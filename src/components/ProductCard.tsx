@@ -1,14 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProductItem } from '../types';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Heart, ShoppingCart } from 'lucide-react';
 
 interface ProductCardProps {
   product: ProductItem;
   onViewDetails: (product: ProductItem) => void;
   index: number;
+  onAddToCart?: (product: ProductItem) => void;
+  onToggleWishlist?: (product: ProductItem) => void;
+  isInWishlist?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails, index }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onViewDetails,
+  index,
+  onAddToCart,
+  onToggleWishlist,
+  isInWishlist = false,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -124,13 +134,40 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
             backdropFilter: 'blur(6px)',
             fontSize: '0.75rem',
             fontWeight: 600,
-            color: '#BEEA9A',
             letterSpacing: '0.04em',
             textTransform: 'uppercase',
           }}
         >
           {product.category}
         </div>
+
+        {/* Wishlist Heart Button */}
+        {onToggleWishlist && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleWishlist(product); }}
+            aria-label="Toggle Wishlist"
+            style={{
+              position: 'absolute',
+              bottom: '16px',
+              right: '16px',
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.92)',
+              backdropFilter: 'blur(4px)',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: isInWishlist ? '#E53935' : '#21372F',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <Heart size={18} fill={isInWishlist ? '#E53935' : 'none'} />
+          </button>
+        )}
       </div>
 
       {/* Product Info */}
@@ -276,25 +313,42 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
             </span>
           </div>
 
-          <button
-            onClick={() => onViewDetails(product)}
-            className="btn btn-primary"
-            style={{
-              padding: '0.6rem 1.3rem',
-              fontSize: '0.88rem',
-              borderRadius: '10px',
-              gap: '0.4rem',
-            }}
-          >
-            View Details
-            <ArrowRight
-              size={16}
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            {onAddToCart && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
+                className="btn btn-outline"
+                style={{
+                  padding: '0.6rem 0.9rem',
+                  fontSize: '0.88rem',
+                  borderRadius: '10px',
+                }}
+                title="Add to Cart"
+              >
+                <ShoppingCart size={16} />
+              </button>
+            )}
+
+            <button
+              onClick={() => onViewDetails(product)}
+              className="btn btn-primary"
               style={{
-                transition: 'transform 0.3s ease',
-                transform: isHovered ? 'translateX(3px)' : 'translateX(0)',
+                padding: '0.6rem 1.2rem',
+                fontSize: '0.88rem',
+                borderRadius: '10px',
+                gap: '0.4rem',
               }}
-            />
-          </button>
+            >
+              Details
+              <ArrowRight
+                size={16}
+                style={{
+                  transition: 'transform 0.3s ease',
+                  transform: isHovered ? 'translateX(3px)' : 'translateX(0)',
+                }}
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>

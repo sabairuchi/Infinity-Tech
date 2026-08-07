@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import type { PageRoute } from '../types';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, ShoppingCart } from 'lucide-react';
 
 interface NavbarProps {
   activePage: PageRoute;
   onNavigate: (page: PageRoute, targetId?: string) => void;
+  cartCount?: number;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activePage, onNavigate }) => {
+export const Navbar: React.FC<NavbarProps> = ({ activePage, onNavigate, cartCount = 0 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -122,7 +123,51 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, onNavigate }) => {
         </nav>
 
         {/* Desktop Right CTA */}
-        <div className="desktop-cta" style={{ display: 'none', alignItems: 'center' }}>
+        <div className="desktop-cta" style={{ display: 'none', alignItems: 'center', gap: '0.85rem' }}>
+          <button
+            onClick={() => handleNavClick('my-products')}
+            aria-label="My Workspace & Cart"
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '42px',
+              height: '42px',
+              borderRadius: '10px',
+              backgroundColor: activePage === 'my-products' ? '#899255' : '#F0F5ED',
+              color: activePage === 'my-products' ? '#FFFFFF' : '#21372F',
+              border: '1px solid #DCE8D3',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+            title="My Cart & Downloads"
+          >
+            <ShoppingCart size={20} />
+            {cartCount > 0 && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '-5px',
+                  right: '-5px',
+                  backgroundColor: '#899255',
+                  color: '#FFFFFF',
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px solid #FFFFFF',
+                }}
+              >
+                {cartCount}
+              </span>
+            )}
+          </button>
+
           <button
             onClick={() => handleNavClick('contact')}
             className="btn btn-primary"

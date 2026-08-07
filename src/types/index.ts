@@ -1,4 +1,4 @@
-export type PageRoute = 'home' | 'about' | 'services' | 'portfolio' | 'blog' | 'contact' | 'products';
+export type PageRoute = 'home' | 'about' | 'services' | 'portfolio' | 'blog' | 'contact' | 'products' | 'my-products';
 
 export interface ProductItem {
   id: string;
@@ -16,6 +16,20 @@ export interface ProductItem {
   techStack: string[];
   useCases: string[];
   integrations: string[];
+}
+
+export interface CartItem {
+  product: ProductItem;
+  quantity: number;
+}
+
+export interface DownloadItem {
+  id: string;
+  product: ProductItem;
+  version: string;
+  licenseKey: string;
+  downloadSize: string;
+  datePurchased: string;
 }
 
 export interface ServiceItem {

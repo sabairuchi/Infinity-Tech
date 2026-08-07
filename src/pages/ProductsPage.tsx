@@ -1,18 +1,20 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import type { PageRoute, ProductItem } from '../types';
-import { PRODUCTS_DATA, PRODUCT_CATEGORIES, FEATURED_PRODUCT_IDS } from '../data/products';
+import { PRODUCTS_DATA, PRODUCT_CATEGORIES } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
 import { ProductFilter } from '../components/ProductFilter';
 import { CTASection } from '../components/CTASection';
 import {
   ArrowRight, Package, Shield, Zap,
-  BarChart3, Globe, Users, Layers, Star,
-  CheckCircle2
+  BarChart3, Globe, Users, Layers, Star
 } from 'lucide-react';
 
 interface ProductsPageProps {
   onNavigate: (page: PageRoute) => void;
   onOpenProductModal: (product: ProductItem) => void;
+  onAddToCart?: (product: ProductItem) => void;
+  onToggleWishlist?: (product: ProductItem) => void;
+  wishlistIds?: string[];
 }
 
 /* ───── Scroll reveal hook ───── */
@@ -42,11 +44,16 @@ const WHY_CHOOSE = [
   { icon: Layers, title: 'Seamless Integrations', desc: 'Connect with 200+ tools you already use through our pre-built connectors and open API.' },
 ];
 
-export const ProductsPage: React.FC<ProductsPageProps> = ({ onNavigate, onOpenProductModal }) => {
+export const ProductsPage: React.FC<ProductsPageProps> = ({
+  onNavigate,
+  onOpenProductModal,
+  onAddToCart,
+  onToggleWishlist,
+  wishlistIds = [],
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   const hero = useScrollReveal();
-  const featured = useScrollReveal();
   const grid = useScrollReveal();
   const whyChoose = useScrollReveal();
   const stats = useScrollReveal();
@@ -65,11 +72,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ onNavigate, onOpenPr
     return counts;
   }, []);
 
-  /* ───── Featured products ───── */
-  const featuredProducts = useMemo(
-    () => PRODUCTS_DATA.filter((p) => FEATURED_PRODUCT_IDS.includes(p.id)),
-    [],
-  );
+
 
   return (
     <div style={{ paddingTop: '80px' }}>
@@ -185,10 +188,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ onNavigate, onOpenPr
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button
-              onClick={() => {
-                const el = document.getElementById('products-grid');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={() => onNavigate('my-products')}
               className="btn"
               style={{
                 padding: '0.95rem 2rem',
@@ -297,55 +297,6 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ onNavigate, onOpenPr
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
-          FEATURED PRODUCTS
-      ════════════════════════════════════════════ */}
-      <section
-        ref={featured.ref}
-        style={{
-          backgroundColor: '#F7FAF5',
-          padding: 'clamp(4rem, 7vw, 6rem) 0',
-          borderBottom: '1px solid #DCE8D3',
-        }}
-      >
-        <div className="container">
-          <div
-            style={{
-              textAlign: 'center',
-              maxWidth: '700px',
-              margin: '0 auto',
-              marginBottom: '3rem',
-              opacity: featured.visible ? 1 : 0,
-              transform: featured.visible ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          >
-            <span className="badge-pill" style={{ marginBottom: '1rem' }}>
-              <span className="dot" /> FEATURED
-            </span>
-            <h2 className="heading-md" style={{ color: '#21372F', marginBottom: '1rem' }}>
-              Our Most Popular <span style={{ color: '#899255' }}>Products</span>
-            </h2>
-            <p style={{ fontSize: '1.05rem', color: '#5F685F', lineHeight: 1.6 }}>
-              These flagship products power thousands of businesses worldwide.
-              Discover what makes them the preferred choice for growth-oriented teams.
-            </p>
-          </div>
-
-          {/* Featured Products — horizontal cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {featuredProducts.map((product, i) => (
-              <FeaturedProductCard
-                key={product.id}
-                product={product}
-                index={i}
-                onViewDetails={onOpenProductModal}
-                parentVisible={featured.visible}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ════════════════════════════════════════════
           ALL PRODUCTS GRID
@@ -359,27 +310,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ onNavigate, onOpenPr
         }}
       >
         <div className="container">
-          <div
-            style={{
-              textAlign: 'center',
-              maxWidth: '700px',
-              margin: '0 auto',
-              marginBottom: '2.5rem',
-              opacity: grid.visible ? 1 : 0,
-              transform: grid.visible ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          >
-            <span className="badge-pill" style={{ marginBottom: '1rem' }}>
-              <span className="dot" /> FULL CATALOG
-            </span>
-            <h2 className="heading-md" style={{ color: '#21372F', marginBottom: '1rem' }}>
-              Explore All <span style={{ color: '#899255' }}>Products</span>
-            </h2>
-            <p style={{ fontSize: '1.05rem', color: '#5F685F', lineHeight: 1.6 }}>
-              Browse our complete product suite. Filter by category to find the perfect tool for your needs.
-            </p>
-          </div>
+
 
           {/* Filter Bar */}
           <ProductFilter
@@ -403,6 +334,9 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ onNavigate, onOpenPr
                 product={product}
                 onViewDetails={onOpenProductModal}
                 index={i}
+                onAddToCart={onAddToCart}
+                onToggleWishlist={onToggleWishlist}
+                isInWishlist={wishlistIds.includes(product.id)}
               />
             ))}
           </div>
@@ -480,202 +414,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ onNavigate, onOpenPr
   );
 };
 
-/* ───────────────────────────────────────────────
-   Featured Product Card (horizontal layout)
-   ─────────────────────────────────────────────── */
-interface FeaturedCardProps {
-  product: ProductItem;
-  index: number;
-  onViewDetails: (product: ProductItem) => void;
-  parentVisible: boolean;
-}
 
-const FeaturedProductCard: React.FC<FeaturedCardProps> = ({ product, index, onViewDetails, parentVisible }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const isReversed = index % 2 !== 0;
-
-  const statusColor = product.status === 'Live' ? '#4CAF50' : '#FF9800';
-
-  return (
-    <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        backgroundColor: '#FFFFFF',
-        borderRadius: '20px',
-        border: `1px solid ${isHovered ? '#A8C36E' : '#DCE8D3'}`,
-        overflow: 'hidden',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '0',
-        opacity: parentVisible ? 1 : 0,
-        transform: parentVisible ? 'translateY(0)' : 'translateY(30px)',
-        transition: `all 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.15}s`,
-        boxShadow: isHovered
-          ? '0 20px 50px rgba(33, 55, 47, 0.12)'
-          : '0 4px 20px rgba(33, 55, 47, 0.05)',
-      }}
-    >
-      {/* Image */}
-      <div
-        style={{
-          order: isReversed ? 2 : 1,
-          position: 'relative',
-          overflow: 'hidden',
-          minHeight: '280px',
-          backgroundColor: '#F7FAF5',
-        }}
-      >
-        <img
-          src={product.image}
-          alt={product.name}
-          loading="lazy"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-            transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            top: '16px',
-            left: '16px',
-            display: 'flex',
-            gap: '8px',
-          }}
-        >
-          <span
-            style={{
-              padding: '6px 14px',
-              borderRadius: '9999px',
-              backgroundColor: 'rgba(33,55,47,0.85)',
-              color: '#BEEA9A',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-            }}
-          >
-            ★ Featured
-          </span>
-          <span
-            style={{
-              padding: '6px 14px',
-              borderRadius: '9999px',
-              backgroundColor: 'rgba(255,255,255,0.92)',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              color: statusColor,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px',
-            }}
-          >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: statusColor }} />
-            {product.status}
-          </span>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div
-        style={{
-          order: isReversed ? 1 : 2,
-          padding: 'clamp(1.5rem, 3vw, 2.5rem)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}
-      >
-        <span
-          style={{
-            fontSize: '0.8rem',
-            fontWeight: 600,
-            color: '#899255',
-            textTransform: 'uppercase',
-            letterSpacing: '0.06em',
-            marginBottom: '0.5rem',
-          }}
-        >
-          {product.category}
-        </span>
-
-        <h3
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: 'clamp(1.4rem, 2.5vw, 1.8rem)',
-            fontWeight: 800,
-            color: '#21372F',
-            marginBottom: '0.5rem',
-            lineHeight: 1.3,
-          }}
-        >
-          {product.name}
-        </h3>
-
-        <p
-          style={{
-            fontSize: '0.95rem',
-            color: '#899255',
-            fontWeight: 600,
-            fontStyle: 'italic',
-            marginBottom: '1rem',
-          }}
-        >
-          {product.tagline}
-        </p>
-
-        <p
-          style={{
-            fontSize: '1rem',
-            color: '#5F685F',
-            lineHeight: 1.65,
-            marginBottom: '1.5rem',
-          }}
-        >
-          {product.shortDesc}
-        </p>
-
-        {/* Key benefits */}
-        <div style={{ marginBottom: '1.5rem' }}>
-          {product.benefits.slice(0, 3).map((b, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '0.6rem',
-                marginBottom: '0.6rem',
-                fontSize: '0.92rem',
-                color: '#365648',
-              }}
-            >
-              <CheckCircle2 size={16} style={{ color: '#899255', flexShrink: 0, marginTop: '3px' }} />
-              <span>{b}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Pricing + CTA */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#21372F' }}>
-            {product.pricing}
-          </span>
-          <button
-            onClick={() => onViewDetails(product)}
-            className="btn btn-primary"
-            style={{ padding: '0.7rem 1.5rem', fontSize: '0.92rem', borderRadius: '10px' }}
-          >
-            View Details <ArrowRight size={16} />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 /* ───────────────────────────────────────────────
    Why Choose Card
