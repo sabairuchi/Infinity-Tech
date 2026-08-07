@@ -1,0 +1,263 @@
+/* Infinity Tech Design System & CSS Styles */
+
+:root {
+  /* Color Palette - strictly adherence to Infinity Tech Green Palette */
+  --bg-main: #FFFFFF;
+  --bg-subtle: #F7FAF5;
+  --bg-card: #FFFFFF;
+  
+  --green-light: #BEEA9A;
+  --green-sage: #A8C36E;
+  --green-olive: #899255;
+  --green-forest: #365648;
+  --green-evergreen: #21372F;
+  
+  --text-main: #21372F;
+  --text-muted: #5F685F;
+  --text-light: #8A968A;
+  --border-color: #DCE8D3;
+  
+  /* Typography */
+  --font-heading: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* Layout & Shadows */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  
+  --shadow-sm: 0 2px 8px rgba(33, 55, 47, 0.05);
+  --shadow-md: 0 10px 25px rgba(33, 55, 47, 0.08);
+  --shadow-lg: 0 20px 40px rgba(33, 55, 47, 0.12);
+  --shadow-glow: 0 0 30px rgba(190, 234, 154, 0.25);
+  
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Reset & Global Base Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-main);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #F0F5ED;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--green-sage);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-olive);
+}
+
+/* Base Typography Utilities */
+.text-olive {
+  color: var(--green-olive);
+}
+
+.text-forest {
+  color: var(--green-forest);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.heading-lg {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  letter-spacing: -0.02em;
+}
+
+.heading-md {
+  font-size: clamp(1.8rem, 3.5vw, 2.7rem);
+  letter-spacing: -0.015em;
+}
+
+.heading-sm {
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 2rem;
+  }
+}
+
+/* Badges */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background-color: rgba(190, 234, 154, 0.35);
+  border: 1px solid var(--border-color);
+  color: var(--green-forest);
+  font-weight: 600;
+  font-size: 0.825rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+}
+
+.badge-pill .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--green-olive);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--green-olive);
+  color: #FFFFFF;
+}
+
+.btn-primary:hover {
+  background-color: var(--green-forest);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(33, 55, 47, 0.15);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--green-forest);
+  color: var(--green-forest);
+}
+
+.btn-outline:hover {
+  background-color: var(--green-forest);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+}
+
+.btn-light {
+  background-color: #FFFFFF;
+  color: var(--green-evergreen);
+}
+
+.btn-light:hover {
+  background-color: var(--green-light);
+  transform: translateY(-2px);
+}
+
+/* Keyframe Animations */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Accessible focus ring */
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid var(--green-olive);
+  outline-offset: 3px;
+}
+
+/* Prefers Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

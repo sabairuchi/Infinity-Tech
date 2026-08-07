@@ -1,0 +1,73 @@
+export type PageRoute = 'home' | 'about' | 'services' | 'portfolio' | 'blog' | 'contact';
+
+export interface ServiceItem {
+  id: string;
+  title: string;
+  category: string;
+  shortDesc: string;
+  fullDesc: string;
+  iconName: string;
+  benefits: string[];
+  features: string[];
+  process: string[];
+  techStack: string[];
+}
+
+export interface ProjectItem {
+  id: string;
+  title: string;
+  category: 'Web' | 'Mobile' | 'UI/UX' | 'E-commerce';
+  shortDesc: string;
+  fullDesc: string;
+  client: string;
+  year: string;
+  image: string;
+  techStack: string[];
+  liveUrl?: string;
+  keyFeatures: string[];
+  impact: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  date: string;
+  readTime: string;
+  author: {
+    name: string;
+    role: string;
+    avatar: string;
+  };
+  summary: string;
+  content: string[];
+  image: string;
+  tags: string[];
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  avatar: string;
+  rating: number;
+  quote: string;
+}
+
+export interface ProcessStep {
+  number: string;
+  title: string;
+  description: string;
+  details: string[];
+}
+
+export interface ContactFormData {
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  service: string;
+  message: string;
+}
