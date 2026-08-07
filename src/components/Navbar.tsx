@@ -26,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, onNavigate }) => {
 
   const navLinks: { name: string; page: PageRoute }[] = [
     { name: 'Home', page: 'home' },
+    { name: 'Products', page: 'products' },
     { name: 'Services', page: 'services' },
     { name: 'Portfolio', page: 'portfolio' },
     { name: 'Blog', page: 'blog' },

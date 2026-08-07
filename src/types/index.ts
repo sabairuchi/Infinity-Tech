@@ -1,4 +1,22 @@
-export type PageRoute = 'home' | 'about' | 'services' | 'portfolio' | 'blog' | 'contact';
+export type PageRoute = 'home' | 'about' | 'services' | 'portfolio' | 'blog' | 'contact' | 'products';
+
+export interface ProductItem {
+  id: string;
+  name: string;
+  tagline: string;
+  category: string;
+  shortDesc: string;
+  fullDesc: string;
+  image: string;
+  pricing: string;
+  status: 'Live' | 'Beta' | 'Coming Soon';
+  version: string;
+  features: string[];
+  benefits: string[];
+  techStack: string[];
+  useCases: string[];
+  integrations: string[];
+}
 
 export interface ServiceItem {
   id: string;

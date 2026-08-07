@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { PageRoute, ServiceItem, ProjectItem, BlogPost } from './types';
+import type { PageRoute, ServiceItem, ProjectItem, BlogPost, ProductItem } from './types';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 
@@ -10,12 +10,14 @@ import { ServicesPage } from './pages/ServicesPage';
 import { PortfolioPage } from './pages/PortfolioPage';
 import { BlogPage } from './pages/BlogPage';
 import { ContactPage } from './pages/ContactPage';
+import { ProductsPage } from './pages/ProductsPage';
 
 // Modals
 import { ServiceModal } from './components/ServiceModal';
 import { ProjectModal } from './components/ProjectModal';
 import { BlogModal } from './components/BlogModal';
 import { LegalModal } from './components/LegalModal';
+import { ProductModal } from './components/ProductModal';
 
 export const App: React.FC = () => {
   const [activePage, setActivePage] = useState<PageRoute>('home');
@@ -25,12 +27,13 @@ export const App: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
   const [legalModalState, setLegalModalState] = useState<{ title: string; type: 'privacy' | 'terms' | null }>({ title: '', type: null });
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
 
   // Handle URL hash changes & back/forward browser navigation
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '') as PageRoute;
-      if (['home', 'about', 'services', 'portfolio', 'blog', 'contact'].includes(hash)) {
+      if (['home', 'about', 'services', 'portfolio', 'blog', 'contact', 'products'].includes(hash)) {
         setActivePage(hash);
       }
     };
@@ -103,6 +106,13 @@ export const App: React.FC = () => {
         {activePage === 'contact' && (
           <ContactPage onNavigate={navigateTo} />
         )}
+
+        {activePage === 'products' && (
+          <ProductsPage
+            onNavigate={navigateTo}
+            onOpenProductModal={(product) => setSelectedProduct(product)}
+          />
+        )}
       </main>
 
       {/* Footer */}
@@ -132,6 +142,12 @@ export const App: React.FC = () => {
         title={legalModalState.title}
         type={legalModalState.type}
         onClose={() => setLegalModalState({ title: '', type: null })}
+      />
+
+      <ProductModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onNavigate={navigateTo}
       />
 
     </div>
