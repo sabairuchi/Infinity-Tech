@@ -48,12 +48,11 @@ app.post('/api/auth/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: 'Name, email, and password are required.' });
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Name and email are required.' });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = password ? await bcrypt.hash(password, await bcrypt.genSalt(10)) : 'GOOGLE_AUTH_NO_PASSWORD';
     const mysqlStatus = getMySQLStatus();
 
     let userId = null;
@@ -106,6 +105,78 @@ app.post('/api/auth/register', async (req, res) => {
   } catch (err) {
     console.error('Registration Error:', err);
     res.status(500).json({ error: 'Failed to create user account.' });
+  }
+});
+
+// ===================================================
+// 1B. GOOGLE DEVICE ACCOUNT SIGNUP & LOGIN (MySQL)
+// ===================================================
+app.post('/api/auth/google', async (req, res) => {
+  try {
+    const { name, email, avatar } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Google email is required.' });
+    }
+
+    const userEmail = email.trim().toLowerCase();
+    const userName = (name || email.split('@')[0]).trim();
+    const userAvatar = avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
+    const mysqlStatus = getMySQLStatus();
+
+    let foundUser = null;
+
+    if (mysqlStatus.connected) {
+      const pool = getPool();
+      const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [userEmail]);
+      if (rows.length > 0) {
+        foundUser = rows[0];
+      } else {
+        const [result] = await pool.query(
+          'INSERT INTO users (name, email, password, role, avatar) VALUES (?, ?, ?, ?, ?)',
+          [userName, userEmail, 'GOOGLE_AUTH_NO_PASSWORD', 'Google Verified Member', userAvatar]
+        );
+        foundUser = {
+          id: result.insertId,
+          name: userName,
+          email: userEmail,
+          role: 'Google Verified Member',
+          avatar: userAvatar,
+        };
+      }
+    } else {
+      // Memory Store Fallback
+      foundUser = memoryStore.users.find(u => u.email.toLowerCase() === userEmail);
+      if (!foundUser) {
+        foundUser = {
+          id: Date.now(),
+          name: userName,
+          email: userEmail,
+          role: 'Google Verified Member',
+          avatar: userAvatar,
+        };
+        memoryStore.users.push(foundUser);
+      }
+    }
+
+    const tokenPayload = { id: foundUser.id, name: foundUser.name, email: foundUser.email };
+    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '7d' });
+
+    res.json({
+      message: 'Signed in with Google Account successfully!',
+      user: {
+        id: foundUser.id,
+        name: foundUser.name,
+        email: foundUser.email,
+        role: foundUser.role || 'Google Verified Member',
+        avatar: foundUser.avatar || userAvatar,
+      },
+      token,
+      mysqlConnected: mysqlStatus.connected,
+    });
+  } catch (err) {
+    console.error('Google Auth Error:', err);
+    res.status(500).json({ error: 'Google authentication failed.' });
   }
 });
 

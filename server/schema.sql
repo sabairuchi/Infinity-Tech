@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
+  password VARCHAR(255) DEFAULT 'GOOGLE_AUTH_NO_PASSWORD',
   role VARCHAR(100) DEFAULT 'Verified Member',
   avatar VARCHAR(500) DEFAULT 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
