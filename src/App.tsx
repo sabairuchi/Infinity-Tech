@@ -110,7 +110,7 @@ export const App: React.FC = () => {
   // MANDATORY PURCHASE AUTH GUARD
   const handleCheckoutSuccess = (purchasedProducts: ProductItem[]) => {
     if (!user) {
-      setAuthRedirectReason('You must sign in or create a MySQL account to complete your product purchase.');
+      setAuthRedirectReason('You must sign in or create an account to complete your product purchase.');
       navigateTo('login');
       return;
     }

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { PageRoute, User } from '../types';
-import { AlertTriangle, ArrowRight, X, ShieldCheck, Database } from 'lucide-react';
+import { AlertTriangle, ArrowRight, X, ShieldCheck } from 'lucide-react';
 
 interface AuthPageProps {
-  initialMode?: 'login' | 'signup';
   onNavigate: (page: PageRoute) => void;
   onLoginSuccess: (user: User, token: string) => void;
   redirectReason?: string | null;
@@ -32,19 +31,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [showDeviceAccountsModal, setShowDeviceAccountsModal] = useState(false);
-  const [mysqlConnected, setMysqlConnected] = useState<boolean | null>(null);
-
-  // Check Backend & MySQL status on mount
-  useEffect(() => {
-    fetch('http://localhost:5000/api/health')
-      .then((res) => res.json())
-      .then((data) => {
-        setMysqlConnected(data?.mysql?.connected ?? false);
-      })
-      .catch(() => {
-        setMysqlConnected(false);
-      });
-  }, []);
 
   const handleGoogleAuth = async (account: { name: string; email: string; avatar: string }) => {
     setErrorMsg(null);
@@ -90,72 +76,57 @@ export const AuthPage: React.FC<AuthPageProps> = ({
     }
   };
 
+  // Clean warning message without "MySQL"
+  const cleanRedirectReason = redirectReason?.replace(/MySQL\s*/gi, '');
+
   return (
     <div
       style={{
         paddingTop: '80px',
-        minHeight: '92vh',
-        backgroundColor: '#070A0F',
+        minHeight: '90vh',
+        backgroundColor: '#F7FAF5',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '5rem 1rem 3rem',
-        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
       }}
     >
       <div
         style={{
-          backgroundColor: '#0E131F',
+          backgroundColor: '#21372F',
+          background: 'linear-gradient(145deg, #21372F 0%, #1A2B24 100%)',
           borderRadius: '28px',
           maxWidth: '460px',
           width: '100%',
           padding: '3.5rem 2.5rem 3.5rem',
-          boxShadow: '0 25px 70px rgba(0, 0, 0, 0.65)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 25px 60px rgba(33, 55, 47, 0.22)',
+          border: '1px solid #365648',
           textAlign: 'center',
           position: 'relative',
         }}
       >
-        {/* Connection status subtle pill */}
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            padding: '4px 12px',
-            borderRadius: '999px',
-            backgroundColor: 'rgba(137, 146, 85, 0.15)',
-            color: '#BEEA9A',
-            fontSize: '0.72rem',
-            fontWeight: 700,
-            marginBottom: '1.75rem',
-            border: '1px solid rgba(190, 234, 154, 0.2)',
-          }}
-        >
-          <Database size={12} />
-          <span>{mysqlConnected ? 'MySQL Connected' : 'Google Auth Ready'}</span>
-        </div>
-
         {/* Redirect warning banner if coming from Buy Now auth guard */}
-        {redirectReason && (
+        {cleanRedirectReason && (
           <div
             style={{
               padding: '0.85rem 1rem',
-              backgroundColor: 'rgba(217, 119, 6, 0.15)',
+              backgroundColor: 'rgba(251, 191, 36, 0.15)',
               borderRadius: '14px',
-              border: '1px solid rgba(217, 119, 6, 0.3)',
-              marginBottom: '1.75rem',
+              border: '1px solid rgba(251, 191, 36, 0.3)',
+              marginBottom: '2rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.6rem',
-              color: '#FBBF24',
+              color: '#FDE68A',
               fontSize: '0.85rem',
               textAlign: 'left',
+              lineHeight: 1.4,
             }}
           >
             <AlertTriangle size={18} style={{ flexShrink: 0, color: '#FBBF24' }} />
-            <span>{redirectReason}</span>
+            <span>{cleanRedirectReason}</span>
           </div>
         )}
 
@@ -163,9 +134,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           <div
             style={{
               padding: '0.75rem 1rem',
-              backgroundColor: 'rgba(239, 68, 68, 0.15)',
+              backgroundColor: 'rgba(239, 68, 68, 0.2)',
               borderRadius: '12px',
-              color: '#F87171',
+              color: '#FECACA',
               fontSize: '0.85rem',
               marginBottom: '1.5rem',
               border: '1px solid rgba(239, 68, 68, 0.3)',
@@ -179,19 +150,19 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           <div
             style={{
               padding: '0.75rem 1rem',
-              backgroundColor: 'rgba(34, 197, 94, 0.15)',
+              backgroundColor: 'rgba(189, 234, 154, 0.2)',
               borderRadius: '12px',
-              color: '#4ADE80',
+              color: '#BEEA9A',
               fontSize: '0.85rem',
               marginBottom: '1.5rem',
-              border: '1px solid rgba(34, 197, 94, 0.3)',
+              border: '1px solid rgba(190, 234, 154, 0.3)',
             }}
           >
             {successMsg}
           </div>
         )}
 
-        {/* Welcome Header matching screenshot */}
+        {/* Welcome Header matching website typography */}
         <h1
           style={{
             fontFamily: 'var(--font-heading)',
@@ -207,7 +178,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
 
         <p
           style={{
-            color: '#94A3B8',
+            color: '#DCE8D3',
             fontSize: '1.05rem',
             fontWeight: 400,
             marginBottom: '2.75rem',
@@ -217,7 +188,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           Log in or create an account to continue.
         </p>
 
-        {/* Google Continue Pill Button matching screenshot */}
+        {/* Google Continue Pill Button matching Infinity Tech colors */}
         <button
           onClick={() => setShowDeviceAccountsModal(true)}
           disabled={loading}
@@ -227,23 +198,25 @@ export const AuthPage: React.FC<AuthPageProps> = ({
             gap: '0.9rem',
             padding: '0.6rem 1.6rem 0.6rem 0.6rem',
             borderRadius: '999px',
-            backgroundColor: '#1E2536',
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
             color: '#FFFFFF',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
             fontSize: '1.05rem',
             fontWeight: 700,
             cursor: 'pointer',
-            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4)',
+            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.25)',
             transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
             outline: 'none',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#283248';
-            e.currentTarget.style.transform = 'scale(1.02)';
+            e.currentTarget.style.backgroundColor = '#899255';
+            e.currentTarget.style.borderColor = '#899255';
+            e.currentTarget.style.transform = 'translateY(-2px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#1E2536';
-            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.12)';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
           {/* White Circular Wrapper with Colorful Google G Logo */}
@@ -281,7 +254,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           <span>{loading ? 'Authenticating...' : 'Continue with Google'}</span>
         </button>
 
-        {/* Security assurance */}
+        {/* Security assurance footer */}
         <div
           style={{
             display: 'flex',
@@ -289,12 +262,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({
             justifyContent: 'center',
             gap: '0.4rem',
             marginTop: '3rem',
-            fontSize: '0.78rem',
-            color: '#64748B',
+            fontSize: '0.8rem',
+            color: '#A8C36E',
           }}
         >
-          <ShieldCheck size={14} style={{ color: '#899255' }} />
-          <span>Secure Google OAuth 2.0 & Device Account Sync</span>
+          <ShieldCheck size={15} style={{ color: '#BEEA9A' }} />
+          <span>Secure Google OAuth 2.0 Authentication</span>
         </div>
       </div>
 
@@ -307,7 +280,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            backgroundColor: 'rgba(33, 55, 47, 0.75)',
             backdropFilter: 'blur(8px)',
             zIndex: 999,
             display: 'flex',
@@ -318,13 +291,13 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         >
           <div
             style={{
-              backgroundColor: '#161C2A',
+              backgroundColor: '#FFFFFF',
               borderRadius: '24px',
               width: '100%',
               maxWidth: '420px',
               padding: '2rem',
-              boxShadow: '0 30px 80px rgba(0,0,0,0.8)',
-              border: '1px solid rgba(255,255,255,0.12)',
+              boxShadow: '0 30px 80px rgba(33, 55, 47, 0.3)',
+              border: '1px solid #DCE8D3',
               position: 'relative',
               textAlign: 'center',
             }}
@@ -337,7 +310,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                 right: '1.25rem',
                 background: 'none',
                 border: 'none',
-                color: '#94A3B8',
+                color: '#5F685F',
                 cursor: 'pointer',
                 padding: '0.25rem',
               }}
@@ -351,12 +324,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                   width: '48px',
                   height: '48px',
                   borderRadius: '50%',
-                  backgroundColor: '#FFFFFF',
+                  backgroundColor: '#F0F5ED',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 0.75rem',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                  border: '1px solid #DCE8D3',
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24">
@@ -378,10 +351,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                   />
                 </svg>
               </div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '0.25rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#21372F', marginBottom: '0.25rem' }}>
                 Choose Google Account
               </h3>
-              <p style={{ fontSize: '0.85rem', color: '#94A3B8' }}>
+              <p style={{ fontSize: '0.85rem', color: '#5F685F' }}>
                 Select an account on this device to continue
               </p>
             </div>
@@ -397,15 +370,15 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                     gap: '0.9rem',
                     padding: '0.85rem 1rem',
                     borderRadius: '14px',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                    backgroundColor: '#20293D',
-                    color: '#FFFFFF',
+                    border: '1px solid #DCE8D3',
+                    backgroundColor: '#F7FAF5',
+                    color: '#21372F',
                     cursor: 'pointer',
                     textAlign: 'left',
                     transition: 'all 0.2s ease',
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#2B3650')}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#20293D')}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#EBF4E5')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#F7FAF5')}
                 >
                   <img
                     src={acc.avatar}
@@ -413,8 +386,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                     style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
                   />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#FFFFFF' }}>{acc.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: '#94A3B8' }}>{acc.email}</div>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#21372F' }}>{acc.name}</div>
+                    <div style={{ fontSize: '0.8rem', color: '#5F685F' }}>{acc.email}</div>
                   </div>
                   <ArrowRight size={16} style={{ color: '#899255' }} />
                 </button>
