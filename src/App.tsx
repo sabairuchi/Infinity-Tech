@@ -280,7 +280,6 @@ export const App: React.FC = () => {
 
         {(activePage === 'login' || activePage === 'signup') && (
           <AuthPage
-            initialMode={activePage === 'signup' ? 'signup' : 'login'}
             onNavigate={navigateTo}
             onLoginSuccess={(authedUser, token) => {
               setUser({ ...authedUser, token });
