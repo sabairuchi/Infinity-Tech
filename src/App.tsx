@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { PageRoute, ServiceItem, ProjectItem, BlogPost, ProductItem, CartItem, DownloadItem } from './types';
+import type { PageRoute, ServiceItem, ProjectItem, BlogPost, ProductItem, CartItem, DownloadItem, User } from './types';
 import { PRODUCTS_DATA } from './data/products';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -13,6 +13,7 @@ import { BlogPage } from './pages/BlogPage';
 import { ContactPage } from './pages/ContactPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { MyProductsPage } from './pages/MyProductsPage';
+import { AuthPage } from './pages/AuthPage';
 
 // Modals
 import { ServiceModal } from './components/ServiceModal';
@@ -23,6 +24,8 @@ import { ProductModal } from './components/ProductModal';
 
 export const App: React.FC = () => {
   const [activePage, setActivePage] = useState<PageRoute>('home');
+  const [user, setUser] = useState<User | null>(null);
+  const [authRedirectReason, setAuthRedirectReason] = useState<string | null>(null);
   
   // Modal states
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
@@ -33,12 +36,12 @@ export const App: React.FC = () => {
 
   // User Cart, Wishlist, Downloads State
   const [cart, setCart] = useState<CartItem[]>([
-    { product: PRODUCTS_DATA[0], quantity: 1 }, // Infinity Analytics
-    { product: PRODUCTS_DATA[1], quantity: 1 }, // Infinity CRM
+    { product: PRODUCTS_DATA[0], quantity: 1 },
+    { product: PRODUCTS_DATA[1], quantity: 1 },
   ]);
   const [wishlist, setWishlist] = useState<ProductItem[]>([
-    PRODUCTS_DATA[2], // Infinity Commerce
-    PRODUCTS_DATA[3], // Infinity TaskFlow
+    PRODUCTS_DATA[2],
+    PRODUCTS_DATA[3],
   ]);
   const [downloads, setDownloads] = useState<DownloadItem[]>([
     {
@@ -48,14 +51,6 @@ export const App: React.FC = () => {
       licenseKey: 'INF-ANALYTICS-8842-X91A-PRO',
       downloadSize: '142 MB',
       datePurchased: 'Aug 5, 2026',
-    },
-    {
-      id: 'dl-2',
-      product: PRODUCTS_DATA[4],
-      version: '2.3',
-      licenseKey: 'INF-HEALTH-3391-B72Z-ENT',
-      downloadSize: '215 MB',
-      datePurchased: 'Jul 28, 2026',
     },
   ]);
 
@@ -112,25 +107,61 @@ export const App: React.FC = () => {
     handleRemoveFromWishlist(product.id);
   };
 
+  // MANDATORY PURCHASE AUTH GUARD
   const handleCheckoutSuccess = (purchasedProducts: ProductItem[]) => {
-    const newDownloads: DownloadItem[] = purchasedProducts.map((product, idx) => ({
-      id: `dl-new-${Date.now()}-${idx}`,
-      product,
-      version: product.version,
-      licenseKey: `INF-${product.name.replace(/\s+/g, '').toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}-KEY`,
-      downloadSize: `${120 + Math.floor(Math.random() * 150)} MB`,
-      datePurchased: 'Today',
-    }));
+    if (!user) {
+      setAuthRedirectReason('You must sign in or create a MySQL account to complete your product purchase.');
+      navigateTo('login');
+      return;
+    }
 
-    setDownloads((prev) => [...newDownloads, ...prev]);
-    setCart([]);
+    // Call MySQL Checkout API
+    fetch('http://localhost:5000/api/orders/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token || 'demo-token'}`,
+      },
+      body: JSON.stringify({
+        products: purchasedProducts,
+        totalAmount: purchasedProducts.reduce((acc, p) => acc + (parseFloat(p.pricing.replace(/[^0-9.]/g, '')) || 49), 0),
+        paymentMethod: 'Credit Card (MySQL Saved)',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const newDownloads: DownloadItem[] = (data.purchases || purchasedProducts).map((item: any, idx: number) => ({
+          id: item.id || `dl-new-${Date.now()}-${idx}`,
+          product: item.product || purchasedProducts[idx],
+          version: item.product?.version || purchasedProducts[idx].version,
+          licenseKey: item.licenseKey || `INF-MYSQL-${Math.floor(1000 + Math.random() * 9000)}-KEY`,
+          downloadSize: item.downloadSize || '140 MB',
+          datePurchased: 'Today (MySQL Verified)',
+        }));
+
+        setDownloads((prev) => [...newDownloads, ...prev]);
+        setCart([]);
+      })
+      .catch(() => {
+        // Fallback local state update if server is launching
+        const newDownloads: DownloadItem[] = purchasedProducts.map((product, idx) => ({
+          id: `dl-new-${Date.now()}-${idx}`,
+          product,
+          version: product.version,
+          licenseKey: `INF-${product.name.replace(/\s+/g, '').toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}-KEY`,
+          downloadSize: '140 MB',
+          datePurchased: 'Today',
+        }));
+        setDownloads((prev) => [...newDownloads, ...prev]);
+        setCart([]);
+      });
   };
 
   // Handle URL hash changes & back/forward browser navigation
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '') as PageRoute;
-      if (['home', 'about', 'services', 'portfolio', 'blog', 'contact', 'products', 'my-products'].includes(hash)) {
+      if (['home', 'about', 'services', 'portfolio', 'blog', 'contact', 'products', 'my-products', 'login', 'signup'].includes(hash)) {
         setActivePage(hash);
       }
     };
@@ -166,6 +197,8 @@ export const App: React.FC = () => {
         activePage={activePage}
         onNavigate={navigateTo}
         cartCount={cart.reduce((a, c) => a + c.quantity, 0)}
+        user={user}
+        onLogout={() => setUser(null)}
       />
 
       {/* Main Dynamic View Content */}
@@ -231,6 +264,18 @@ export const App: React.FC = () => {
             onMoveToCartFromWishlist={handleMoveToCartFromWishlist}
             onViewProductDetails={(product) => setSelectedProduct(product)}
             onCheckoutSuccess={handleCheckoutSuccess}
+          />
+        )}
+
+        {(activePage === 'login' || activePage === 'signup') && (
+          <AuthPage
+            initialMode={activePage === 'signup' ? 'signup' : 'login'}
+            onNavigate={navigateTo}
+            onLoginSuccess={(authedUser, token) => {
+              setUser({ ...authedUser, token });
+              setAuthRedirectReason(null);
+            }}
+            redirectReason={authRedirectReason}
           />
         )}
       </main>

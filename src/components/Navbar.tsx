@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import type { PageRoute } from '../types';
-import { Menu, X, ArrowRight, ShoppingCart } from 'lucide-react';
+import type { PageRoute, User } from '../types';
+import { Menu, X, ArrowRight, ShoppingCart, LogIn, LogOut, Package } from 'lucide-react';
 
 interface NavbarProps {
   activePage: PageRoute;
   onNavigate: (page: PageRoute, targetId?: string) => void;
   cartCount?: number;
+  user?: User | null;
+  onLogout?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activePage, onNavigate, cartCount = 0 }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  activePage,
+  onNavigate,
+  cartCount = 0,
+  user,
+  onLogout,
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,6 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, onNavigate, cartCoun
   const handleNavClick = (page: PageRoute) => {
     onNavigate(page);
     setMobileMenuOpen(false);
+    setUserDropdownOpen(false);
   };
 
   return (
@@ -124,6 +134,84 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, onNavigate, cartCoun
 
         {/* Desktop Right CTA */}
         <div className="desktop-cta" style={{ display: 'none', alignItems: 'center', gap: '0.85rem' }}>
+          
+          {/* User Auth Profile / Login Button */}
+          {user ? (
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.35rem 0.8rem 0.35rem 0.35rem',
+                  borderRadius: '999px',
+                  backgroundColor: '#F0F5ED',
+                  border: '1px solid #DCE8D3',
+                  cursor: 'pointer',
+                }}
+              >
+                <img src={user.avatar} alt={user.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#21372F' }}>{user.name}</span>
+              </button>
+
+              {userDropdownOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '120%',
+                    right: 0,
+                    width: '210px',
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: '16px',
+                    boxShadow: '0 12px 35px rgba(33,55,47,0.15)',
+                    border: '1px solid #DCE8D3',
+                    padding: '0.5rem',
+                    zIndex: 110,
+                  }}
+                >
+                  <div style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid #F0F5ED', marginBottom: '0.35rem' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#899255', fontWeight: 700, textTransform: 'uppercase' }}>MySQL Member</div>
+                    <div style={{ fontSize: '0.85rem', color: '#21372F', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
+                  </div>
+                  <button
+                    onClick={() => handleNavClick('my-products')}
+                    style={{ width: '100%', padding: '0.6rem 0.75rem', border: 'none', background: 'none', textAlign: 'left', fontSize: '0.88rem', fontWeight: 700, color: '#21372F', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  >
+                    <Package size={16} style={{ color: '#899255' }} /> My Purchased Products
+                  </button>
+                  {onLogout && (
+                    <button
+                      onClick={() => { onLogout(); setUserDropdownOpen(false); }}
+                      style={{ width: '100%', padding: '0.6rem 0.75rem', border: 'none', background: 'none', textAlign: 'left', fontSize: '0.88rem', fontWeight: 600, color: '#E53935', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                    >
+                      <LogOut size={16} /> Sign Out
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => handleNavClick('login')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.55rem 1.1rem',
+                borderRadius: '10px',
+                backgroundColor: '#F0F5ED',
+                color: '#21372F',
+                border: '1px solid #DCE8D3',
+                fontSize: '0.88rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              <LogIn size={16} style={{ color: '#899255' }} /> Sign In / Register
+            </button>
+          )}
+
           <button
             onClick={() => handleNavClick('my-products')}
             aria-label="My Workspace & Cart"

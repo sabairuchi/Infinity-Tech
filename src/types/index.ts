@@ -1,4 +1,13 @@
-export type PageRoute = 'home' | 'about' | 'services' | 'portfolio' | 'blog' | 'contact' | 'products' | 'my-products';
+export type PageRoute = 'home' | 'about' | 'services' | 'portfolio' | 'blog' | 'contact' | 'products' | 'my-products' | 'login' | 'signup';
+
+export interface User {
+  id: string | number;
+  name: string;
+  email: string;
+  avatar: string;
+  role: string;
+  token?: string;
+}
 
 export interface ProductItem {
   id: string;
