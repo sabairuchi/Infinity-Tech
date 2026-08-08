@@ -23,6 +23,54 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Database Inspector API Endpoint
+app.get('/api/database', async (req, res) => {
+  try {
+    const mysqlStatus = getMySQLStatus();
+    let users = [];
+    let orders = [];
+    let purchases = [];
+    let products = [];
+
+    if (mysqlStatus.connected) {
+      const pool = getPool();
+      const [uRows] = await pool.query('SELECT id, name, email, role, avatar, created_at FROM users');
+      const [oRows] = await pool.query('SELECT * FROM orders ORDER BY created_at DESC');
+      const [pRows] = await pool.query('SELECT * FROM user_purchases ORDER BY date_purchased DESC');
+      const [prodRows] = await pool.query('SELECT * FROM products');
+      users = uRows;
+      orders = oRows;
+      purchases = pRows;
+      products = prodRows;
+    } else {
+      users = memoryStore.users.map(u => ({ id: u.id, name: u.name, email: u.email, role: u.role, avatar: u.avatar }));
+      orders = memoryStore.orders;
+      purchases = memoryStore.purchases;
+      products = [];
+    }
+
+    res.json({
+      status: 'success',
+      mysqlStatus,
+      tables: {
+        users,
+        orders,
+        purchases,
+        products,
+      },
+      counts: {
+        users: users.length,
+        orders: orders.length,
+        purchases: purchases.length,
+        products: products.length,
+      },
+    });
+  } catch (err) {
+    console.error('Database inspection error:', err);
+    res.status(500).json({ error: 'Failed to inspect database tables.' });
+  }
+});
+
 // Middleware to authenticate JWT token
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
