@@ -189,6 +189,16 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleBuyNow = (product: ProductItem) => {
+    if (!user) {
+      setAuthRedirectReason('Authentication Required: Please sign in or create an account to purchase products.');
+      navigateTo('login');
+      return;
+    }
+    handleAddToCart(product);
+    navigateTo('my-products');
+  };
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FFFFFF' }}>
       
@@ -246,6 +256,7 @@ export const App: React.FC = () => {
             onNavigate={navigateTo}
             onOpenProductModal={(product) => setSelectedProduct(product)}
             onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
             onToggleWishlist={handleToggleWishlist}
             wishlistIds={wishlist.map((w) => w.id)}
           />
@@ -313,6 +324,7 @@ export const App: React.FC = () => {
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
         onNavigate={navigateTo}
+        onBuyNow={handleBuyNow}
       />
 
     </div>

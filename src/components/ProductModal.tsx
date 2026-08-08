@@ -9,9 +9,10 @@ interface ProductModalProps {
   product: ProductItem | null;
   onClose: () => void;
   onNavigate: (page: PageRoute) => void;
+  onBuyNow?: (product: ProductItem) => void;
 }
 
-export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onNavigate }) => {
+export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onNavigate, onBuyNow }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -230,13 +231,24 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                 {product.pricing}
               </span>
             </div>
-            <button
-              onClick={() => { handleClose(); onNavigate('contact'); }}
-              className="btn btn-primary"
-              style={{ padding: '0.75rem 1.6rem', fontSize: '0.95rem' }}
-            >
-              Get Started <ArrowRight size={18} />
-            </button>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              {onBuyNow && (
+                <button
+                  onClick={() => { handleClose(); onBuyNow(product); }}
+                  className="btn btn-primary"
+                  style={{ padding: '0.75rem 1.6rem', fontSize: '0.95rem', backgroundColor: '#899255', gap: '0.4rem' }}
+                >
+                  <Zap size={18} /> Buy Now
+                </button>
+              )}
+              <button
+                onClick={() => { handleClose(); onNavigate('contact'); }}
+                className="btn btn-outline"
+                style={{ padding: '0.75rem 1.4rem', fontSize: '0.95rem' }}
+              >
+                Get Started <ArrowRight size={18} />
+              </button>
+            </div>
           </div>
 
           {/* Features Grid */}

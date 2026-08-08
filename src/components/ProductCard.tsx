@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProductItem } from '../types';
-import { ArrowRight, Check, Heart, ShoppingCart } from 'lucide-react';
+import { ArrowRight, Check, Heart, ShoppingCart, Zap } from 'lucide-react';
 
 interface ProductCardProps {
   product: ProductItem;
   onViewDetails: (product: ProductItem) => void;
   index: number;
   onAddToCart?: (product: ProductItem) => void;
+  onBuyNow?: (product: ProductItem) => void;
   onToggleWishlist?: (product: ProductItem) => void;
   isInWishlist?: boolean;
 }
@@ -16,6 +17,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onViewDetails,
   index,
   onAddToCart,
+  onBuyNow,
   onToggleWishlist,
   isInWishlist = false,
 }) => {
@@ -329,11 +331,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               </button>
             )}
 
+            {onBuyNow && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onBuyNow(product); }}
+                className="btn btn-primary"
+                style={{
+                  padding: '0.6rem 1rem',
+                  fontSize: '0.88rem',
+                  borderRadius: '10px',
+                  backgroundColor: '#899255',
+                  color: '#FFFFFF',
+                  fontWeight: 700,
+                  gap: '0.35rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Zap size={15} /> Buy Now
+              </button>
+            )}
+
             <button
               onClick={() => onViewDetails(product)}
-              className="btn btn-primary"
+              className="btn btn-outline"
               style={{
-                padding: '0.6rem 1.2rem',
+                padding: '0.6rem 1rem',
                 fontSize: '0.88rem',
                 borderRadius: '10px',
                 gap: '0.4rem',

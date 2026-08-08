@@ -13,6 +13,7 @@ interface ProductsPageProps {
   onNavigate: (page: PageRoute) => void;
   onOpenProductModal: (product: ProductItem) => void;
   onAddToCart?: (product: ProductItem) => void;
+  onBuyNow?: (product: ProductItem) => void;
   onToggleWishlist?: (product: ProductItem) => void;
   wishlistIds?: string[];
 }
@@ -48,6 +49,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   onNavigate,
   onOpenProductModal,
   onAddToCart,
+  onBuyNow,
   onToggleWishlist,
   wishlistIds = [],
 }) => {
@@ -340,6 +342,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                 onViewDetails={onOpenProductModal}
                 index={i}
                 onAddToCart={onAddToCart}
+                onBuyNow={onBuyNow}
                 onToggleWishlist={onToggleWishlist}
                 isInWishlist={wishlistIds.includes(product.id)}
               />
