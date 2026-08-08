@@ -676,12 +676,12 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#21372F', marginBottom: '0.3rem' }}>Work Email</label>
-                    <input type="email" required defaultValue="alex@company.com" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #DCE8D3', outline: 'none' }} />
+                    <input type="email" required placeholder="name@company.com" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #DCE8D3', outline: 'none' }} />
                   </div>
 
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#21372F', marginBottom: '0.3rem' }}>Company Name</label>
-                    <input type="text" required defaultValue="Acme Corp" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #DCE8D3', outline: 'none' }} />
+                    <input type="text" required placeholder="Company Name" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #DCE8D3', outline: 'none' }} />
                   </div>
 
                   <div>
