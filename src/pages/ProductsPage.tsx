@@ -188,7 +188,12 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button
-              onClick={() => onNavigate('my-products')}
+              onClick={() => {
+                const el = document.getElementById('products-grid');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className="btn"
               style={{
                 padding: '0.95rem 2rem',
