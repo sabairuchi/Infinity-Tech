@@ -720,10 +720,7 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {(dbData?.tables?.users || [
-                        { id: 1, name: 'Kishan Tech', email: 'kishan@gmail.com', role: 'Google Verified Member' },
-                        { id: 2, name: 'Alex Rivera', email: 'alex@infinitytech.io', role: 'Senior Tech Lead' }
-                      ]).map((u: any, i: number) => (
+                      {(dbData?.tables?.users || []).map((u: any, i: number) => (
                         <tr key={i} style={{ borderBottom: '1px solid #F0F5ED' }}>
                           <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#899255' }}>#{u.id}</td>
                           <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#21372F' }}>{u.name}</td>

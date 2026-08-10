@@ -28,6 +28,8 @@ export interface ProductItem {
   techStack: string[];
   useCases: string[];
   integrations: string[];
+  isEBook?: boolean;
+  pageCount?: number;
 }
 
 export interface CartItem {

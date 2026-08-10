@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { PageRoute, User } from '../types';
-import { AlertTriangle, ArrowRight, X, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, X, ShieldCheck } from 'lucide-react';
 
 interface AuthPageProps {
   onNavigate: (page: PageRoute) => void;
@@ -101,7 +101,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
     setSuccessMsg(null);
     setLoading(true);
     setShowDeviceAccountsModal(false);
-    setIsCustomGoogleMode(false);
 
     try {
       const response = await fetch('http://localhost:5000/api/auth/google', {
