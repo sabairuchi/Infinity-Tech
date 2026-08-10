@@ -12,8 +12,11 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
   password VARCHAR(255) DEFAULT 'GOOGLE_AUTH_NO_PASSWORD',
+  google_id VARCHAR(255) UNIQUE,
   role VARCHAR(100) DEFAULT 'Verified Member',
   avatar VARCHAR(500) DEFAULT 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+  profile_image VARCHAR(500),
+  auth_provider VARCHAR(50) DEFAULT 'email',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -54,6 +57,18 @@ CREATE TABLE IF NOT EXISTS user_purchases (
   FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
+-- 5. CONTACT MESSAGES TABLE
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50),
+  company VARCHAR(255),
+  service VARCHAR(100),
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- SEED DEMO USER (Password: DemoPass123!)
 INSERT IGNORE INTO users (id, name, email, password, role) 
 VALUES (
@@ -63,3 +78,4 @@ VALUES (
   '$2a$10$e7j41Vl9d5Y8uV2Yq8Z3u.Q4XwXbN3Z2X7X8X9Y0Z1A2B3C4D5E6F', 
   'Senior Tech Lead'
 );
+

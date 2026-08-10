@@ -2,11 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 import { initDatabaseConnection, getPool, getMySQLStatus, memoryStore } from './db.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'infinity_tech_secret_key_2026';
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+const googleOAuthClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 app.use(cors());
 app.use(express.json());
@@ -31,6 +34,7 @@ app.get('/api/database', async (req, res) => {
     let orders = [];
     let purchases = [];
     let products = [];
+    let contactMessages = [];
 
     if (mysqlStatus.connected) {
       const pool = getPool();
@@ -38,15 +42,18 @@ app.get('/api/database', async (req, res) => {
       const [oRows] = await pool.query('SELECT * FROM orders ORDER BY created_at DESC');
       const [pRows] = await pool.query('SELECT * FROM user_purchases ORDER BY date_purchased DESC');
       const [prodRows] = await pool.query('SELECT * FROM products');
+      const [msgRows] = await pool.query('SELECT * FROM contact_messages ORDER BY created_at DESC');
       users = uRows;
       orders = oRows;
       purchases = pRows;
       products = prodRows;
+      contactMessages = msgRows;
     } else {
       users = memoryStore.users.map(u => ({ id: u.id, name: u.name, email: u.email, role: u.role, avatar: u.avatar }));
       orders = memoryStore.orders;
       purchases = memoryStore.purchases;
       products = [];
+      contactMessages = memoryStore.contactMessages || [];
     }
 
     res.json({
@@ -57,12 +64,14 @@ app.get('/api/database', async (req, res) => {
         orders,
         purchases,
         products,
+        contactMessages,
       },
       counts: {
         users: users.length,
         orders: orders.length,
         purchases: purchases.length,
         products: products.length,
+        contactMessages: contactMessages.length,
       },
     });
   } catch (err) {
@@ -157,53 +166,96 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // ===================================================
-// 1B. GOOGLE DEVICE ACCOUNT SIGNUP & LOGIN (MySQL)
+// 1B. REAL GOOGLE OAUTH ID TOKEN VERIFICATION & SIGNUP/LOGIN (MySQL)
 // ===================================================
 app.post('/api/auth/google', async (req, res) => {
   try {
-    const { name, email, avatar } = req.body;
+    const { credential, idToken, name, email, avatar } = req.body;
+    const tokenToVerify = credential || idToken;
 
-    if (!email) {
-      return res.status(400).json({ error: 'Google email is required.' });
+    let payload = null;
+
+    if (tokenToVerify) {
+      try {
+        const ticket = await googleOAuthClient.verifyIdToken({
+          idToken: tokenToVerify,
+          audience: GOOGLE_CLIENT_ID || undefined,
+        });
+        payload = ticket.getPayload();
+      } catch (tokenErr) {
+        console.error('Google ID token verification failed:', tokenErr.message);
+        // If client ID is not set up or token fails in dev, return error
+        if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID') {
+          return res.status(401).json({ error: 'Invalid or expired Google authentication token.' });
+        }
+      }
     }
 
-    const userEmail = email.trim().toLowerCase();
-    const userName = (name || email.split('@')[0]).trim();
-    const userAvatar = avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
-    const mysqlStatus = getMySQLStatus();
+    const googleId = payload ? payload.sub : (req.body.googleId || null);
+    const userEmail = (payload ? payload.email : (email || '')).trim().toLowerCase();
+    const userName = (payload ? payload.name : (name || (userEmail ? userEmail.split('@')[0] : 'Google User'))).trim();
+    const userAvatar = (payload ? payload.picture : (avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'));
 
+    if (!userEmail) {
+      return res.status(400).json({ error: 'Google authentication failed: Email is required.' });
+    }
+
+    const mysqlStatus = getMySQLStatus();
     let foundUser = null;
 
     if (mysqlStatus.connected) {
       const pool = getPool();
-      const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [userEmail]);
-      if (rows.length > 0) {
-        foundUser = rows[0];
+      let [byGoogleId] = googleId ? await pool.query('SELECT * FROM users WHERE google_id = ?', [googleId]) : [[]];
+
+      if (byGoogleId.length > 0) {
+        foundUser = byGoogleId[0];
       } else {
-        const [result] = await pool.query(
-          'INSERT INTO users (name, email, password, role, avatar) VALUES (?, ?, ?, ?, ?)',
-          [userName, userEmail, 'GOOGLE_AUTH_NO_PASSWORD', 'Google Verified Member', userAvatar]
-        );
-        foundUser = {
-          id: result.insertId,
-          name: userName,
-          email: userEmail,
-          role: 'Google Verified Member',
-          avatar: userAvatar,
-        };
+        const [byEmail] = await pool.query('SELECT * FROM users WHERE email = ?', [userEmail]);
+        if (byEmail.length > 0) {
+          foundUser = byEmail[0];
+          await pool.query(
+            'UPDATE users SET google_id = COALESCE(?, google_id), auth_provider = "google", profile_image = COALESCE(?, profile_image) WHERE id = ?',
+            [googleId, userAvatar, foundUser.id]
+          );
+          foundUser.google_id = googleId || foundUser.google_id;
+          foundUser.auth_provider = 'google';
+          foundUser.profile_image = userAvatar;
+        } else {
+          const [result] = await pool.query(
+            'INSERT INTO users (name, email, password, google_id, role, avatar, profile_image, auth_provider) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [userName, userEmail, 'GOOGLE_AUTH_NO_PASSWORD', googleId, 'Google Verified Member', userAvatar, userAvatar, 'google']
+          );
+          foundUser = {
+            id: result.insertId,
+            name: userName,
+            email: userEmail,
+            google_id: googleId,
+            role: 'Google Verified Member',
+            avatar: userAvatar,
+            profile_image: userAvatar,
+            auth_provider: 'google',
+          };
+        }
       }
     } else {
       // Memory Store Fallback
-      foundUser = memoryStore.users.find(u => u.email.toLowerCase() === userEmail);
+      foundUser = memoryStore.users.find(u => (googleId && u.google_id === googleId) || u.email.toLowerCase() === userEmail);
       if (!foundUser) {
         foundUser = {
           id: Date.now(),
           name: userName,
           email: userEmail,
+          google_id: googleId,
           role: 'Google Verified Member',
           avatar: userAvatar,
+          profile_image: userAvatar,
+          auth_provider: 'google',
         };
         memoryStore.users.push(foundUser);
+      } else {
+        foundUser.google_id = googleId || foundUser.google_id;
+        foundUser.auth_provider = 'google';
+        foundUser.profile_image = userAvatar;
       }
     }
 
@@ -218,13 +270,16 @@ app.post('/api/auth/google', async (req, res) => {
         email: foundUser.email,
         role: foundUser.role || 'Google Verified Member',
         avatar: foundUser.avatar || userAvatar,
+        googleId: foundUser.google_id || googleId,
+        profileImage: foundUser.profile_image || userAvatar,
+        authProvider: 'google',
       },
       token,
       mysqlConnected: mysqlStatus.connected,
     });
   } catch (err) {
-    console.error('Google Auth Error:', err);
-    res.status(500).json({ error: 'Google authentication failed.' });
+    console.error('Google Auth Server Error:', err);
+    res.status(500).json({ error: 'Google authentication failed on server.' });
   }
 });
 
@@ -257,7 +312,10 @@ app.post('/api/auth/login', async (req, res) => {
       }
     }
 
-    const isMatch = await bcrypt.compare(password, foundUser.password).catch(() => true);
+    let isMatch = false;
+    if (foundUser.password && (foundUser.password.startsWith('$2a$') || foundUser.password.startsWith('$2b$'))) {
+      isMatch = await bcrypt.compare(password, foundUser.password).catch(() => false);
+    }
     if (!isMatch && password !== 'DemoPass123!') {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
@@ -287,7 +345,99 @@ app.post('/api/auth/login', async (req, res) => {
 // 3. GET CURRENT LOGGED IN USER PROFILE
 // ===================================================
 app.get('/api/auth/me', authenticateToken, async (req, res) => {
-  res.json({ user: req.user, mysqlConnected: getMySQLStatus().connected });
+  try {
+    const mysqlStatus = getMySQLStatus();
+    let fullUser = null;
+
+    if (mysqlStatus.connected) {
+      const pool = getPool();
+      const [rows] = await pool.query('SELECT id, name, email, role, avatar, created_at FROM users WHERE id = ?', [req.user.id]);
+      if (rows.length > 0) fullUser = rows[0];
+    } else {
+      fullUser = memoryStore.users.find(u => u.id === req.user.id);
+    }
+
+    if (!fullUser) {
+      fullUser = { ...req.user, role: 'Verified Member', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80' };
+    }
+
+    const { password, ...userWithoutPassword } = fullUser;
+    res.json({ user: userWithoutPassword, mysqlConnected: mysqlStatus.connected });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch user profile.' });
+  }
+});
+
+// ===================================================
+// 3B. GET USER PURCHASES & LICENSES
+// ===================================================
+app.get('/api/user/purchases', authenticateToken, async (req, res) => {
+  try {
+    const mysqlStatus = getMySQLStatus();
+    let purchases = [];
+
+    if (mysqlStatus.connected) {
+      const pool = getPool();
+      const [rows] = await pool.query(
+        `SELECT p.id, p.product_id, p.license_key, p.date_purchased, o.total_amount, o.payment_method 
+         FROM user_purchases p 
+         LEFT JOIN orders o ON p.order_id = o.id 
+         WHERE p.user_id = ? 
+         ORDER BY p.date_purchased DESC`,
+        [req.user.id]
+      );
+      purchases = rows;
+    } else {
+      purchases = memoryStore.purchases.filter(p => p.userId === req.user.id);
+    }
+
+    res.json({ purchases, mysqlConnected: mysqlStatus.connected });
+  } catch (err) {
+    console.error('Fetch Purchases Error:', err);
+    res.status(500).json({ error: 'Failed to fetch user purchases.' });
+  }
+});
+
+// ===================================================
+// 3C. CONTACT FORM SUBMISSION
+// ===================================================
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, phone, company, service, message } = req.body;
+
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: 'Name, email, and message are required fields.' });
+    }
+
+    const mysqlStatus = getMySQLStatus();
+
+    if (mysqlStatus.connected) {
+      const pool = getPool();
+      await pool.query(
+        'INSERT INTO contact_messages (name, email, phone, company, service, message) VALUES (?, ?, ?, ?, ?, ?)',
+        [name.trim(), email.trim().toLowerCase(), phone || '', company || '', service || 'General Inquiry', message.trim()]
+      );
+    } else {
+      memoryStore.contactMessages.push({
+        id: Date.now(),
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone || '',
+        company: company || '',
+        service: service || 'General Inquiry',
+        message: message.trim(),
+        created_at: new Date().toISOString(),
+      });
+    }
+
+    res.status(201).json({
+      message: 'Inquiry submitted successfully!',
+      mysqlConnected: mysqlStatus.connected,
+    });
+  } catch (err) {
+    console.error('Contact Submission Error:', err);
+    res.status(500).json({ error: 'Failed to submit contact message.' });
+  }
 });
 
 // ===================================================

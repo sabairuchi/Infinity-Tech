@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { PageRoute, User } from '../types';
 import { AlertTriangle, ArrowRight, X, ShieldCheck } from 'lucide-react';
 
@@ -7,20 +7,6 @@ interface AuthPageProps {
   onLoginSuccess: (user: User, token: string) => void;
   redirectReason?: string | null;
 }
-
-// Device Google accounts detected on system for 1-click login
-const DEVICE_GOOGLE_ACCOUNTS = [
-  {
-    name: 'Kishan Tech',
-    email: 'kishan@gmail.com',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-  },
-  {
-    name: 'Alex Rivera',
-    email: 'alex@infinitytech.io',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  },
-];
 
 export const AuthPage: React.FC<AuthPageProps> = ({
   onNavigate,
@@ -31,12 +17,91 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [showDeviceAccountsModal, setShowDeviceAccountsModal] = useState(false);
+  const [customGoogleEmail, setCustomGoogleEmail] = useState('');
+  const [customGoogleName, setCustomGoogleName] = useState('');
+
+  // Handle Google ID Token received from Google Identity Services
+  const handleGoogleCredentialAuth = async (credential: string) => {
+    setErrorMsg(null);
+    setSuccessMsg(null);
+    setLoading(true);
+    setShowDeviceAccountsModal(false);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Google authentication failed.');
+      }
+
+      setSuccessMsg(`Welcome, ${data.user.name}! Signed in via Google.`);
+      if (data.user && data.token) {
+        setTimeout(() => {
+          onLoginSuccess(data.user, data.token);
+          onNavigate('products');
+        }, 500);
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Google Sign-In failed. Please try again.');
+      setLoading(false);
+    }
+  };
+
+  // Initialize Google Identity Services SDK
+  useEffect(() => {
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+    if (!googleClientId || googleClientId === 'YOUR_GOOGLE_CLIENT_ID') return;
+
+    const initGoogleGIS = () => {
+      if ((window as any).google?.accounts?.id) {
+        (window as any).google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: (response: any) => {
+            if (response.credential) {
+              handleGoogleCredentialAuth(response.credential);
+            }
+          },
+        });
+      }
+    };
+
+    if ((window as any).google?.accounts?.id) {
+      initGoogleGIS();
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = initGoogleGIS;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  const handleGoogleButtonClick = () => {
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+    if ((window as any).google?.accounts?.id && googleClientId && googleClientId !== 'YOUR_GOOGLE_CLIENT_ID') {
+      (window as any).google.accounts.id.prompt((notification: any) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          setShowDeviceAccountsModal(true);
+        }
+      });
+    } else {
+      setShowDeviceAccountsModal(true);
+    }
+  };
 
   const handleGoogleAuth = async (account: { name: string; email: string; avatar: string }) => {
     setErrorMsg(null);
     setSuccessMsg(null);
     setLoading(true);
     setShowDeviceAccountsModal(false);
+    setIsCustomGoogleMode(false);
 
     try {
       const response = await fetch('http://localhost:5000/api/auth/google', {
@@ -74,6 +139,17 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         onNavigate('products');
       }, 500);
     }
+  };
+
+  const handleCustomGoogleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customGoogleEmail.trim()) return;
+    const name = customGoogleName.trim() || customGoogleEmail.split('@')[0];
+    handleGoogleAuth({
+      name,
+      email: customGoogleEmail.trim().toLowerCase(),
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+    });
   };
 
   // Clean warning message without "MySQL"
@@ -190,7 +266,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
 
         {/* Google Continue Pill Button matching Infinity Tech colors */}
         <button
-          onClick={() => setShowDeviceAccountsModal(true)}
+          onClick={handleGoogleButtonClick}
           disabled={loading}
           style={{
             display: 'inline-flex',
@@ -352,47 +428,91 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                 </svg>
               </div>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#21372F', marginBottom: '0.25rem' }}>
-                Choose Google Account
+                Sign In with Google
               </h3>
               <p style={{ fontSize: '0.85rem', color: '#5F685F' }}>
-                Select an account on this device to continue
+                Enter your Google Account email to continue
               </p>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1rem' }}>
-              {DEVICE_GOOGLE_ACCOUNTS.map((acc, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleGoogleAuth(acc)}
+            <form onSubmit={handleCustomGoogleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1rem', textAlign: 'left' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#3B5949', marginBottom: '0.3rem' }}>
+                  Google Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="user@gmail.com"
+                  value={customGoogleEmail}
+                  onChange={(e) => setCustomGoogleEmail(e.target.value)}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.9rem',
-                    padding: '0.85rem 1rem',
-                    borderRadius: '14px',
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '1px solid #DCE8D3',
+                    backgroundColor: '#FFFFFF',
+                    fontSize: '0.9rem',
+                    color: '#21372F',
+                    outline: 'none',
+                  }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#3B5949', marginBottom: '0.3rem' }}>
+                  Full Name (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  value={customGoogleName}
+                  onChange={(e) => setCustomGoogleName(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '1px solid #DCE8D3',
+                    backgroundColor: '#FFFFFF',
+                    fontSize: '0.9rem',
+                    color: '#21372F',
+                    outline: 'none',
+                  }}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowDeviceAccountsModal(false)}
+                  style={{
+                    flex: 1,
+                    padding: '0.75rem',
+                    borderRadius: '12px',
                     border: '1px solid #DCE8D3',
                     backgroundColor: '#F7FAF5',
-                    color: '#21372F',
+                    color: '#5F685F',
+                    fontWeight: 600,
                     cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'all 0.2s ease',
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#EBF4E5')}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#F7FAF5')}
                 >
-                  <img
-                    src={acc.avatar}
-                    alt={acc.name}
-                    style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
-                  />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#21372F' }}>{acc.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: '#5F685F' }}>{acc.email}</div>
-                  </div>
-                  <ArrowRight size={16} style={{ color: '#899255' }} />
+                  Cancel
                 </button>
-              ))}
-            </div>
+                <button
+                  type="submit"
+                  style={{
+                    flex: 2,
+                    padding: '0.75rem',
+                    borderRadius: '12px',
+                    border: 'none',
+                    backgroundColor: '#899255',
+                    color: '#FFFFFF',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Sign In with Google
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

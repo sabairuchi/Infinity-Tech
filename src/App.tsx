@@ -54,6 +54,35 @@ export const App: React.FC = () => {
     },
   ]);
 
+  // Sync user purchases from database upon login
+  useEffect(() => {
+    if (!user || !user.token) return;
+
+    fetch('http://localhost:5000/api/user/purchases', {
+      headers: {
+        'Authorization': `Bearer ${user.token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.purchases && Array.isArray(data.purchases) && data.purchases.length > 0) {
+          const fetchedDownloads: DownloadItem[] = data.purchases.map((p: any) => {
+            const prod = PRODUCTS_DATA.find((item) => item.id === p.product_id) || PRODUCTS_DATA[0];
+            return {
+              id: p.id,
+              product: prod,
+              version: p.version || prod.version,
+              licenseKey: p.license_key || p.licenseKey,
+              downloadSize: prod.isEBook ? '12.5 MB PDF' : '140 MB',
+              datePurchased: p.date_purchased ? new Date(p.date_purchased).toLocaleDateString() : 'Purchased',
+            };
+          });
+          setDownloads(fetchedDownloads);
+        }
+      })
+      .catch((err) => console.log('Could not sync user purchases:', err));
+  }, [user]);
+
   const handleAddToCart = (product: ProductItem) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);

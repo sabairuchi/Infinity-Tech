@@ -27,6 +27,7 @@ export const memoryStore = {
   ],
   orders: [],
   purchases: [],
+  contactMessages: [],
 };
 
 export async function initDatabaseConnection() {
@@ -44,6 +45,34 @@ export async function initDatabaseConnection() {
 
     const connection = await pool.getConnection();
     console.log(`[MySQL] Successfully connected to MySQL Database '${DB_NAME}' on ${DB_HOST}:${DB_PORT}`);
+
+    // Auto-migrate schema columns for Google Auth if missing
+    try {
+      await connection.query("ALTER TABLE users ADD COLUMN google_id VARCHAR(255) UNIQUE");
+    } catch (e) {}
+    try {
+      await connection.query("ALTER TABLE users ADD COLUMN profile_image VARCHAR(500)");
+    } catch (e) {}
+    try {
+      await connection.query("ALTER TABLE users ADD COLUMN auth_provider VARCHAR(50) DEFAULT 'email'");
+    } catch (e) {}
+
+    // Auto-create contact_messages table if missing
+    try {
+      await connection.query(`
+        CREATE TABLE IF NOT EXISTS contact_messages (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          email VARCHAR(255) NOT NULL,
+          phone VARCHAR(50),
+          company VARCHAR(255),
+          service VARCHAR(100),
+          message TEXT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+    } catch (e) {}
+
     connection.release();
     isConnectedToMySQL = true;
     return true;

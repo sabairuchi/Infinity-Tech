@@ -7,6 +7,9 @@ export interface User {
   avatar: string;
   role: string;
   token?: string;
+  googleId?: string;
+  profileImage?: string;
+  authProvider?: 'email' | 'google';
 }
 
 export interface ProductItem {

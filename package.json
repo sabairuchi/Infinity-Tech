@@ -18,6 +18,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "google-auth-library": "^11.0.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^1.29.0",
     "mysql2": "^3.16.2",
