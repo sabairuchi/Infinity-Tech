@@ -9,10 +9,11 @@ const __dirname = path.dirname(__filename);
 const publicAssetsDir = path.join(__dirname, '..', 'public', 'assets');
 const distAssetsDir = path.join(__dirname, '..', 'dist', 'assets');
 
-// Generated cover image path from artifact directory
+// Generated cover image & logo mark paths from artifact directory
 const artifactImage = 'C:\\Users\\kisha\\.gemini\\antigravity-ide\\brain\\b6a48fdb-8a97-47df-8120-a6f5448e7210\\cloud_computing_blueprint_1786428611634.png';
 const targetImagePublic = path.join(publicAssetsDir, 'cloud_computing_blueprint.png');
-const targetPdfPublic = path.join(publicAssetsDir, 'cloud-computing-blueprint.pdf');
+const artifactLogoImage = 'C:\\Users\\kisha\\.gemini\\antigravity-ide\\brain\\b6a48fdb-8a97-47df-8120-a6f5448e7210\\digiro_logo_mark_1786439359819.png';
+const targetLogoPublic = path.join(publicAssetsDir, 'digiro_logo_mark.png');
 
 export function ensureAssetsExist() {
   try {
@@ -20,10 +21,14 @@ export function ensureAssetsExist() {
       fs.mkdirSync(publicAssetsDir, { recursive: true });
     }
 
-    // 1. Copy generated image cover if present
+    // 1. Copy generated image cover & logo mark if present
     if (fs.existsSync(artifactImage)) {
       fs.copyFileSync(artifactImage, targetImagePublic);
       console.log(`[Setup Assets] Copied cover image to ${targetImagePublic}`);
+    }
+    if (fs.existsSync(artifactLogoImage)) {
+      fs.copyFileSync(artifactLogoImage, targetLogoPublic);
+      console.log(`[Setup Assets] Copied logo mark image to ${targetLogoPublic}`);
     }
 
     // 2. Generate PDF eBook
