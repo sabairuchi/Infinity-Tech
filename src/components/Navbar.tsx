@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   transition: 'color 0.2s ease',
                 }}
               >
-                {link.label}
+                {link.name}
                 {isActive && (
                   <span
                     style={{
