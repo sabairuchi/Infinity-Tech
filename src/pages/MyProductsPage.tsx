@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { PageRoute, ProductItem, CartItem, DownloadItem } from '../types';
 import {
   ShoppingCart, Heart, Download, Trash2, ArrowRight, Check,
