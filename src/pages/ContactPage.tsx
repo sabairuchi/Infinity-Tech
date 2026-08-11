@@ -53,7 +53,14 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
 
     // Real API call to Express backend
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
+      const customApi = import.meta.env.VITE_API_BASE_URL;
+      const apiUrl = customApi
+        ? `${customApi.replace(/\/$/, '')}/api/contact`
+        : (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+            ? '/api/contact'
+            : 'http://localhost:5000/api/contact');
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

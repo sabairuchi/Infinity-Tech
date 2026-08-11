@@ -47,7 +47,14 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
   const fetchDatabaseInfo = async () => {
     setDbLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/database');
+      const customApi = import.meta.env.VITE_API_BASE_URL;
+      const apiUrl = customApi
+        ? `${customApi.replace(/\/$/, '')}/api/database`
+        : (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+            ? '/api/database'
+            : 'http://localhost:5000/api/database');
+
+      const res = await fetch(apiUrl);
       const data = await res.json();
       setDbData(data);
     } catch (err) {

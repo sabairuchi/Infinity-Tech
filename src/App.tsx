@@ -58,7 +58,14 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (!user || !user.token) return;
 
-    fetch('http://localhost:5000/api/user/purchases', {
+    const customApi = import.meta.env.VITE_API_BASE_URL;
+    const apiUrl = customApi
+      ? `${customApi.replace(/\/$/, '')}/api/user/purchases`
+      : (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+          ? '/api/user/purchases'
+          : 'http://localhost:5000/api/user/purchases');
+
+    fetch(apiUrl, {
       headers: {
         'Authorization': `Bearer ${user.token}`,
       },
