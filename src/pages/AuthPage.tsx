@@ -115,44 +115,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
     }
   };
 
-  const handleGoogleAuth = async (account: { name: string; email: string; avatar: string }) => {
-    setErrorMsg(null);
-    setSuccessMsg(null);
-    setLoading(true);
-    setShowDeviceAccountsModal(false);
-
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(account),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Google authentication failed.');
-      }
-
-      processAuthResult(data.user, data.token, data.isNewUser);
-    } catch (err: any) {
-      // Fallback local auth
-      setTimeout(() => {
-        setLoading(false);
-        const fallbackUser: User = {
-          id: `usr-g-${Date.now()}`,
-          name: account.name,
-          email: account.email,
-          avatar: account.avatar,
-          role: 'Google Verified Member',
-          token: `token-g-${Date.now()}`,
-          isNewUser: true,
-        };
-        processAuthResult(fallbackUser, fallbackUser.token!, true);
-      }, 500);
-    }
-  };
-
   // Submit Profile Details for First-Time Users
   const handleSaveProfileDetails = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,17 +155,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
       onLoginSuccess(updatedUser, pendingToken);
       onNavigate('home');
     }, 400);
-  };
-
-  const handleCustomGoogleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customGoogleEmail.trim()) return;
-    const name = customGoogleName.trim() || customGoogleEmail.split('@')[0];
-    handleGoogleAuth({
-      name,
-      email: customGoogleEmail.trim().toLowerCase(),
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-    });
   };
 
   // Clean warning message without "MySQL"
