@@ -567,6 +567,11 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                   Sign In with Google
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* FIRST-TIME USER PROFILE DETAILS COMPLETION MODAL */}
       {showProfileDetailsModal && (
         <div
