@@ -65,7 +65,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   const handleGoogleCredentialAuth = async (credential: string) => {
     setErrorMsg(null);
     setSuccessMsg(null);
-    setLoading(true);
 
     try {
       const customApi = import.meta.env.VITE_API_BASE_URL;
