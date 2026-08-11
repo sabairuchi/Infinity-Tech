@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { PageRoute, User } from '../types';
 import { Menu, X, ArrowRight, ShoppingCart, LogIn, LogOut, Package } from 'lucide-react';
+import { DigiroLogoIcon } from './DigiroLogoIcon';
 
 interface NavbarProps {
   activePage: PageRoute;
@@ -80,15 +81,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             textAlign: 'left',
           }}
         >
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#899255" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 12c-2-2.5-4-4-6.5-4A4.5 4.5 0 0 0 1 12.5 4.5 4.5 0 0 0 5.5 17C8 17 10 14.5 12 12zm0 0c2 2.5 4 4 6.5 4a4.5 4.5 0 0 0 4.5-4.5 4.5 4.5 0 0 0-4.5-4.5C16 7 14 9.5 12 12z" />
-          </svg>
+          <DigiroLogoIcon size={38} />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', fontWeight: 800, color: '#21372F', letterSpacing: '-0.02em', lineHeight: 1 }}>
               Digi<span style={{ color: '#899255' }}>ro</span>
             </span>
-            <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#5F685F', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              Digital Solutions
+            <span style={{ fontSize: '0.58rem', fontWeight: 700, color: '#5F685F', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '3px' }}>
+              Powering The Digital Future
             </span>
           </div>
         </button>

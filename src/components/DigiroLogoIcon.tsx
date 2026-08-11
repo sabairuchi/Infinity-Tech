@@ -1,0 +1,52 @@
+import React from 'react';
+
+interface DigiroLogoIconProps {
+  size?: number;
+  className?: string;
+}
+
+export const DigiroLogoIcon: React.FC<DigiroLogoIconProps> = ({ size = 36, className = '' }) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <defs>
+        <linearGradient id="digiroLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#899255" />
+          <stop offset="55%" stopColor="#4E733D" />
+          <stop offset="100%" stopColor="#21372F" />
+        </linearGradient>
+      </defs>
+
+      {/* Dispersing Digital Particles Cluster on the Left */}
+      <circle cx="36" cy="20" r="3.6" fill="#899255" />
+      <circle cx="22" cy="30" r="3.2" fill="#A8C36E" />
+      <circle cx="42" cy="35" r="4.2" fill="#899255" />
+      <circle cx="26" cy="46" r="3.8" fill="#527842" />
+      <circle cx="44" cy="50" r="4.5" fill="#4E733D" />
+      <circle cx="22" cy="58" r="3.2" fill="#698A47" />
+      <circle cx="34" cy="68" r="3.6" fill="#365648" />
+
+      {/* Outer D Arch Band */}
+      <path
+        d="M 48 15 H 68 C 84 15 93 27 93 50 C 93 73 84 85 68 85 H 48 C 41 85 37 80 37 73 C 37 66 41 61 48 61 H 66 C 72 61 74 57 74 50 C 74 43 72 39 66 39 H 48 C 41 39 37 34 37 27 C 37 20 41 15 48 15 Z"
+        fill="url(#digiroLogoGrad)"
+      />
+
+      {/* Inner D Arch Loop */}
+      <path
+        d="M 52 38 H 63 C 69 38 71 42 71 50 C 71 58 69 62 63 62 H 52 C 47 62 44 58 44 54 C 44 50 47 46 52 46 H 60 C 62 46 63 48 63 50 C 63 52 62 54 60 54 H 52"
+        fill="none"
+        stroke="url(#digiroLogoGrad)"
+        strokeWidth="11"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

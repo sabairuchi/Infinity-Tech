@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { PageRoute } from '../types';
 import { Mail, Phone, MapPin, Send, CheckCircle2 } from 'lucide-react';
+import { DigiroLogoIcon } from './DigiroLogoIcon';
 
 interface FooterProps {
   onNavigate: (page: PageRoute, targetId?: string) => void;
@@ -37,16 +38,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
           {/* Brand Column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#BEEA9A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 12c-2-2.5-4-4-6.5-4A4.5 4.5 0 0 0 1 12.5 4.5 4.5 0 0 0 5.5 17C8 17 10 14.5 12 12zm0 0c2 2.5 4 4 6.5 4a4.5 4.5 0 0 0 4.5-4.5 4.5 4.5 0 0 0-4.5-4.5C16 7 14 9.5 12 12z" />
-              </svg>
+              <DigiroLogoIcon size={38} />
               <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800, color: '#FFFFFF' }}>
                 Digi<span style={{ color: '#BEEA9A' }}>ro</span>
               </span>
             </div>
             
             <p style={{ color: '#DCE8D3', fontSize: '0.925rem', lineHeight: 1.6, fontStyle: 'italic' }}>
-              "Endless Possibilities, Infinite Solutions"
+              "Powering The Digital Future"
             </p>
 
             <p style={{ color: '#A8C36E', fontSize: '0.875rem', lineHeight: 1.6 }}>

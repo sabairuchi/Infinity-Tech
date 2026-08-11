@@ -73,7 +73,7 @@ export const App: React.FC = () => {
               product: prod,
               version: p.version || prod.version,
               licenseKey: p.license_key || p.licenseKey,
-              downloadSize: prod.isEBook ? '12.5 MB PDF' : '140 MB',
+              downloadSize: (prod as any).isEBook || prod.id === 'cloud-computing-blueprint' ? '12.5 MB PDF' : '140 MB',
               datePurchased: p.date_purchased ? new Date(p.date_purchased).toLocaleDateString() : 'Purchased',
             };
           });
