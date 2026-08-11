@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProductItem } from '../types';
-import { ArrowRight, Check, Heart, ShoppingCart, Zap, Download, BookOpen } from 'lucide-react';
+import { ArrowRight, Check, Heart, ShoppingCart, Zap, Download } from 'lucide-react';
 
 interface ProductCardProps {
   product: ProductItem;

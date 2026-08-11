@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { ProductItem, PageRoute } from '../types';
 import {
   X, Check, ArrowRight, Layers, Zap, Globe, Users,
-  Shield, BarChart3, Puzzle, Star, Download, BookOpen
+  Shield, BarChart3, Puzzle, Star, Download
 } from 'lucide-react';
 
 interface ProductModalProps {
