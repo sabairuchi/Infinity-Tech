@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { PageRoute, ProductItem, CartItem, DownloadItem } from '../types';
 import {
   ShoppingCart, Heart, Download, Trash2, ArrowRight, Check,
-  Copy, CheckCircle2, ShieldCheck, Plus, Minus, Database, RefreshCw
+  Copy, CheckCircle2, ShieldCheck, Plus, Minus
 } from 'lucide-react';
 
 interface MyProductsPageProps {
@@ -32,7 +32,7 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
   onViewProductDetails,
   onCheckoutSuccess,
 }) => {
-  const [activeTab, setActiveTab] = useState<'cart' | 'wishlist' | 'downloads' | 'database'>('cart');
+  const [activeTab, setActiveTab] = useState<'cart' | 'wishlist' | 'downloads'>('cart');
   const [copiedLicenseId, setCopiedLicenseId] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -40,35 +40,6 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
   const [checkoutComplete, setCheckoutComplete] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
-
-  const [dbData, setDbData] = useState<any>(null);
-  const [dbLoading, setDbLoading] = useState(false);
-
-  const fetchDatabaseInfo = async () => {
-    setDbLoading(true);
-    try {
-      const customApi = import.meta.env.VITE_API_BASE_URL;
-      const apiUrl = customApi
-        ? `${customApi.replace(/\/$/, '')}/api/database`
-        : (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-            ? '/api/database'
-            : 'http://localhost:5000/api/database');
-
-      const res = await fetch(apiUrl);
-      const data = await res.json();
-      setDbData(data);
-    } catch (err) {
-      console.error('Failed to fetch DB info:', err);
-    } finally {
-      setDbLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab === 'database') {
-      fetchDatabaseInfo();
-    }
-  }, [activeTab]);
 
   // Helper to parse price number from string like "From $49/mo" or "$99"
   const parsePrice = (priceStr: string): number => {
@@ -380,39 +351,6 @@ startxref
                 }}
               >
                 {downloads.length}
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('database')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.6rem',
-                padding: '1rem 1.5rem',
-                fontSize: '1rem',
-                fontWeight: activeTab === 'database' ? 700 : 500,
-                color: activeTab === 'database' ? '#899255' : '#5F685F',
-                background: 'none',
-                border: 'none',
-                borderBottom: activeTab === 'database' ? '3px solid #899255' : '3px solid transparent',
-                cursor: 'pointer',
-                marginBottom: '-2px',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <Database size={20} /> Database Inspector
-              <span
-                style={{
-                  backgroundColor: activeTab === 'database' ? '#899255' : '#F0F5ED',
-                  color: activeTab === 'database' ? '#FFFFFF' : '#5F685F',
-                  padding: '2px 8px',
-                  borderRadius: '9999px',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                }}
-              >
-                {dbData?.counts?.users || 1}
               </span>
             </button>
           </div>
@@ -743,145 +681,6 @@ startxref
                   ))}
                 </div>
               )}
-            </div>
-          )}
-
-          {/* TAB 4: DATABASE INSPECTOR */}
-          {activeTab === 'database' && (
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-                <div>
-                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#21372F', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                    <Database size={22} style={{ color: '#899255' }} /> Database Table Records
-                  </h3>
-                  <p style={{ color: '#5F685F', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-                    Live records retrieved from your backend database instance.
-                  </p>
-                </div>
-                <button
-                  onClick={fetchDatabaseInfo}
-                  disabled={dbLoading}
-                  className="btn btn-outline"
-                  style={{ padding: '0.6rem 1.1rem', fontSize: '0.88rem', gap: '0.4rem', borderRadius: '10px' }}
-                >
-                  <RefreshCw size={16} className={dbLoading ? 'spin' : ''} /> {dbLoading ? 'Refreshing...' : 'Refresh Tables'}
-                </button>
-              </div>
-
-              {/* Status Header */}
-              <div style={{ backgroundColor: '#21372F', color: '#FFFFFF', padding: '1.25rem 1.5rem', borderRadius: '16px', marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                <div>
-                  <span style={{ fontSize: '0.75rem', color: '#A8C36E', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>DATABASE INSTANCE</span>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF' }}>{dbData?.mysqlStatus?.database || 'digiro_db'}</div>
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', color: '#A8C36E', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>HOST & PORT</span>
-                  <div style={{ fontSize: '1rem', fontWeight: 700, color: '#DCE8D3' }}>{dbData?.mysqlStatus?.host || 'localhost'}:{dbData?.mysqlStatus?.port || 3306}</div>
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', color: '#A8C36E', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>STATUS</span>
-                  <div style={{ fontSize: '1rem', fontWeight: 800, color: dbData?.mysqlStatus?.connected ? '#BEEA9A' : '#FFD54F' }}>
-                    {dbData?.mysqlStatus?.connected ? '✓ MySQL Engine Connected' : 'Active'}
-                  </div>
-                </div>
-              </div>
-
-              {/* USERS TABLE */}
-              <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', border: '1px solid #DCE8D3', padding: '1.75rem', marginBottom: '2.5rem', boxShadow: '0 4px 20px rgba(33,55,47,0.05)' }}>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#21372F', marginBottom: '1rem' }}>
-                  👥 Users Table (`users`)
-                </h4>
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
-                    <thead>
-                      <tr style={{ backgroundColor: '#F7FAF5', borderBottom: '2px solid #DCE8D3', color: '#21372F' }}>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>ID</th>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Name</th>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Email</th>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Role</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(dbData?.tables?.users || []).map((u: any, i: number) => (
-                        <tr key={i} style={{ borderBottom: '1px solid #F0F5ED' }}>
-                          <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#899255' }}>#{u.id}</td>
-                          <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#21372F' }}>{u.name}</td>
-                          <td style={{ padding: '0.75rem 1rem', color: '#5F685F' }}>{u.email}</td>
-                          <td style={{ padding: '0.75rem 1rem' }}>
-                            <span style={{ padding: '3px 10px', borderRadius: '999px', backgroundColor: '#EBF4E5', color: '#21372F', fontSize: '0.78rem', fontWeight: 700 }}>
-                              {u.role || 'Member'}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* ORDERS TABLE */}
-              <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', border: '1px solid #DCE8D3', padding: '1.75rem', marginBottom: '2.5rem', boxShadow: '0 4px 20px rgba(33,55,47,0.05)' }}>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#21372F', marginBottom: '1rem' }}>
-                  🛒 Orders Table (`orders`)
-                </h4>
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
-                    <thead>
-                      <tr style={{ backgroundColor: '#F7FAF5', borderBottom: '2px solid #DCE8D3', color: '#21372F' }}>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Order ID</th>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>User ID</th>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Total Amount</th>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Payment Method</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(dbData?.tables?.orders || [
-                        { id: 'DIG-ORD-948120', user_id: 1, total_amount: '88.00', payment_method: 'Credit Card (Saved)' }
-                      ]).map((o: any, i: number) => (
-                        <tr key={i} style={{ borderBottom: '1px solid #F0F5ED' }}>
-                          <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#21372F' }}>{o.id || o.orderId}</td>
-                          <td style={{ padding: '0.75rem 1rem', color: '#5F685F' }}>#{o.user_id || o.userId || 1}</td>
-                          <td style={{ padding: '0.75rem 1rem', fontWeight: 800, color: '#899255' }}>${o.total_amount || o.totalAmount || '88.00'}</td>
-                          <td style={{ padding: '0.75rem 1rem', color: '#5F685F' }}>{o.payment_method || o.paymentMethod || 'Credit Card'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* PURCHASES TABLE */}
-              <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', border: '1px solid #DCE8D3', padding: '1.75rem', boxShadow: '0 4px 20px rgba(33,55,47,0.05)' }}>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#21372F', marginBottom: '1rem' }}>
-                  🔑 Purchases & Licenses Table (`user_purchases`)
-                </h4>
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
-                    <thead>
-                      <tr style={{ backgroundColor: '#F7FAF5', borderBottom: '2px solid #DCE8D3', color: '#21372F' }}>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Purchase ID</th>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Product</th>
-                        <th style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>License Key</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(dbData?.tables?.purchases || [
-                        { id: 'dl-1', product_id: 'digiro-analytics', license_key: 'DIG-ANALYTICS-8842-X91A-PRO' }
-                      ]).map((p: any, i: number) => (
-                        <tr key={i} style={{ borderBottom: '1px solid #F0F5ED' }}>
-                          <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#5F685F' }}>{p.id}</td>
-                          <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#21372F' }}>{p.product_id || p.product?.name || 'Digiro Product'}</td>
-                          <td style={{ padding: '0.75rem 1rem' }}>
-                            <code style={{ backgroundColor: '#F0F5ED', padding: '3px 8px', borderRadius: '6px', fontSize: '0.82rem', fontWeight: 700, color: '#21372F' }}>
-                              {p.license_key || p.licenseKey}
-                            </code>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
             </div>
           )}
 

@@ -39,10 +39,17 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Database Inspector API Endpoint
+// Database Inspector API Endpoint (Protected Admin / Developer Debug Route)
 app.get('/api/database', async (req, res) => {
+  const debugSecret = req.headers['x-debug-secret'] || req.query.secret;
+  const allowedSecret = process.env.DEBUG_SECRET || 'digiro-dev-admin-secret-2026';
+
+  if (process.env.NODE_ENV === 'production' && debugSecret !== allowedSecret) {
+    return res.status(403).json({ error: 'Access denied: Database Inspector is disabled in production.' });
+  }
+
   try {
-    const mysqlStatus = getMySQLStatus();
+    const mysqlStatus = getMySQLStatus(false);
     let users = [];
     let orders = [];
     let purchases = [];

@@ -87,7 +87,13 @@ export function getPool() {
   return pool;
 }
 
-export function getMySQLStatus() {
+export function getMySQLStatus(sanitized = true) {
+  if (sanitized) {
+    return {
+      connected: isConnectedToMySQL,
+      status: isConnectedToMySQL ? 'healthy' : 'active',
+    };
+  }
   return {
     connected: isConnectedToMySQL,
     database: DB_NAME,
