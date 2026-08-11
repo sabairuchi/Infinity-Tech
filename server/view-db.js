@@ -2,7 +2,7 @@ import { initDatabaseConnection, getPool, getMySQLStatus, memoryStore } from './
 
 async function viewDatabase() {
   console.log('\n======================================================');
-  console.log('   📊 INFINITY TECH MYSQL DATABASE VIEWER & INSPECTOR  ');
+  console.log('   📊 DIGIRO MYSQL DATABASE VIEWER & INSPECTOR  ');
   console.log('======================================================\n');
 
   const connected = await initDatabaseConnection();

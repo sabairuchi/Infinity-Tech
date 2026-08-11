@@ -2,17 +2,27 @@ import express from 'express';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { OAuth2Client } from 'google-auth-library';
 import { initDatabaseConnection, getPool, getMySQLStatus, memoryStore } from './db.js';
+import { ensureAssetsExist } from './setup-assets.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || 'infinity_tech_secret_key_2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'digiro_secret_key_2026';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const googleOAuthClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 app.use(cors());
 app.use(express.json());
+app.use('/assets', express.static(path.join(__dirname, '../public/assets')));
+
+// Ensure PDF eBook & cover image assets exist
+ensureAssetsExist();
 
 // Initialize Database connection
 await initDatabaseConnection();
@@ -496,5 +506,5 @@ app.post('/api/orders/checkout', authenticateToken, async (req, res) => {
 
 // Start Express Server
 app.listen(PORT, () => {
-  console.log(`[Infinity Tech Server] Running on http://localhost:${PORT}`);
+  console.log(`[Digiro Server] Running on http://localhost:${PORT}`);
 });

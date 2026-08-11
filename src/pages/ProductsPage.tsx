@@ -223,31 +223,6 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             >
               Explore Products <ArrowRight size={20} />
             </button>
-            <button
-              onClick={() => onNavigate('contact')}
-              className="btn"
-              style={{
-                padding: '0.95rem 2rem',
-                fontSize: '1.05rem',
-                fontWeight: 700,
-                backgroundColor: 'transparent',
-                color: '#FFFFFF',
-                border: '2px solid rgba(255,255,255,0.3)',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                transition: 'all 0.25s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#BEEA9A';
-                e.currentTarget.style.color = '#BEEA9A';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
-                e.currentTarget.style.color = '#FFFFFF';
-              }}
-            >
-              Request a Demo
-            </button>
           </div>
         </div>
       </section>
@@ -389,7 +364,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             }}
           >
             <span className="badge-pill" style={{ marginBottom: '1rem' }}>
-              <span className="dot" /> WHY INFINITY TECH
+              <span className="dot" /> WHY DIGIRO
             </span>
             <h2 className="heading-md" style={{ color: '#21372F', marginBottom: '1rem' }}>
               Built for <span style={{ color: '#899255' }}>Modern Businesses</span>

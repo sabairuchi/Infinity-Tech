@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { ProductItem, PageRoute } from '../types';
 import {
   X, Check, ArrowRight, Layers, Zap, Globe, Users,
-  Shield, BarChart3, Puzzle, Star
+  Shield, BarChart3, Puzzle, Star, Download, BookOpen
 } from 'lucide-react';
 
 interface ProductModalProps {
@@ -232,22 +232,34 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
               </span>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-              {onBuyNow && (
+              {product.isEBook ? (
                 <button
-                  onClick={() => { handleClose(); onBuyNow(product); }}
+                  onClick={() => { handleClose(); if (onBuyNow) onBuyNow(product); }}
                   className="btn btn-primary"
                   style={{ padding: '0.75rem 1.6rem', fontSize: '0.95rem', backgroundColor: '#899255', gap: '0.4rem' }}
                 >
-                  <Zap size={18} /> Buy Now
+                  <Download size={18} /> Download Free PDF eBook
                 </button>
+              ) : (
+                <>
+                  {onBuyNow && (
+                    <button
+                      onClick={() => { handleClose(); onBuyNow(product); }}
+                      className="btn btn-primary"
+                      style={{ padding: '0.75rem 1.6rem', fontSize: '0.95rem', backgroundColor: '#899255', gap: '0.4rem' }}
+                    >
+                      <Zap size={18} /> Buy Now
+                    </button>
+                  )}
+                  <button
+                    onClick={() => { handleClose(); onNavigate('contact'); }}
+                    className="btn btn-outline"
+                    style={{ padding: '0.75rem 1.4rem', fontSize: '0.95rem' }}
+                  >
+                    Get Started <ArrowRight size={18} />
+                  </button>
+                </>
               )}
-              <button
-                onClick={() => { handleClose(); onNavigate('contact'); }}
-                className="btn btn-outline"
-                style={{ padding: '0.75rem 1.4rem', fontSize: '0.95rem' }}
-              >
-                Get Started <ArrowRight size={18} />
-              </button>
             </div>
           </div>
 
@@ -492,13 +504,23 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
               Interested in {product.name}? Let's discuss how it fits your business.
             </p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <button
-                onClick={() => { handleClose(); onNavigate('contact'); }}
-                className="btn btn-primary"
-                style={{ padding: '0.8rem 2rem' }}
-              >
-                Request a Demo <ArrowRight size={18} />
-              </button>
+              {product.isEBook ? (
+                <button
+                  onClick={() => { handleClose(); if (onBuyNow) onBuyNow(product); }}
+                  className="btn btn-primary"
+                  style={{ padding: '0.8rem 2rem' }}
+                >
+                  Download eBook PDF <Download size={18} />
+                </button>
+              ) : (
+                <button
+                  onClick={() => { handleClose(); onNavigate('contact'); }}
+                  className="btn btn-primary"
+                  style={{ padding: '0.8rem 2rem' }}
+                >
+                  Get Started <ArrowRight size={18} />
+                </button>
+              )}
               <button
                 onClick={handleClose}
                 className="btn btn-outline"

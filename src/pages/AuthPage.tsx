@@ -263,7 +263,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           Log in or create an account to continue.
         </p>
 
-        {/* Google Continue Pill Button matching Infinity Tech colors */}
+        {/* Google Continue Pill Button matching Digiro colors */}
         <button
           onClick={handleGoogleButtonClick}
           disabled={loading}

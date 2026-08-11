@@ -66,10 +66,10 @@ export const Navbar: React.FC<NavbarProps> = ({
     >
       <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px' }}>
         
-        {/* Brand Logo with Infinity Symbol */}
+        {/* Brand Logo */}
         <button
           onClick={() => handleNavClick('home')}
-          aria-label="Infinity Tech Homepage"
+          aria-label="Digiro Homepage"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -85,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </svg>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', fontWeight: 800, color: '#21372F', letterSpacing: '-0.02em', lineHeight: 1 }}>
-              Infinity<span style={{ color: '#899255' }}>Tech</span>
+              Digi<span style={{ color: '#899255' }}>ro</span>
             </span>
             <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#5F685F', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
               Digital Solutions

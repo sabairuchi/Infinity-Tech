@@ -7,7 +7,7 @@ dotenv.config();
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_USER = process.env.DB_USER || 'root';
 const DB_PASSWORD = process.env.DB_PASSWORD || '';
-const DB_NAME = process.env.DB_NAME || 'infinity_tech_db';
+const DB_NAME = process.env.DB_NAME || 'digiro_db';
 const DB_PORT = process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306;
 
 let pool = null;
@@ -19,7 +19,7 @@ export const memoryStore = {
     {
       id: 1,
       name: 'Alex Rivera',
-      email: 'alex@infinitytech.io',
+      email: 'alex@digiro.io',
       password: '$2a$10$e7j41Vl9d5Y8uV2Yq8Z3u.Q4XwXbN3Z2X7X8X9Y0Z1A2B3C4D5E6F',
       role: 'Senior Tech Lead',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',

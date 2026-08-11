@@ -141,8 +141,8 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                   </div>
                   <div>
                     <strong style={{ display: 'block', fontSize: '1rem', color: '#21372F', marginBottom: '0.2rem' }}>Email Inquiry</strong>
-                    <a href="mailto:hello@infinitytech.digital" style={{ color: '#899255', fontWeight: 600, fontSize: '0.95rem' }}>
-                      hello@infinitytech.digital
+                    <a href="mailto:hello@digiro.digital" style={{ color: '#899255', fontWeight: 600, fontSize: '0.95rem' }}>
+                      hello@digiro.digital
                     </a>
                   </div>
                 </div>
@@ -210,7 +210,7 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                     <circle cx="180" cy="70" r="4" fill="#FFFFFF" />
                   </svg>
                   <div style={{ position: 'relative', zIndex: 2, backgroundColor: '#FFFFFF', padding: '0.4rem 0.85rem', borderRadius: '9999px', border: '1px solid #899255', boxShadow: '0 4px 12px rgba(33,55,47,0.1)', fontSize: '0.8rem', fontWeight: 700, color: '#21372F' }}>
-                    📍 Infinity Tech Studio
+                    📍 Digiro Studio
                   </div>
                 </div>
               </div>

@@ -41,7 +41,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
         <div className="container">
           <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
             <span className="badge-pill" style={{ marginBottom: '1.25rem' }}>
-              <span className="dot" /> ABOUT INFINITY TECH
+              <span className="dot" /> ABOUT DIGIRO
             </span>
             <h1 className="heading-lg" style={{ marginBottom: '1.5rem', color: '#21372F' }}>
               Building Software That Powers the <span style={{ color: '#899255' }}>Future</span>
@@ -67,7 +67,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', color: '#5F685F', fontSize: '1rem', lineHeight: 1.7 }}>
                 <p>
-                  Started in 2018, Infinity Tech was founded with a clear directive: bridge the gap between heavy enterprise backend engineering and human-centered design aesthetic.
+                  Started in 2018, Digiro was founded with a clear directive: bridge the gap between heavy enterprise backend engineering and human-centered design aesthetic.
                 </p>
                 <p>
                   Over the past 8+ years, we have scaled from a specialized consultancy into a full-service software agency serving global leaders across healthcare, fintech, e-commerce, and SaaS.
@@ -79,7 +79,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
             </div>
 
             <div style={{ borderRadius: '20px', overflow: 'hidden', border: '1px solid #DCE8D3', boxShadow: '0 20px 40px rgba(33, 55, 47, 0.08)' }}>
-              <img src="/assets/about_team_culture.png" alt="Infinity Tech Agency Studio" style={{ width: '100%', height: 'auto' }} />
+              <img src="/assets/about_team_culture.png" alt="Digiro Agency Studio" style={{ width: '100%', height: 'auto' }} />
             </div>
 
           </div>

@@ -48,7 +48,7 @@ export const App: React.FC = () => {
       id: 'dl-1',
       product: PRODUCTS_DATA[0],
       version: '3.2',
-      licenseKey: 'INF-ANALYTICS-8842-X91A-PRO',
+      licenseKey: 'DIG-ANALYTICS-8842-X91A-PRO',
       downloadSize: '142 MB',
       datePurchased: 'Aug 5, 2026',
     },
@@ -163,7 +163,7 @@ export const App: React.FC = () => {
           id: item.id || `dl-new-${Date.now()}-${idx}`,
           product: item.product || purchasedProducts[idx],
           version: item.product?.version || purchasedProducts[idx].version,
-          licenseKey: item.licenseKey || `INF-MYSQL-${Math.floor(1000 + Math.random() * 9000)}-KEY`,
+          licenseKey: item.licenseKey || `DIG-MYSQL-${Math.floor(1000 + Math.random() * 9000)}-KEY`,
           downloadSize: item.downloadSize || '140 MB',
           datePurchased: 'Today (MySQL Verified)',
         }));
@@ -177,7 +177,7 @@ export const App: React.FC = () => {
           id: `dl-new-${Date.now()}-${idx}`,
           product,
           version: product.version,
-          licenseKey: `INF-${product.name.replace(/\s+/g, '').toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}-KEY`,
+          licenseKey: `DIG-${product.name.replace(/\s+/g, '').toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}-KEY`,
           downloadSize: '140 MB',
           datePurchased: 'Today',
         }));
@@ -218,7 +218,113 @@ export const App: React.FC = () => {
     }
   };
 
+  const triggerPdfDownload = async (fileUrl: string, fileName: string) => {
+    try {
+      const res = await fetch(fileUrl);
+      if (res.ok) {
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        return;
+      }
+    } catch (e) {
+      console.warn('PDF fetch fallback triggered:', e);
+    }
+
+    const fallbackPdf = `%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 420 >>
+stream
+BT
+/F1 14 Tf
+50 720 Td
+20 TL
+(CLOUD COMPUTING BLUEPRINT - 65 PAGES EBOOK) '
+(==================================================) '
+(A Beginner's Guide to Cloud Technologies, Architecture,) '
+(and Real-World Applications) '
+(==================================================) '
+() '
+(Publisher: Digiro Digital Publications) '
+(Chapters: IaaS, PaaS, SaaS, Public/Private Cloud, Security,) '
+(Databases, AWS, Azure, GCP, DevOps & Cloud Careers.) '
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000187 00000 n 
+0000000302 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+780
+%%EOF`;
+
+    const blob = new Blob([fallbackPdf], { type: 'application/pdf' });
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+  };
+
   const handleBuyNow = (product: ProductItem) => {
+    if (product.isEBook || product.id === 'cloud-computing-blueprint') {
+      if (!user) {
+        sessionStorage.setItem('pendingEbookDownload', product.id);
+        setAuthRedirectReason(`Create your free account or sign in to instantly download ${product.name} (PDF).`);
+        navigateTo('signup');
+        return;
+      }
+
+      // Add to user downloads if not already listed
+      setDownloads((prev) => {
+        const exists = prev.some((d) => d.product.id === product.id);
+        if (exists) return prev;
+        return [
+          {
+            id: `dl-ebook-${Date.now()}`,
+            product,
+            version: product.version,
+            licenseKey: `EBOOK-FREE-MEMBER-LICENSE`,
+            downloadSize: '12.5 MB PDF',
+            datePurchased: 'Free Member Download',
+          },
+          ...prev,
+        ];
+      });
+
+      triggerPdfDownload('/assets/cloud-computing-blueprint.pdf', 'Cloud-Computing-Blueprint-Digiro.pdf');
+      navigateTo('my-products');
+      return;
+    }
+
     if (!user) {
       setAuthRedirectReason('Authentication Required: Please sign in or create an account to purchase products.');
       navigateTo('login');
@@ -226,6 +332,38 @@ export const App: React.FC = () => {
     }
     handleAddToCart(product);
     navigateTo('my-products');
+  };
+
+  const handleLoginSuccess = (authedUser: User, token: string) => {
+    setUser({ ...authedUser, token });
+    setAuthRedirectReason(null);
+
+    const pendingEbookId = sessionStorage.getItem('pendingEbookDownload');
+    if (pendingEbookId) {
+      sessionStorage.removeItem('pendingEbookDownload');
+      const ebookProd = PRODUCTS_DATA.find((p) => p.id === pendingEbookId) || PRODUCTS_DATA[0];
+
+      setDownloads((prev) => {
+        const exists = prev.some((d) => d.product.id === ebookProd.id);
+        if (exists) return prev;
+        return [
+          {
+            id: `dl-ebook-${Date.now()}`,
+            product: ebookProd,
+            version: ebookProd.version,
+            licenseKey: `EBOOK-FREE-MEMBER-LICENSE`,
+            downloadSize: '12.5 MB PDF',
+            datePurchased: 'Free Member Download',
+          },
+          ...prev,
+        ];
+      });
+
+      setTimeout(() => {
+        triggerPdfDownload('/assets/cloud-computing-blueprint.pdf', 'Cloud-Computing-Blueprint-Digiro.pdf');
+        navigateTo('my-products');
+      }, 400);
+    }
   };
 
   return (
@@ -310,10 +448,7 @@ export const App: React.FC = () => {
         {(activePage === 'login' || activePage === 'signup') && (
           <AuthPage
             onNavigate={navigateTo}
-            onLoginSuccess={(authedUser, token) => {
-              setUser({ ...authedUser, token });
-              setAuthRedirectReason(null);
-            }}
+            onLoginSuccess={handleLoginSuccess}
             redirectReason={authRedirectReason}
           />
         )}

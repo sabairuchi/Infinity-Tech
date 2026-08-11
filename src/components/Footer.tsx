@@ -41,7 +41,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
                 <path d="M12 12c-2-2.5-4-4-6.5-4A4.5 4.5 0 0 0 1 12.5 4.5 4.5 0 0 0 5.5 17C8 17 10 14.5 12 12zm0 0c2 2.5 4 4 6.5 4a4.5 4.5 0 0 0 4.5-4.5 4.5 4.5 0 0 0-4.5-4.5C16 7 14 9.5 12 12z" />
               </svg>
               <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800, color: '#FFFFFF' }}>
-                Infinity<span style={{ color: '#BEEA9A' }}>Tech</span>
+                Digi<span style={{ color: '#BEEA9A' }}>ro</span>
               </span>
             </div>
             
@@ -184,7 +184,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.9rem', color: '#DCE8D3' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Mail size={18} style={{ color: '#BEEA9A', flexShrink: 0 }} />
-                <a href="mailto:hello@infinitytech.digital" style={{ color: 'inherit' }}>hello@infinitytech.digital</a>
+                <a href="mailto:hello@digiro.digital" style={{ color: 'inherit' }}>hello@digiro.digital</a>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Phone size={18} style={{ color: '#BEEA9A', flexShrink: 0 }} />
@@ -232,7 +232,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
 
               {/* Mail */}
               <a
-                href="mailto:hello@infinitytech.digital"
+                href="mailto:hello@digiro.digital"
                 aria-label="Send Email"
                 title="Send Email"
                 style={{
@@ -305,7 +305,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
             color: '#A8C36E',
           }}
         >
-          <p>© {new Date().getFullYear()} Infinity Tech. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Digiro. All rights reserved.</p>
 
           <div style={{ display: 'flex', gap: '1.5rem' }}>
             <button

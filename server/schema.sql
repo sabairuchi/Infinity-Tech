@@ -1,10 +1,10 @@
 -- ===================================================
--- INFINITY TECH MYSQL DATABASE SCHEMA
+-- DIGIRO MYSQL DATABASE SCHEMA
 -- Execute this script in your local MySQL instance (phpMyAdmin, MySQL Workbench, or CLI)
 -- ===================================================
 
-CREATE DATABASE IF NOT EXISTS infinity_tech_db;
-USE infinity_tech_db;
+CREATE DATABASE IF NOT EXISTS digiro_db;
+USE digiro_db;
 
 -- 1. USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
@@ -74,7 +74,7 @@ INSERT IGNORE INTO users (id, name, email, password, role)
 VALUES (
   1, 
   'Alex Rivera', 
-  'alex@infinitytech.io', 
+  'alex@digiro.io', 
   '$2a$10$e7j41Vl9d5Y8uV2Yq8Z3u.Q4XwXbN3Z2X7X8X9Y0Z1A2B3C4D5E6F', 
   'Senior Tech Lead'
 );

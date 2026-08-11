@@ -79,27 +79,102 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
     setTimeout(() => setCopiedLicenseId(null), 2500);
   };
 
-  const handleDownload = (item: DownloadItem) => {
+  const handleDownload = async (item: DownloadItem) => {
     setDownloadingId(item.id);
-    setTimeout(() => {
+    setTimeout(async () => {
       setDownloadingId(null);
-      // Trigger dummy file download
-      const element = document.createElement('a');
-      const file = new Blob([`Infinity Tech License File\nProduct: ${item.product.name}\nVersion: ${item.version}\nLicense Key: ${item.licenseKey}`], { type: 'text/plain' });
-      element.href = URL.createObjectURL(file);
-      element.download = `${item.product.id}-v${item.version}-installer.txt`;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-    }, 1200);
+      if (item.product.isEBook || item.product.id === 'cloud-computing-blueprint') {
+        try {
+          const res = await fetch('/assets/cloud-computing-blueprint.pdf');
+          if (res.ok) {
+            const blob = await res.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const element = document.createElement('a');
+            element.href = blobUrl;
+            element.download = 'Cloud-Computing-Blueprint-Digiro.pdf';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+            return;
+          }
+        } catch (e) {
+          console.warn('PDF fetch fallback triggered:', e);
+        }
+
+        const fallbackPdf = `%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 420 >>
+stream
+BT
+/F1 14 Tf
+50 720 Td
+20 TL
+(CLOUD COMPUTING BLUEPRINT - 65 PAGES EBOOK) '
+(==================================================) '
+(A Beginner's Guide to Cloud Technologies, Architecture,) '
+(and Real-World Applications) '
+(==================================================) '
+() '
+(Publisher: Digiro Digital Publications) '
+(Chapters: IaaS, PaaS, SaaS, Public/Private Cloud, Security,) '
+(Databases, AWS, Azure, GCP, DevOps & Cloud Careers.) '
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000187 00000 n 
+0000000302 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+780
+%%EOF`;
+
+        const blob = new Blob([fallbackPdf], { type: 'application/pdf' });
+        const blobUrl = URL.createObjectURL(blob);
+        const element = document.createElement('a');
+        element.href = blobUrl;
+        element.download = 'Cloud-Computing-Blueprint-Digiro.pdf';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      } else {
+        const element = document.createElement('a');
+        const file = new Blob([`Digiro License File\nProduct: ${item.product.name}\nVersion: ${item.version}\nLicense Key: ${item.licenseKey}`], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `${item.product.id}-v${item.version}-installer.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      }
+    }, 500);
   };
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
-    if (couponCode.trim().toUpperCase() === 'INFINITY15' || couponCode.trim().toUpperCase() === 'SAVE15') {
+    if (couponCode.trim().toUpperCase() === 'DIGIRO15' || couponCode.trim().toUpperCase() === 'INFINITY15' || couponCode.trim().toUpperCase() === 'SAVE15') {
       setDiscountApplied(true);
     } else {
-      alert('Use promo code INFINITY15 for 15% off!');
+      alert('Use promo code DIGIRO15 for 15% off!');
     }
   };
 
@@ -464,7 +539,7 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
                     <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
                       <input
                         type="text"
-                        placeholder="Promo Code (INFINITY15)"
+                        placeholder="Promo Code (DIGIRO15)"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value)}
                         style={{
@@ -654,7 +729,7 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
                           style={{ padding: '0.75rem 1.4rem', fontSize: '0.9rem', gap: '0.5rem' }}
                         >
                           <Download size={18} />
-                          {downloadingId === item.id ? 'Preparing...' : 'Download Build'}
+                          {downloadingId === item.id ? 'Preparing PDF...' : (item.product.isEBook ? 'Download PDF' : 'Download Build')}
                         </button>
                       </div>
                     </div>
@@ -690,7 +765,7 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
               <div style={{ backgroundColor: '#21372F', color: '#FFFFFF', padding: '1.25rem 1.5rem', borderRadius: '16px', marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
                   <span style={{ fontSize: '0.75rem', color: '#A8C36E', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>DATABASE INSTANCE</span>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF' }}>{dbData?.mysqlStatus?.database || 'infinity_tech_db'}</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF' }}>{dbData?.mysqlStatus?.database || 'digiro_db'}</div>
                 </div>
                 <div>
                   <span style={{ fontSize: '0.75rem', color: '#A8C36E', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>HOST & PORT</span>
@@ -754,7 +829,7 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
                     </thead>
                     <tbody>
                       {(dbData?.tables?.orders || [
-                        { id: 'INF-ORD-948120', user_id: 1, total_amount: '88.00', payment_method: 'Credit Card (Saved)' }
+                        { id: 'DIG-ORD-948120', user_id: 1, total_amount: '88.00', payment_method: 'Credit Card (Saved)' }
                       ]).map((o: any, i: number) => (
                         <tr key={i} style={{ borderBottom: '1px solid #F0F5ED' }}>
                           <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#21372F' }}>{o.id || o.orderId}</td>
@@ -784,11 +859,11 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
                     </thead>
                     <tbody>
                       {(dbData?.tables?.purchases || [
-                        { id: 'dl-1', product_id: 'infinity-analytics', license_key: 'INF-ANALYTICS-8842-X91A-PRO' }
+                        { id: 'dl-1', product_id: 'digiro-analytics', license_key: 'DIG-ANALYTICS-8842-X91A-PRO' }
                       ]).map((p: any, i: number) => (
                         <tr key={i} style={{ borderBottom: '1px solid #F0F5ED' }}>
                           <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#5F685F' }}>{p.id}</td>
-                          <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#21372F' }}>{p.product_id || p.product?.name || 'Infinity Product'}</td>
+                          <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#21372F' }}>{p.product_id || p.product?.name || 'Digiro Product'}</td>
                           <td style={{ padding: '0.75rem 1rem' }}>
                             <code style={{ backgroundColor: '#F0F5ED', padding: '3px 8px', borderRadius: '6px', fontSize: '0.82rem', fontWeight: 700, color: '#21372F' }}>
                               {p.license_key || p.licenseKey}

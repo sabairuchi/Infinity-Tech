@@ -82,7 +82,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             {/* Left Content */}
             <div style={{ animation: 'fadeInUp 0.8s ease forwards' }}>
               <div className="badge-pill" style={{ marginBottom: '1.25rem' }}>
-                <span className="dot" /> WELCOME TO INFINITY TECH
+                <span className="dot" /> WELCOME TO DIGIRO
               </div>
 
               <h1
@@ -188,7 +188,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               >
                 <img
                   src="/assets/hero_tech_3d.png"
-                  alt="Infinity Tech 3D Technology Illustration"
+                  alt="Digiro 3D Technology Illustration"
                   style={{ width: '100%', height: 'auto', display: 'block' }}
                 />
 
@@ -386,7 +386,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             
             <div>
               <span className="badge-pill" style={{ marginBottom: '1rem' }}>
-                <span className="dot" /> WHY INFINITY TECH
+                <span className="dot" /> WHY DIGIRO
               </span>
 
               <h2 className="heading-md" style={{ marginBottom: '1.25rem' }}>
@@ -424,7 +424,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               >
                 <img
                   src="/assets/about_team_culture.png"
-                  alt="Infinity Tech Engineering Team Culture"
+                  alt="Digiro Engineering Team Culture"
                   style={{ width: '100%', height: 'auto', display: 'block' }}
                 />
               </div>

@@ -82,7 +82,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({ title, type, onClose }) 
           {type === 'privacy' ? (
             <>
               <p>
-                At <strong>Infinity Tech</strong>, protecting your privacy and business data is paramount. This Privacy Policy outlines how we collect, process, and safeguard information when you use our website or engage our software development services.
+                At <strong>Digiro</strong>, protecting your privacy and business data is paramount. This Privacy Policy outlines how we collect, process, and safeguard information when you use our website or engage our software development services.
               </p>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#365648' }}>1. Information We Collect</h3>
               <p>
@@ -100,15 +100,15 @@ export const LegalModal: React.FC<LegalModalProps> = ({ title, type, onClose }) 
           ) : (
             <>
               <p>
-                These Terms of Service govern your access to and use of the website and digital consulting services provided by <strong>Infinity Tech</strong>. By accessing our services, you agree to comply with these terms.
+                These Terms of Service govern your access to and use of the website and digital consulting services provided by <strong>Digiro</strong>. By accessing our services, you agree to comply with these terms.
               </p>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#365648' }}>1. Intellectual Property</h3>
               <p>
-                All website content, custom graphic elements, proprietary brand assets, and code frameworks displayed on this platform are owned by Infinity Tech or licensed to us. Custom client work product ownership is transferred as specified in individual Master Services Agreements.
+                All website content, custom graphic elements, proprietary brand assets, and code frameworks displayed on this platform are owned by Digiro or licensed to us. Custom client work product ownership is transferred as specified in individual Master Services Agreements.
               </p>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#365648' }}>2. Limitation of Liability</h3>
               <p>
-                Infinity Tech provides digital consulting and software development services on an "as is" and "as available" basis. While we maintain rigorous quality assurance standards, we are not liable for incidental or consequential damages resulting from third-party server outages or improper usage.
+                Digiro provides digital consulting and software development services on an "as is" and "as available" basis. While we maintain rigorous quality assurance standards, we are not liable for incidental or consequential damages resulting from third-party server outages or improper usage.
               </p>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#365648' }}>3. Governing Law</h3>
               <p>

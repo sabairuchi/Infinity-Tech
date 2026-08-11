@@ -299,7 +299,7 @@ export const TESTIMONIALS_DATA: Testimonial[] = [
     company: 'NovaWorks Inc.',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
     rating: 5,
-    quote: 'Infinity Tech transformed our complex software requirements into a sleek, intuitive product. Their attention to design details, performance, and communication made working together effortless.'
+    quote: 'Digiro transformed our complex software requirements into a sleek, intuitive product. Their attention to design details, performance, and communication made working together effortless.'
   },
   {
     id: '2',
@@ -308,7 +308,7 @@ export const TESTIMONIALS_DATA: Testimonial[] = [
     company: 'Apex Labs',
     avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200',
     rating: 5,
-    quote: 'The engineering depth of the Infinity Tech team is top-tier. They rebuilt our cloud architecture and web application on time and within budget. We saw an immediate 3x increase in system throughput.'
+    quote: 'The engineering depth of the Digiro team is top-tier. They rebuilt our cloud architecture and web application on time and within budget. We saw an immediate 3x increase in system throughput.'
   },
   {
     id: '3',
@@ -317,7 +317,7 @@ export const TESTIMONIALS_DATA: Testimonial[] = [
     company: 'UrbanCore Retail',
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200',
     rating: 5,
-    quote: 'Our new e-commerce platform launched without a single glitch during our peak holiday sale. Infinity Tech deliver solutions that are robust, beautiful, and truly drive business results.'
+    quote: 'Our new e-commerce platform launched without a single glitch during our peak holiday sale. Digiro delivers solutions that are robust, beautiful, and truly drive business results.'
   },
   {
     id: '4',
@@ -326,7 +326,7 @@ export const TESTIMONIALS_DATA: Testimonial[] = [
     company: 'GreenByte Systems',
     avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200',
     rating: 5,
-    quote: 'Finding an agency that excels at both high-end UI design and complex back-end engineering is rare. Infinity Tech is our go-to partner for all digital product builds.'
+    quote: 'Finding an agency that excels at both high-end UI design and complex back-end engineering is rare. Digiro is our go-to partner for all digital product builds.'
   }
 ];
 
