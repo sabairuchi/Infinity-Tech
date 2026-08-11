@@ -35,10 +35,7 @@ export const App: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
 
   // User Cart, Wishlist, Downloads State
-  const [cart, setCart] = useState<CartItem[]>([
-    { product: PRODUCTS_DATA[0], quantity: 1 },
-    { product: PRODUCTS_DATA[1], quantity: 1 },
-  ]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<ProductItem[]>([
     PRODUCTS_DATA[2],
     PRODUCTS_DATA[3],

@@ -50,33 +50,45 @@ export const Navbar: React.FC<NavbarProps> = ({
     setUserDropdownOpen(false);
   };
 
+  const getUserDisplayName = (usr: User) => {
+    if (usr.name && !usr.name.includes('@')) return usr.name;
+    if (!usr.email) return usr.name || 'Member';
+    const namePart = usr.email.split('@')[0];
+    const cleaned = namePart.replace(/[._\d]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()).trim();
+    return cleaned || usr.name || 'Member';
+  };
+
   return (
     <header
       style={{
-        position: 'fixed',
+        position: 'sticky',
         top: 0,
-        left: 0,
-        right: 0,
         zIndex: 100,
-        backgroundColor: isScrolled ? '#FFFFFF' : 'rgba(255, 255, 255, 0.9)',
-        backdropFilter: 'blur(10px)',
-        boxShadow: isScrolled ? '0 4px 20px rgba(33, 55, 47, 0.08)' : 'none',
-        borderBottom: isScrolled ? '1px solid #DCE8D3' : '1px solid transparent',
-        transition: 'all 0.35s ease',
+        backgroundColor: '#FFFFFF',
+        borderBottom: '1px solid #E8F0E5',
+        boxShadow: isScrolled ? '0 10px 30px rgba(33, 55, 47, 0.08)' : 'none',
+        transition: 'box-shadow 0.3s ease',
       }}
     >
-      <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px' }}>
+      <div
+        className="container"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '80px',
+        }}
+      >
         
-        {/* Brand Logo */}
+        {/* Brand Logo & Name */}
         <button
           onClick={() => handleNavClick('home')}
-          aria-label="Digiro Homepage"
           style={{
+            background: 'none',
+            border: 'none',
             display: 'flex',
             alignItems: 'center',
             gap: '0.65rem',
-            background: 'none',
-            border: 'none',
             cursor: 'pointer',
             textAlign: 'left',
           }}
@@ -93,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
 
         {/* Desktop Navigation Links */}
-        <nav className="desktop-nav" style={{ display: 'none', alignItems: 'center', gap: '2rem' }}>
+        <nav className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
           {navLinks.map((link) => {
             const isActive = activePage === link.page;
             return (
@@ -103,24 +115,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                 style={{
                   background: 'none',
                   border: 'none',
-                  fontSize: '0.95rem',
+                  fontSize: '0.92rem',
                   fontWeight: isActive ? 700 : 500,
-                  color: isActive ? '#899255' : '#21372F',
+                  color: isActive ? '#21372F' : '#5F685F',
                   cursor: 'pointer',
                   padding: '0.4rem 0',
                   position: 'relative',
                   transition: 'color 0.2s ease',
                 }}
               >
-                {link.name}
+                {link.label}
                 {isActive && (
                   <span
                     style={{
                       position: 'absolute',
-                      bottom: '-2px',
+                      bottom: 0,
                       left: 0,
                       right: 0,
-                      height: '2px',
+                      height: '2.5px',
                       backgroundColor: '#899255',
                       borderRadius: '2px',
                     }}
@@ -131,8 +143,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           })}
         </nav>
 
-        {/* Desktop Right CTA */}
-        <div className="desktop-cta" style={{ display: 'none', alignItems: 'center', gap: '0.85rem' }}>
+        {/* Action Buttons (Desktop & Mobile) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           
           {/* User Auth Profile / Login Button */}
           {user ? (
@@ -150,8 +162,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   cursor: 'pointer',
                 }}
               >
-                <img src={user.avatar} alt={user.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#21372F' }}>{user.name}</span>
+                <img src={user.avatar} alt={getUserDisplayName(user)} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#21372F' }}>{getUserDisplayName(user)}</span>
               </button>
 
               {userDropdownOpen && (
@@ -169,9 +181,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                     zIndex: 110,
                   }}
                 >
-                  <div style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid #F0F5ED', marginBottom: '0.35rem' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#899255', fontWeight: 700, textTransform: 'uppercase' }}>MySQL Member</div>
-                    <div style={{ fontSize: '0.85rem', color: '#21372F', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
+                  <div style={{ padding: '0.6rem 0.75rem', borderBottom: '1px solid #F0F5ED', marginBottom: '0.35rem' }}>
+                    <div style={{ fontSize: '0.92rem', color: '#21372F', fontWeight: 800, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {getUserDisplayName(user)}
+                    </div>
+                    <div style={{ fontSize: '0.74rem', color: '#899255', fontWeight: 600 }}>
+                      {user.role ? user.role.replace(/MySQL\s*/gi, '') : 'Verified Member'}
+                    </div>
                   </div>
                   <button
                     onClick={() => handleNavClick('my-products')}
