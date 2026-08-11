@@ -12,8 +12,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   onNavigate,
   onLoginSuccess,
   redirectReason,
-}) => {
-  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   // State for First-Time User Profile Details Bar/Modal
