@@ -16,6 +16,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [showDeviceAccountsModal, setShowDeviceAccountsModal] = useState(false);
+  const [customGoogleEmail, setCustomGoogleEmail] = useState('');
+  const [customGoogleName, setCustomGoogleName] = useState('');
   // State for First-Time User Profile Details Bar/Modal
   const [showProfileDetailsModal, setShowProfileDetailsModal] = useState(false);
   const [profileName, setProfileName] = useState('');
