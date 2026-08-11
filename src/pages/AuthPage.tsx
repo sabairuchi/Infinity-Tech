@@ -172,6 +172,19 @@ export const AuthPage: React.FC<AuthPageProps> = ({
               }
             },
           });
+
+          // Also render official Google button in slot if available
+          const btnSlot = document.getElementById('google-official-btn');
+          if (btnSlot) {
+            btnSlot.innerHTML = '';
+            (window as any).google.accounts.id.renderButton(btnSlot, {
+              theme: 'outline',
+              size: 'large',
+              width: 280,
+              shape: 'pill',
+              text: 'continue_with',
+            });
+          }
         } catch (e) {
           console.warn('GIS Init notice:', e);
         }
@@ -191,7 +204,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   }, []);
 
   const triggerOAuthFallback = (googleClientId: string) => {
-    const redirectUri = window.location.origin + window.location.pathname;
+    // Strip trailing slash to match exact Google Cloud Console origin
+    const redirectUri = window.location.origin.replace(/\/$/, '');
     const scope = 'email profile openid';
     const nonce = Math.random().toString(36).substring(2);
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=id_token&scope=${encodeURIComponent(scope)}&nonce=${nonce}&prompt=select_account`;
@@ -211,17 +225,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         (window as any).google.accounts.id.cancel();
         (window as any).google.accounts.id.prompt((notification: any) => {
           if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            // One Tap suppressed or skipped on mobile, trigger direct Google Account Chooser
             triggerOAuthFallback(googleClientId);
           }
         });
-
-        // Safety fallback timer for mobile devices if prompt callback does not fire
-        setTimeout(() => {
-          if (!pendingUser && !showProfileDetailsModal) {
-            triggerOAuthFallback(googleClientId);
-          }
-        }, 1200);
       } catch (e) {
         triggerOAuthFallback(googleClientId);
       }
@@ -456,6 +462,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           </div>
           <span>{loading ? 'Authenticating...' : 'Continue with Google'}</span>
         </button>
+
+        {/* Official Google Identity Services Button Slot */}
+        <div id="google-official-btn" style={{ marginTop: '1.25rem', display: 'flex', justifyContent: 'center' }} />
 
         {/* Security assurance footer */}
         <div
