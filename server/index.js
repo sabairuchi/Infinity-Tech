@@ -215,6 +215,7 @@ app.post('/api/auth/google', async (req, res) => {
 
     const mysqlStatus = getMySQLStatus();
     let foundUser = null;
+    let isNewUser = false;
 
     if (mysqlStatus.connected) {
       const pool = getPool();
@@ -222,10 +223,12 @@ app.post('/api/auth/google', async (req, res) => {
 
       if (byGoogleId.length > 0) {
         foundUser = byGoogleId[0];
+        isNewUser = false;
       } else {
         const [byEmail] = await pool.query('SELECT * FROM users WHERE email = ?', [userEmail]);
         if (byEmail.length > 0) {
           foundUser = byEmail[0];
+          isNewUser = false;
           await pool.query(
             'UPDATE users SET google_id = COALESCE(?, google_id), auth_provider = "google", profile_image = COALESCE(?, profile_image) WHERE id = ?',
             [googleId, userAvatar, foundUser.id]
@@ -234,6 +237,7 @@ app.post('/api/auth/google', async (req, res) => {
           foundUser.auth_provider = 'google';
           foundUser.profile_image = userAvatar;
         } else {
+          isNewUser = true;
           const [result] = await pool.query(
             'INSERT INTO users (name, email, password, google_id, role, avatar, profile_image, auth_provider) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [userName, userEmail, 'GOOGLE_AUTH_NO_PASSWORD', googleId, 'Google Verified Member', userAvatar, userAvatar, 'google']
@@ -254,6 +258,7 @@ app.post('/api/auth/google', async (req, res) => {
       // Memory Store Fallback
       foundUser = memoryStore.users.find(u => (googleId && u.google_id === googleId) || u.email.toLowerCase() === userEmail);
       if (!foundUser) {
+        isNewUser = true;
         foundUser = {
           id: Date.now(),
           name: userName,
@@ -266,6 +271,7 @@ app.post('/api/auth/google', async (req, res) => {
         };
         memoryStore.users.push(foundUser);
       } else {
+        isNewUser = false;
         foundUser.google_id = googleId || foundUser.google_id;
         foundUser.auth_provider = 'google';
         foundUser.profile_image = userAvatar;
@@ -276,7 +282,8 @@ app.post('/api/auth/google', async (req, res) => {
     const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '7d' });
 
     res.json({
-      message: 'Signed in with Google Account successfully!',
+      message: isNewUser ? 'Google Sign-Up successful! Please complete your profile.' : 'Signed in with Google Account successfully!',
+      isNewUser,
       user: {
         id: foundUser.id,
         name: foundUser.name,
@@ -286,6 +293,9 @@ app.post('/api/auth/google', async (req, res) => {
         googleId: foundUser.google_id || googleId,
         profileImage: foundUser.profile_image || userAvatar,
         authProvider: 'google',
+        phone: foundUser.phone || '',
+        company: foundUser.company || '',
+        isNewUser,
       },
       token,
       mysqlConnected: mysqlStatus.connected,
@@ -293,6 +303,36 @@ app.post('/api/auth/google', async (req, res) => {
   } catch (err) {
     console.error('Google Auth Server Error:', err);
     res.status(500).json({ error: 'Google authentication failed on server.' });
+  }
+});
+
+// Update Profile Details Endpoint (First-time user or profile settings update)
+app.post('/api/user/profile', authenticateToken, async (req, res) => {
+  try {
+    const { name, phone, company, role } = req.body;
+    const userId = req.user.id;
+    const mysqlStatus = getMySQLStatus();
+
+    if (mysqlStatus.connected) {
+      const pool = getPool();
+      await pool.query(
+        'UPDATE users SET name = COALESCE(?, name), phone = COALESCE(?, phone), company = COALESCE(?, company), role = COALESCE(?, role) WHERE id = ?',
+        [name || null, phone || null, company || null, role || null, userId]
+      );
+    } else {
+      const user = memoryStore.users.find(u => u.id === userId);
+      if (user) {
+        if (name) user.name = name;
+        if (phone) user.phone = phone;
+        if (company) user.company = company;
+        if (role) user.role = role;
+      }
+    }
+
+    res.json({ message: 'Profile details saved successfully!' });
+  } catch (err) {
+    console.error('Profile Update Error:', err);
+    res.status(500).json({ error: 'Failed to save profile details.' });
   }
 });
 

@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS users (
   avatar VARCHAR(500) DEFAULT 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
   profile_image VARCHAR(500),
   auth_provider VARCHAR(50) DEFAULT 'email',
+  phone VARCHAR(50),
+  company VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -6,10 +6,13 @@ export interface User {
   email: string;
   avatar: string;
   role: string;
+  phone?: string;
+  company?: string;
   token?: string;
   googleId?: string;
   profileImage?: string;
   authProvider?: 'email' | 'google';
+  isNewUser?: boolean;
 }
 
 export interface ProductItem {

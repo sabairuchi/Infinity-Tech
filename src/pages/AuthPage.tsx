@@ -16,9 +16,35 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
-  const [showDeviceAccountsModal, setShowDeviceAccountsModal] = useState(false);
-  const [customGoogleEmail, setCustomGoogleEmail] = useState('');
-  const [customGoogleName, setCustomGoogleName] = useState('');
+  // State for First-Time User Profile Details Bar/Modal
+  const [showProfileDetailsModal, setShowProfileDetailsModal] = useState(false);
+  const [profileName, setProfileName] = useState('');
+  const [profilePhone, setProfilePhone] = useState('');
+  const [profileCompany, setProfileCompany] = useState('');
+  const [profileRole, setProfileRole] = useState('Digital Architect');
+  const [pendingUser, setPendingUser] = useState<User | null>(null);
+  const [pendingToken, setPendingToken] = useState<string | null>(null);
+  const [savingProfile, setSavingProfile] = useState(false);
+
+  // Process authenticated Google account
+  const processAuthResult = (userData: User, token: string, isNewUser?: boolean) => {
+    if (isNewUser || userData.isNewUser) {
+      setPendingUser(userData);
+      setPendingToken(token);
+      setProfileName(userData.name || '');
+      setProfilePhone(userData.phone || '');
+      setProfileCompany(userData.company || '');
+      setProfileRole(userData.role || 'Digital Architect');
+      setLoading(false);
+      setShowProfileDetailsModal(true);
+    } else {
+      setSuccessMsg(`Welcome back, ${userData.name}! Signed in successfully.`);
+      setTimeout(() => {
+        onLoginSuccess(userData, token);
+        onNavigate('home');
+      }, 500);
+    }
+  };
 
   // Handle Google ID Token received from Google Identity Services
   const handleGoogleCredentialAuth = async (credential: string) => {
@@ -40,13 +66,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         throw new Error(data.error || 'Google authentication failed.');
       }
 
-      setSuccessMsg(`Welcome, ${data.user.name}! Signed in via Google.`);
-      if (data.user && data.token) {
-        setTimeout(() => {
-          onLoginSuccess(data.user, data.token);
-          onNavigate('products');
-        }, 500);
-      }
+      processAuthResult(data.user, data.token, data.isNewUser);
     } catch (err: any) {
       setErrorMsg(err.message || 'Google Sign-In failed. Please try again.');
       setLoading(false);
@@ -115,13 +135,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         throw new Error(data.error || 'Google authentication failed.');
       }
 
-      setSuccessMsg(`Welcome, ${account.name}! Signed in via Google.`);
-      if (data.user && data.token) {
-        setTimeout(() => {
-          onLoginSuccess(data.user, data.token);
-          onNavigate('products');
-        }, 500);
-      }
+      processAuthResult(data.user, data.token, data.isNewUser);
     } catch (err: any) {
       // Fallback local auth
       setTimeout(() => {
@@ -133,11 +147,53 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           avatar: account.avatar,
           role: 'Google Verified Member',
           token: `token-g-${Date.now()}`,
+          isNewUser: true,
         };
-        onLoginSuccess(fallbackUser, fallbackUser.token!);
-        onNavigate('products');
+        processAuthResult(fallbackUser, fallbackUser.token!, true);
       }, 500);
     }
+  };
+
+  // Submit Profile Details for First-Time Users
+  const handleSaveProfileDetails = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pendingUser || !pendingToken) return;
+    setSavingProfile(true);
+
+    try {
+      await fetch('http://localhost:5000/api/user/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${pendingToken}`,
+        },
+        body: JSON.stringify({
+          name: profileName,
+          phone: profilePhone,
+          company: profileCompany,
+          role: profileRole,
+        }),
+      });
+    } catch (err) {
+      console.warn('Backend profile sync notice:', err);
+    }
+
+    const updatedUser: User = {
+      ...pendingUser,
+      name: profileName || pendingUser.name,
+      phone: profilePhone,
+      company: profileCompany,
+      role: profileRole,
+      isNewUser: false,
+    };
+
+    setSavingProfile(false);
+    setShowProfileDetailsModal(false);
+    setSuccessMsg('Profile setup complete! Redirecting to Home Page...');
+    setTimeout(() => {
+      onLoginSuccess(updatedUser, pendingToken);
+      onNavigate('home');
+    }, 400);
   };
 
   const handleCustomGoogleSubmit = (e: React.FormEvent) => {
@@ -511,6 +567,173 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                   Sign In with Google
                 </button>
               </div>
+      {/* FIRST-TIME USER PROFILE DETAILS COMPLETION MODAL */}
+      {showProfileDetailsModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(33, 55, 47, 0.85)',
+            backdropFilter: 'blur(10px)',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.5rem',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: '24px',
+              width: '100%',
+              maxWidth: '460px',
+              padding: '2.25rem 2rem',
+              boxShadow: '0 30px 90px rgba(0, 0, 0, 0.35)',
+              border: '1px solid #DCE8D3',
+              textAlign: 'left',
+              animation: 'fadeInUp 0.35s ease forwards',
+            }}
+          >
+            <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
+              <div
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  backgroundColor: '#F0F5ED',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 0.75rem',
+                  border: '2px solid #899255',
+                  fontSize: '1.5rem',
+                }}
+              >
+                🎉
+              </div>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#21372F', marginBottom: '0.35rem' }}>
+                Welcome to Digiro!
+              </h3>
+              <p style={{ fontSize: '0.88rem', color: '#5F685F', lineHeight: 1.5 }}>
+                First time signing in? Please fill out your profile details to customize your workspace.
+              </p>
+            </div>
+
+            <form onSubmit={handleSaveProfileDetails} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                  Full Name <span style={{ color: '#E53E3E' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="John Doe"
+                  value={profileName}
+                  onChange={(e) => setProfileName(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '1px solid #DCE8D3',
+                    fontSize: '0.9rem',
+                    color: '#21372F',
+                    outline: 'none',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+1 (555) 000-1234"
+                  value={profilePhone}
+                  onChange={(e) => setProfilePhone(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '1px solid #DCE8D3',
+                    fontSize: '0.9rem',
+                    color: '#21372F',
+                    outline: 'none',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                  Company / Organization
+                </label>
+                <input
+                  type="text"
+                  placeholder="Acme Innovations"
+                  value={profileCompany}
+                  onChange={(e) => setProfileCompany(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '1px solid #DCE8D3',
+                    fontSize: '0.9rem',
+                    color: '#21372F',
+                    outline: 'none',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                  Professional Role
+                </label>
+                <select
+                  value={profileRole}
+                  onChange={(e) => setProfileRole(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '1px solid #DCE8D3',
+                    fontSize: '0.9rem',
+                    color: '#21372F',
+                    outline: 'none',
+                    backgroundColor: '#FFFFFF',
+                  }}
+                >
+                  <option value="Digital Architect">Digital Architect</option>
+                  <option value="Software Engineer">Software Engineer</option>
+                  <option value="Product Manager">Product Manager</option>
+                  <option value="CTO / Tech Director">CTO / Tech Director</option>
+                  <option value="Business Founder">Business Founder</option>
+                  <option value="Verified Member">Verified Member</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                disabled={savingProfile}
+                style={{
+                  marginTop: '0.75rem',
+                  padding: '0.85rem',
+                  borderRadius: '12px',
+                  border: 'none',
+                  backgroundColor: '#899255',
+                  color: '#FFFFFF',
+                  fontSize: '0.98rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(137, 146, 85, 0.35)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {savingProfile ? 'Saving Profile...' : 'Save Details & Go to Home Page →'}
+              </button>
             </form>
           </div>
         </div>
