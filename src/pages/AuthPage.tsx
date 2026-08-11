@@ -117,8 +117,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({
 
   // Initialize Google Identity Services SDK
   useEffect(() => {
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
-    if (!googleClientId || googleClientId === '1032430083994-ks2adb95ardvjphhubdne2vsjkkp5j66.apps.googleusercontent.com') return;
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1032430083994-ks2adb95ardvjphhubdne2vsjkkp5j66.apps.googleusercontent.com';
+    if (!googleClientId || googleClientId === 'YOUR_GOOGLE_CLIENT_ID') return;
 
     const initGoogleGIS = () => {
       if ((window as any).google?.accounts?.id) {
@@ -152,18 +152,18 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   }, []);
 
   const handleGoogleButtonClick = () => {
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1032430083994-ks2adb95ardvjphhubdne2vsjkkp5j66.apps.googleusercontent.com';
     if ((window as any).google?.accounts?.id && googleClientId && googleClientId !== 'YOUR_GOOGLE_CLIENT_ID') {
       try {
         (window as any).google.accounts.id.cancel();
         (window as any).google.accounts.id.prompt();
       } catch (e) {
-        const redirectUri = window.location.origin;
+        const redirectUri = typeof window !== 'undefined' ? window.location.origin : 'https://www.digiro.in';
         const scope = 'email profile';
         window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(scope)}`;
       }
     } else if (googleClientId && googleClientId !== 'YOUR_GOOGLE_CLIENT_ID') {
-      const redirectUri = window.location.origin;
+      const redirectUri = typeof window !== 'undefined' ? window.location.origin : 'https://www.digiro.in';
       const scope = 'email profile';
       window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(scope)}`;
     } else {
