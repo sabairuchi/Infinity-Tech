@@ -115,6 +115,45 @@ export const AuthPage: React.FC<AuthPageProps> = ({
     }
   };
 
+  // Handle OAuth 2.0 redirect tokens from URL hash on mount
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && (hash.includes('id_token=') || hash.includes('access_token='))) {
+      const params = new URLSearchParams(hash.replace('#', '?'));
+      const idToken = params.get('id_token');
+      const accessToken = params.get('access_token');
+
+      if (idToken) {
+        handleGoogleCredentialAuth(idToken);
+        window.history.replaceState(null, '', window.location.pathname);
+      } else if (accessToken) {
+        fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data && data.email) {
+              const gUser: User = {
+                id: data.sub || `usr-g-${Date.now()}`,
+                name: data.name || data.email.split('@')[0],
+                email: data.email,
+                avatar: data.picture || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+                role: 'Google Verified Member',
+                googleId: data.sub,
+                profileImage: data.picture,
+                authProvider: 'google',
+                token: accessToken,
+              };
+              processAuthResult(gUser, accessToken, true);
+            }
+            window.history.replaceState(null, '', window.location.pathname);
+          })
+          .catch((err) => {
+            console.error('Access token fetch error:', err);
+            setErrorMsg('Failed to complete Google Sign-In.');
+          });
+      }
+    }
+  }, []);
+
   // Initialize Google Identity Services SDK
   useEffect(() => {
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1032430083994-ks2adb95ardvjphhubdne2vsjkkp5j66.apps.googleusercontent.com';
@@ -151,23 +190,43 @@ export const AuthPage: React.FC<AuthPageProps> = ({
     }
   }, []);
 
+  const triggerOAuthFallback = (googleClientId: string) => {
+    const redirectUri = window.location.origin + window.location.pathname;
+    const scope = 'email profile openid';
+    const nonce = Math.random().toString(36).substring(2);
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=id_token&scope=${encodeURIComponent(scope)}&nonce=${nonce}&prompt=select_account`;
+  };
+
   const handleGoogleButtonClick = () => {
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1032430083994-ks2adb95ardvjphhubdne2vsjkkp5j66.apps.googleusercontent.com';
-    if ((window as any).google?.accounts?.id && googleClientId && googleClientId !== 'YOUR_GOOGLE_CLIENT_ID') {
+    if (!googleClientId || googleClientId === 'YOUR_GOOGLE_CLIENT_ID') {
+      setErrorMsg('Google OAuth Client ID is not configured. Please check your .env settings.');
+      return;
+    }
+
+    setLoading(true);
+
+    if ((window as any).google?.accounts?.id) {
       try {
         (window as any).google.accounts.id.cancel();
-        (window as any).google.accounts.id.prompt();
+        (window as any).google.accounts.id.prompt((notification: any) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            // One Tap suppressed or skipped on mobile, trigger direct Google Account Chooser
+            triggerOAuthFallback(googleClientId);
+          }
+        });
+
+        // Safety fallback timer for mobile devices if prompt callback does not fire
+        setTimeout(() => {
+          if (!pendingUser && !showProfileDetailsModal) {
+            triggerOAuthFallback(googleClientId);
+          }
+        }, 1200);
       } catch (e) {
-        const redirectUri = typeof window !== 'undefined' ? window.location.origin : 'https://www.digiro.in';
-        const scope = 'email profile';
-        window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(scope)}`;
+        triggerOAuthFallback(googleClientId);
       }
-    } else if (googleClientId && googleClientId !== 'YOUR_GOOGLE_CLIENT_ID') {
-      const redirectUri = typeof window !== 'undefined' ? window.location.origin : 'https://www.digiro.in';
-      const scope = 'email profile';
-      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(scope)}`;
     } else {
-      setErrorMsg('Google OAuth Client ID is not configured. Please check your .env settings.');
+      triggerOAuthFallback(googleClientId);
     }
   };
 
