@@ -36,20 +36,8 @@ export const App: React.FC = () => {
 
   // User Cart, Wishlist, Downloads State
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<ProductItem[]>([
-    PRODUCTS_DATA[2],
-    PRODUCTS_DATA[3],
-  ]);
-  const [downloads, setDownloads] = useState<DownloadItem[]>([
-    {
-      id: 'dl-1',
-      product: PRODUCTS_DATA[0],
-      version: '3.2',
-      licenseKey: 'DIG-ANALYTICS-8842-X91A-PRO',
-      downloadSize: '142 MB',
-      datePurchased: 'Aug 5, 2026',
-    },
-  ]);
+  const [wishlist, setWishlist] = useState<ProductItem[]>([]);
+  const [downloads, setDownloads] = useState<DownloadItem[]>([]);
 
   // Sync user purchases from database upon login
   useEffect(() => {
