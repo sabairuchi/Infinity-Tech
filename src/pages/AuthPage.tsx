@@ -12,6 +12,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   onNavigate,
   onLoginSuccess,
   redirectReason,
+}) => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   // State for First-Time User Profile Details Bar/Modal
@@ -33,7 +34,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
       setProfilePhone(userData.phone || '');
       setProfileCompany(userData.company || '');
       setProfileRole(userData.role || 'Digital Architect');
-      setLoading(false);
       setShowProfileDetailsModal(true);
     } else {
       setSuccessMsg(`Welcome back, ${userData.name}! Signed in successfully.`);
@@ -109,7 +109,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
       processAuthResult(gUser, credential, true);
     } else {
       setErrorMsg('Google Sign-In failed. Please try again.');
-      setLoading(false);
     }
   };
 
