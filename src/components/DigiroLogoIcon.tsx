@@ -3,49 +3,67 @@ import React from 'react';
 interface DigiroLogoIconProps {
   size?: number;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export const DigiroLogoIcon: React.FC<DigiroLogoIconProps> = ({ size = 36, className = '' }) => {
+export const DigiroLogoIcon: React.FC<DigiroLogoIconProps> = ({ size = 36, className = '', style }) => {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 100 100"
+      viewBox="0 0 500 500"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      style={{ display: 'inline-block', verticalAlign: 'middle', ...style }}
     >
       <defs>
-        <linearGradient id="digiroLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#899255" />
-          <stop offset="55%" stopColor="#4E733D" />
-          <stop offset="100%" stopColor="#21372F" />
+        <linearGradient id="topGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#89BD3A" />
+          <stop offset="100%" stopColor="#5E8F29" />
+        </linearGradient>
+
+        <linearGradient id="innerGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#6DA42F" />
+          <stop offset="100%" stopColor="#457421" />
+        </linearGradient>
+
+        <linearGradient id="bottomDarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#255531" />
+          <stop offset="100%" stopColor="#0F331A" />
         </linearGradient>
       </defs>
 
-      {/* Dispersing Digital Particles Cluster on the Left */}
-      <circle cx="36" cy="20" r="3.6" fill="#899255" />
-      <circle cx="22" cy="30" r="3.2" fill="#A8C36E" />
-      <circle cx="42" cy="35" r="4.2" fill="#899255" />
-      <circle cx="26" cy="46" r="3.8" fill="#527842" />
-      <circle cx="44" cy="50" r="4.5" fill="#4E733D" />
-      <circle cx="22" cy="58" r="3.2" fill="#698A47" />
-      <circle cx="34" cy="68" r="3.6" fill="#365648" />
+      {/* Dispersing Rounded Square Digital Particles */}
+      <rect x="80" y="235" width="22" height="22" rx="6" fill="#75A42D" />
+      <rect x="115" y="160" width="26" height="26" rx="7" fill="#7DB032" />
+      <rect x="125" y="280" width="24" height="24" rx="6" fill="#6EA22E" />
+      <rect x="108" y="330" width="20" height="20" rx="5" fill="#679A2B" />
 
-      {/* Outer D Arch Band */}
+      <rect x="155" y="115" width="28" height="28" rx="8" fill="#84BA37" />
+      <rect x="148" y="200" width="34" height="34" rx="9" fill="#75AA2F" />
+      <rect x="160" y="250" width="30" height="30" rx="8" fill="#6DA22D" />
+      <rect x="162" y="300" width="22" height="22" rx="6" fill="#609127" />
+
+      <rect x="190" y="150" width="32" height="32" rx="8" fill="#7EAF33" />
+      <rect x="198" y="210" width="30" height="30" rx="8" fill="#6FA22E" />
+
+      {/* Outer D Top Band */}
       <path
-        d="M 48 15 H 68 C 84 15 93 27 93 50 C 93 73 84 85 68 85 H 48 C 41 85 37 80 37 73 C 37 66 41 61 48 61 H 66 C 72 61 74 57 74 50 C 74 43 72 39 66 39 H 48 C 41 39 37 34 37 27 C 37 20 41 15 48 15 Z"
-        fill="url(#digiroLogoGrad)"
+        d="M 225 105 H 345 C 415 105 465 155 465 245 C 465 315 435 375 375 410 C 375 410 395 385 410 355 C 430 315 430 250 390 200 C 365 170 325 150 250 150 H 240 C 230 150 225 140 225 130 V 105 Z"
+        fill="url(#topGreenGrad)"
       />
 
-      {/* Inner D Arch Loop */}
+      {/* Outer D Bottom Dark Shadow Band */}
       <path
-        d="M 52 38 H 63 C 69 38 71 42 71 50 C 71 58 69 62 63 62 H 52 C 47 62 44 58 44 54 C 44 50 47 46 52 46 H 60 C 62 46 63 48 63 50 C 63 52 62 54 60 54 H 52"
-        fill="none"
-        stroke="url(#digiroLogoGrad)"
-        strokeWidth="11"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        d="M 222 380 H 345 C 420 380 460 320 460 250 C 460 325 425 390 355 390 H 222 C 205 390 195 375 195 360 C 195 345 208 335 225 335 H 340 C 380 335 410 310 410 275 C 410 325 375 355 320 355 H 222 Z"
+        fill="url(#bottomDarkGrad)"
+      />
+
+      {/* Middle D Inner Loop */}
+      <path
+        d="M 252 170 H 335 C 390 170 425 205 425 260 C 425 320 385 350 330 350 H 252 C 235 350 225 338 225 323 C 225 308 238 298 252 298 H 325 C 350 298 368 285 368 260 C 368 235 350 220 325 220 H 252 C 235 220 225 208 225 195 C 225 182 235 170 252 170 Z"
+        fill="url(#innerGreenGrad)"
       />
     </svg>
   );
