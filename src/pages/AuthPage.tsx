@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { PageRoute, User } from '../types';
-import { AlertTriangle, X, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, ShieldCheck } from 'lucide-react';
 
 interface AuthPageProps {
   onNavigate: (page: PageRoute) => void;
@@ -16,9 +16,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
-  const [showDeviceAccountsModal, setShowDeviceAccountsModal] = useState(false);
-  const [customGoogleEmail, setCustomGoogleEmail] = useState('');
-  const [customGoogleName, setCustomGoogleName] = useState('');
   // State for First-Time User Profile Details Bar/Modal
   const [showProfileDetailsModal, setShowProfileDetailsModal] = useState(false);
   const [profileName, setProfileName] = useState('');
@@ -54,7 +51,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
     setErrorMsg(null);
     setSuccessMsg(null);
     setLoading(true);
-    setShowDeviceAccountsModal(false);
 
     try {
       const response = await fetch('http://localhost:5000/api/auth/google', {
@@ -109,13 +105,13 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   const handleGoogleButtonClick = () => {
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
     if ((window as any).google?.accounts?.id && googleClientId && googleClientId !== 'YOUR_GOOGLE_CLIENT_ID') {
-      (window as any).google.accounts.id.prompt((notification: any) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          setShowDeviceAccountsModal(true);
-        }
-      });
+      (window as any).google.accounts.id.prompt();
+    } else if (googleClientId && googleClientId !== 'YOUR_GOOGLE_CLIENT_ID') {
+      const redirectUri = window.location.origin;
+      const scope = 'email profile';
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(scope)}`;
     } else {
-      setShowDeviceAccountsModal(true);
+      setErrorMsg('Google OAuth Client ID is not configured. Please check your .env settings.');
     }
   };
 
@@ -404,176 +400,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           <span>Secure Google OAuth 2.0 Authentication</span>
         </div>
       </div>
-
-      {/* DEVICE GOOGLE ACCOUNTS PICKER MODAL */}
-      {showDeviceAccountsModal && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(33, 55, 47, 0.75)',
-            backdropFilter: 'blur(8px)',
-            zIndex: 999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1.5rem',
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '24px',
-              width: '100%',
-              maxWidth: '420px',
-              padding: '2rem',
-              boxShadow: '0 30px 80px rgba(33, 55, 47, 0.3)',
-              border: '1px solid #DCE8D3',
-              position: 'relative',
-              textAlign: 'center',
-            }}
-          >
-            <button
-              onClick={() => setShowDeviceAccountsModal(false)}
-              style={{
-                position: 'absolute',
-                top: '1.25rem',
-                right: '1.25rem',
-                background: 'none',
-                border: 'none',
-                color: '#5F685F',
-                cursor: 'pointer',
-                padding: '0.25rem',
-              }}
-            >
-              <X size={20} />
-            </button>
-
-            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-              <div
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '50%',
-                  backgroundColor: '#F0F5ED',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 0.75rem',
-                  border: '1px solid #DCE8D3',
-                }}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                  />
-                </svg>
-              </div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#21372F', marginBottom: '0.25rem' }}>
-                Sign In with Google
-              </h3>
-              <p style={{ fontSize: '0.85rem', color: '#5F685F' }}>
-                Enter your Google Account email to continue
-              </p>
-            </div>
-
-            <form onSubmit={handleCustomGoogleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1rem', textAlign: 'left' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#3B5949', marginBottom: '0.3rem' }}>
-                  Google Email Address
-                </label>
-                <input
-                  type="email"
-                  required
-                  placeholder="user@gmail.com"
-                  value={customGoogleEmail}
-                  onChange={(e) => setCustomGoogleEmail(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '12px',
-                    border: '1px solid #DCE8D3',
-                    backgroundColor: '#FFFFFF',
-                    fontSize: '0.9rem',
-                    color: '#21372F',
-                    outline: 'none',
-                  }}
-                />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#3B5949', marginBottom: '0.3rem' }}>
-                  Full Name (Optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  value={customGoogleName}
-                  onChange={(e) => setCustomGoogleName(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '12px',
-                    border: '1px solid #DCE8D3',
-                    backgroundColor: '#FFFFFF',
-                    fontSize: '0.9rem',
-                    color: '#21372F',
-                    outline: 'none',
-                  }}
-                />
-              </div>
-              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                <button
-                  type="button"
-                  onClick={() => setShowDeviceAccountsModal(false)}
-                  style={{
-                    flex: 1,
-                    padding: '0.75rem',
-                    borderRadius: '12px',
-                    border: '1px solid #DCE8D3',
-                    backgroundColor: '#F7FAF5',
-                    color: '#5F685F',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  style={{
-                    flex: 2,
-                    padding: '0.75rem',
-                    borderRadius: '12px',
-                    border: 'none',
-                    backgroundColor: '#899255',
-                    color: '#FFFFFF',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                  }}
-                >
-                  Sign In with Google
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* FIRST-TIME USER PROFILE DETAILS COMPLETION MODAL */}
       {showProfileDetailsModal && (
