@@ -4,9 +4,12 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 import { OAuth2Client } from 'google-auth-library';
 import { initDatabaseConnection, getPool, getMySQLStatus, memoryStore } from './db.js';
 import { ensureAssetsExist } from './setup-assets.js';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
