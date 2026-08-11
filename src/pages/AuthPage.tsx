@@ -79,14 +79,20 @@ export const AuthPage: React.FC<AuthPageProps> = ({
 
     const initGoogleGIS = () => {
       if ((window as any).google?.accounts?.id) {
-        (window as any).google.accounts.id.initialize({
-          client_id: googleClientId,
-          callback: (response: any) => {
-            if (response.credential) {
-              handleGoogleCredentialAuth(response.credential);
-            }
-          },
-        });
+        try {
+          (window as any).google.accounts.id.initialize({
+            client_id: googleClientId,
+            auto_select: false,
+            use_fedcm_for_prompt: false,
+            callback: (response: any) => {
+              if (response.credential) {
+                handleGoogleCredentialAuth(response.credential);
+              }
+            },
+          });
+        } catch (e) {
+          console.warn('GIS Init notice:', e);
+        }
       }
     };
 
@@ -105,7 +111,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   const handleGoogleButtonClick = () => {
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
     if ((window as any).google?.accounts?.id && googleClientId && googleClientId !== 'YOUR_GOOGLE_CLIENT_ID') {
-      (window as any).google.accounts.id.prompt();
+      try {
+        (window as any).google.accounts.id.cancel();
+        (window as any).google.accounts.id.prompt();
+      } catch (e) {
+        const redirectUri = window.location.origin;
+        const scope = 'email profile';
+        window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(scope)}`;
+      }
     } else if (googleClientId && googleClientId !== 'YOUR_GOOGLE_CLIENT_ID') {
       const redirectUri = window.location.origin;
       const scope = 'email profile';
