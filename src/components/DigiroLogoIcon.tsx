@@ -15,55 +15,59 @@ export const DigiroLogoIcon: React.FC<DigiroLogoIconProps> = ({ size = 36, class
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      style={{ display: 'inline-block', verticalAlign: 'middle', ...style }}
+      style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, ...style }}
     >
       <defs>
-        <linearGradient id="topGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#89BD3A" />
-          <stop offset="100%" stopColor="#5E8F29" />
+        {/* Top Arc Light Green Gradient */}
+        <linearGradient id="digiroTopArc" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#A2D065" />
+          <stop offset="60%" stopColor="#87BA4A" />
+          <stop offset="100%" stopColor="#6C9F32" />
         </linearGradient>
 
-        <linearGradient id="innerGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6DA42F" />
-          <stop offset="100%" stopColor="#457421" />
+        {/* Middle Arc Medium Green Gradient */}
+        <linearGradient id="digiroMidArc" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#78A63D" />
+          <stop offset="100%" stopColor="#4D7728" />
         </linearGradient>
 
-        <linearGradient id="bottomDarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#255531" />
-          <stop offset="100%" stopColor="#0F331A" />
+        {/* Bottom Arc Dark Forest Gradient */}
+        <linearGradient id="digiroBotArc" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#255134" />
+          <stop offset="100%" stopColor="#143722" />
         </linearGradient>
       </defs>
 
-      {/* Dispersing Rounded Square Digital Particles */}
-      <rect x="80" y="235" width="22" height="22" rx="6" fill="#75A42D" />
-      <rect x="115" y="160" width="26" height="26" rx="7" fill="#7DB032" />
-      <rect x="125" y="280" width="24" height="24" rx="6" fill="#6EA22E" />
-      <rect x="108" y="330" width="20" height="20" rx="5" fill="#679A2B" />
+      {/* Dispersing Rounded Square Digital Particles (Left Side) */}
+      <rect x="80" y="248" width="18" height="18" rx="5" fill="#99C762" />
+      <rect x="110" y="325" width="22" height="22" rx="6" fill="#78A63D" />
+      
+      <rect x="88" y="195" width="22" height="22" rx="6" fill="#99C762" />
+      <rect x="118" y="222" width="26" height="26" rx="7" fill="#87BA4A" />
+      <rect x="135" y="260" width="34" height="34" rx="9" fill="#58822C" />
+      <rect x="146" y="305" width="24" height="24" rx="6" fill="#2E5A3B" />
+      
+      <rect x="132" y="152" width="26" height="26" rx="7" fill="#A2D065" />
+      <rect x="162" y="168" width="34" height="34" rx="9" fill="#78A63D" />
+      <rect x="168" y="215" width="32" height="32" rx="8" fill="#699738" />
+      <rect x="188" y="272" width="28" height="28" rx="7" fill="#1B442A" />
 
-      <rect x="155" y="115" width="28" height="28" rx="8" fill="#84BA37" />
-      <rect x="148" y="200" width="34" height="34" rx="9" fill="#75AA2F" />
-      <rect x="160" y="250" width="30" height="30" rx="8" fill="#6DA22D" />
-      <rect x="162" y="300" width="22" height="22" rx="6" fill="#609127" />
-
-      <rect x="190" y="150" width="32" height="32" rx="8" fill="#7EAF33" />
-      <rect x="198" y="210" width="30" height="30" rx="8" fill="#6FA22E" />
-
-      {/* Outer D Top Band */}
+      {/* Top Arc Layer */}
       <path
-        d="M 225 105 H 345 C 415 105 465 155 465 245 C 465 315 435 375 375 410 C 375 410 395 385 410 355 C 430 315 430 250 390 200 C 365 170 325 150 250 150 H 240 C 230 150 225 140 225 130 V 105 Z"
-        fill="url(#topGreenGrad)"
+        d="M 195 115 H 335 C 418 115 470 170 470 260 C 470 345 425 415 365 435 C 375 415 390 380 395 350 C 410 305 415 250 385 195 C 360 155 315 145 255 145 H 215 C 200 145 195 130 195 115 Z"
+        fill="url(#digiroTopArc)"
       />
 
-      {/* Outer D Bottom Dark Shadow Band */}
+      {/* Bottom Shadow Arc Layer */}
       <path
-        d="M 222 380 H 345 C 420 380 460 320 460 250 C 460 325 425 390 355 390 H 222 C 205 390 195 375 195 360 C 195 345 208 335 225 335 H 340 C 380 335 410 310 410 275 C 410 325 375 355 320 355 H 222 Z"
-        fill="url(#bottomDarkGrad)"
+        d="M 188 385 H 325 C 410 385 455 315 455 245 C 455 325 415 415 330 415 H 188 C 168 415 158 395 158 375 C 158 355 172 345 192 345 H 320 C 365 345 395 318 395 275 C 395 325 355 365 295 365 H 188 Z"
+        fill="url(#digiroBotArc)"
       />
 
-      {/* Middle D Inner Loop */}
+      {/* Middle Inner Arc Loop */}
       <path
-        d="M 252 170 H 335 C 390 170 425 205 425 260 C 425 320 385 350 330 350 H 252 C 235 350 225 338 225 323 C 225 308 238 298 252 298 H 325 C 350 298 368 285 368 260 C 368 235 350 220 325 220 H 252 C 235 220 225 208 225 195 C 225 182 235 170 252 170 Z"
-        fill="url(#innerGreenGrad)"
+        d="M 228 175 H 320 C 375 175 412 210 412 265 C 412 325 372 355 315 355 H 228 C 210 355 198 342 198 325 C 198 308 212 296 228 296 H 305 C 330 296 350 282 350 260 C 350 238 330 220 305 220 H 228 C 210 220 198 208 198 192 C 198 176 210 175 228 175 Z"
+        fill="url(#digiroMidArc)"
       />
     </svg>
   );
