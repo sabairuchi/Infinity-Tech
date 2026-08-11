@@ -98,14 +98,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', fontWeight: 800, color: '#21372F', letterSpacing: '-0.02em', lineHeight: 1 }}>
               Digi<span style={{ color: '#899255' }}>ro</span>
             </span>
-            <span style={{ fontSize: '0.58rem', fontWeight: 700, color: '#5F685F', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '3px' }}>
+            <span className="logo-subtitle" style={{ fontSize: '0.58rem', fontWeight: 700, color: '#5F685F', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '3px' }}>
               Powering The Digital Future
             </span>
           </div>
         </button>
 
-        {/* Desktop Navigation Links */}
-        <nav className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
+        {/* Desktop & Laptop Navigation Links (>= 1024px) */}
+        <nav className="desktop-only" style={{ alignItems: 'center', gap: '1.75rem' }}>
           {navLinks.map((link) => {
             const isActive = activePage === link.page;
             return (
@@ -143,8 +143,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           })}
         </nav>
 
-        {/* Action Buttons (Desktop & Mobile) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        {/* Action Buttons (Desktop, Tablet & Mobile) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           
           {/* User Auth Profile / Login Button */}
           {user ? (
@@ -155,7 +155,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  padding: '0.35rem 0.8rem 0.35rem 0.35rem',
+                  padding: '0.35rem 0.75rem 0.35rem 0.35rem',
                   borderRadius: '999px',
                   backgroundColor: '#F0F5ED',
                   border: '1px solid #DCE8D3',
@@ -163,7 +163,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
               >
                 <img src={user.avatar} alt={getUserDisplayName(user)} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#21372F' }}>{getUserDisplayName(user)}</span>
+                <span className="hide-mobile-text" style={{ fontSize: '0.88rem', fontWeight: 700, color: '#21372F' }}>{getUserDisplayName(user)}</span>
               </button>
 
               {userDropdownOpen && (
@@ -213,7 +213,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.4rem',
-                padding: '0.55rem 1.1rem',
+                padding: '0.55rem 0.95rem',
                 borderRadius: '10px',
                 backgroundColor: '#F0F5ED',
                 color: '#21372F',
@@ -223,10 +223,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 cursor: 'pointer',
               }}
             >
-              <LogIn size={16} style={{ color: '#899255' }} /> Sign In / Register
+              <LogIn size={16} style={{ color: '#899255' }} /> <span className="hide-mobile-text">Sign In / Register</span>
             </button>
           )}
 
+          {/* Cart Icon Button */}
           <button
             onClick={() => handleNavClick('my-products')}
             aria-label="My Workspace & Cart"
@@ -271,31 +272,32 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
+          {/* Let's Talk CTA Button (Hidden on Mobile < 768px, shown on Tablet & Desktop) */}
           <button
             onClick={() => handleNavClick('contact')}
-            className="btn btn-primary"
-            style={{ padding: '0.7rem 1.4rem', fontSize: '0.9rem' }}
+            className="btn btn-primary hide-mobile"
+            style={{ padding: '0.65rem 1.25rem', fontSize: '0.88rem' }}
           >
             Let's Talk <ArrowRight size={16} />
           </button>
         </div>
 
-        {/* Mobile Hamburger Toggle Button */}
+        {/* Mobile & Tablet Hamburger Toggle Button (< 1024px) */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="mobile-toggle"
           aria-label={mobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
           style={{
-            display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             width: '42px',
             height: '42px',
-            borderRadius: '8px',
+            borderRadius: '10px',
             background: '#F0F5ED',
             border: '1px solid #DCE8D3',
             color: '#21372F',
             cursor: 'pointer',
+            marginLeft: '0.25rem',
           }}
         >
           {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -303,7 +305,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       </div>
 
-      {/* Mobile Animated Menu Drawer */}
+      {/* Mobile & Tablet Fullscreen Animated Menu Drawer */}
       {mobileMenuOpen && (
         <div
           style={{
@@ -314,7 +316,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             bottom: 0,
             height: 'calc(100vh - 80px)',
             backgroundColor: '#FFFFFF',
-            zIndex: 99,
+            zIndex: 999,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -323,7 +325,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             animation: 'fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {navLinks.map((link) => {
               const isActive = activePage === link.page;
               return (
@@ -334,8 +336,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     background: 'none',
                     border: 'none',
                     textAlign: 'left',
-                    fontSize: '1.35rem',
-                    fontWeight: isActive ? 700 : 500,
+                    fontSize: '1.25rem',
+                    fontWeight: isActive ? 800 : 600,
                     color: isActive ? '#899255' : '#21372F',
                     padding: '0.75rem 0',
                     borderBottom: '1px solid #F0F5ED',
@@ -352,7 +354,29 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
 
-          <div style={{ paddingTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {!user && (
+              <button
+                onClick={() => handleNavClick('login')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  padding: '0.85rem',
+                  borderRadius: '12px',
+                  backgroundColor: '#F0F5ED',
+                  color: '#21372F',
+                  border: '1px solid #DCE8D3',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                <LogIn size={18} style={{ color: '#899255' }} /> Sign In / Register
+              </button>
+            )}
             <button
               onClick={() => handleNavClick('contact')}
               className="btn btn-primary"
@@ -361,17 +385,25 @@ export const Navbar: React.FC<NavbarProps> = ({
               Let's Talk <ArrowRight size={18} />
             </button>
             <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#5F685F' }}>
-              Endless Possibilities, Infinite Solutions
+              Powering The Digital Future
             </p>
           </div>
         </div>
       )}
 
-      {/* Desktop Responsive Query Inline Styles */}
+      {/* Responsive Breakpoint Rules */}
       <style>{`
-        @media (min-width: 992px) {
-          .desktop-nav { display: flex !important; }
-          .desktop-cta { display: flex !important; }
+        .desktop-only { display: none !important; }
+        .mobile-toggle { display: flex !important; }
+
+        @media (max-width: 640px) {
+          .hide-mobile { display: none !important; }
+          .hide-mobile-text { display: none !important; }
+          .logo-subtitle { display: none !important; }
+        }
+
+        @media (min-width: 1024px) {
+          .desktop-only { display: flex !important; }
           .mobile-toggle { display: none !important; }
         }
       `}</style>
