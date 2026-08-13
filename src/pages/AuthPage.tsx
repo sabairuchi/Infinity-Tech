@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { PageRoute, User } from '../types';
-import { AlertTriangle, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, ShieldCheck, X } from 'lucide-react';
 
 interface AuthPageProps {
   onNavigate: (page: PageRoute) => void;
@@ -278,6 +278,41 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           position: 'relative',
         }}
       >
+        {/* Close (X) Button in top right corner */}
+        <button
+          onClick={() => onNavigate(redirectReason ? 'products' : 'home')}
+          aria-label="Close authentication modal"
+          title="Close"
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            color: '#DCE8D3',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s ease',
+            zIndex: 10,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+            e.currentTarget.style.color = '#FFFFFF';
+            e.currentTarget.style.transform = 'scale(1.08)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+            e.currentTarget.style.color = '#DCE8D3';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+        >
+          <X size={18} />
+        </button>
         {/* Redirect warning banner if coming from Buy Now auth guard */}
         {cleanRedirectReason && (
           <div
