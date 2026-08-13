@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProductItem } from '../types';
-import { ArrowRight, Check, Heart, ShoppingCart, Zap } from 'lucide-react';
+import { Check, Heart, ShoppingCart } from 'lucide-react';
 
 interface ProductCardProps {
   product: ProductItem;
@@ -17,7 +17,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onViewDetails,
   index,
   onAddToCart,
-  onBuyNow,
   onToggleWishlist,
   isInWishlist = false,
 }) => {
@@ -52,6 +51,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       ref={cardRef}
+      onClick={() => onViewDetails(product)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
@@ -69,6 +69,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           : '0 4px 20px rgba(33, 55, 47, 0.06)',
         display: 'flex',
         flexDirection: 'column',
+        cursor: 'pointer',
       }}
     >
       {/* Product Image */}
@@ -171,35 +172,72 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.status}
         </div>
 
+        {/* Action overlay buttons: Cart icon BEFORE Like / Wishlist icon */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '16px',
+            right: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            zIndex: 5,
+          }}
+        >
+          {onAddToCart && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
+              aria-label="Add to Cart"
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(4px)',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#21372F',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+              title="Add to Cart"
+            >
+              <ShoppingCart size={17} />
+            </button>
+          )}
 
-
-        {/* Wishlist Heart Button */}
-        {onToggleWishlist && (
-          <button
-            onClick={(e) => { e.stopPropagation(); onToggleWishlist(product); }}
-            aria-label="Toggle Wishlist"
-            style={{
-              position: 'absolute',
-              bottom: '16px',
-              right: '16px',
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(255, 255, 255, 0.92)',
-              backdropFilter: 'blur(4px)',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: isInWishlist ? '#E53935' : '#21372F',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
-              transition: 'all 0.2s ease',
-            }}
-          >
-            <Heart size={18} fill={isInWishlist ? '#E53935' : 'none'} />
-          </button>
-        )}
+          {onToggleWishlist && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onToggleWishlist(product); }}
+              aria-label="Toggle Wishlist"
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(4px)',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: isInWishlist ? '#E53935' : '#21372F',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+              title="Wishlist / Like"
+            >
+              <Heart size={18} fill={isInWishlist ? '#E53935' : 'none'} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Product Info */}
@@ -323,7 +361,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
 
-        {/* Pricing & Action */}
+        {/* Pricing Footer */}
         <div
           style={{
             display: 'flex',
@@ -336,7 +374,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div>
             <span
               style={{
-                fontSize: '1.1rem',
+                fontSize: '1.2rem',
                 fontWeight: 800,
                 color: '#21372F',
               }}
@@ -345,62 +383,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            {onAddToCart && (
-              <button
-                onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-                className="btn btn-outline"
-                style={{
-                  padding: '0.6rem 0.9rem',
-                  fontSize: '0.88rem',
-                  borderRadius: '10px',
-                }}
-                title="Add to Cart"
-              >
-                <ShoppingCart size={16} />
-              </button>
-            )}
-
-            {onBuyNow && (
-              <button
-                onClick={(e) => { e.stopPropagation(); onBuyNow(product); }}
-                className="btn btn-primary"
-                style={{
-                  padding: '0.6rem 1rem',
-                  fontSize: '0.88rem',
-                  borderRadius: '10px',
-                  backgroundColor: '#899255',
-                  color: '#FFFFFF',
-                  fontWeight: 700,
-                  gap: '0.35rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                }}
-              >
-                <Zap size={15} /> Buy Now
-              </button>
-            )}
-
-            <button
-              onClick={() => onViewDetails(product)}
-              className="btn btn-outline"
-              style={{
-                padding: '0.6rem 1rem',
-                fontSize: '0.88rem',
-                borderRadius: '10px',
-                gap: '0.4rem',
-              }}
-            >
-              Details
-              <ArrowRight
-                size={16}
-                style={{
-                  transition: 'transform 0.3s ease',
-                  transform: isHovered ? 'translateX(3px)' : 'translateX(0)',
-                }}
-              />
-            </button>
-          </div>
+          <span
+            style={{
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              color: '#899255',
+            }}
+          >
+            Click card for details →
+          </span>
         </div>
       </div>
     </div>
