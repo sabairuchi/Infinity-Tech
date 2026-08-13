@@ -37,6 +37,12 @@ export interface ProductItem {
   integrations: string[];
   isEBook?: boolean;
   pageCount?: number;
+  whatYoullLearn?: string[];
+  whoThisBookIsFor?: string[];
+  whyPython?: string;
+  closingQuote?: string;
+  format?: string;
+  idealFor?: string;
 }
 
 export interface CartItem {

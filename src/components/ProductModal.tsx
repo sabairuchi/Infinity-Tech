@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { ProductItem, PageRoute } from '../types';
 import {
-  X, Check, Zap, Download, ShoppingCart, Heart, BookOpen, FileText
+  X, Check, Zap, Download, ShoppingCart, Heart, BookOpen, FileText, Target, Users, Code, Star
 } from 'lucide-react';
 
 interface ProductModalProps {
@@ -17,7 +17,6 @@ interface ProductModalProps {
 export const ProductModal: React.FC<ProductModalProps> = ({
   product,
   onClose,
-  onNavigate,
   onBuyNow,
   onAddToCart,
   onToggleWishlist,
@@ -47,12 +46,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
   if (!product) return null;
 
-  const statusColor = product.status === 'Live'
-    ? '#4ADE80'
-    : product.status === 'Beta'
-      ? '#FACC15'
-      : '#94A3B8';
-
   const coverImg = product.coverImage || product.image;
   const descImg = product.descriptionImage;
 
@@ -63,15 +56,33 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         position: 'fixed',
         inset: 0,
         zIndex: 200,
-        backgroundColor: isVisible ? 'rgba(7, 12, 23, 0.75)' : 'rgba(7, 12, 23, 0)',
+        backgroundColor: isVisible ? 'rgba(7, 12, 23, 0.8)' : 'rgba(7, 12, 23, 0)',
         backdropFilter: isVisible ? 'blur(12px)' : 'blur(0px)',
         transition: 'all 0.35s ease',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '1.25rem',
+        padding: '1rem',
       }}
     >
+      {/* Custom Scrollbar Global Style for the Right Scrollable Column */}
+      <style>{`
+        .custom-modal-scroller::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-modal-scroller::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.04);
+          border-radius: 9999px;
+        }
+        .custom-modal-scroller::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.25);
+          border-radius: 9999px;
+        }
+        .custom-modal-scroller::-webkit-scrollbar-thumb:hover {
+          background: #6366F1;
+        }
+      `}</style>
+
       {/* 2-Column Dark Reference Card Container */}
       <div
         onClick={(e) => e.stopPropagation()}
@@ -79,20 +90,19 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           backgroundColor: '#0F172A',
           color: '#F8FAFC',
           borderRadius: '28px',
-          maxWidth: '1020px',
+          maxWidth: '1060px',
           width: '100%',
           maxHeight: '92vh',
-          overflowY: 'auto',
           transform: isVisible ? 'scale(1) translateY(0)' : 'scale(0.94) translateY(24px)',
           opacity: isVisible ? 1 : 0,
           transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
-          boxShadow: '0 30px 90px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 30px 90px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.12)',
           display: 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap',
           position: 'relative',
           overflow: 'hidden',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
         }}
       >
         {/* Close Button (X) at Top Right */}
@@ -103,26 +113,26 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             position: 'absolute',
             top: '20px',
             right: '20px',
-            zIndex: 10,
+            zIndex: 30,
             width: '40px',
             height: '40px',
             borderRadius: '50%',
-            backgroundColor: 'rgba(30, 41, 59, 0.85)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
+            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#FFFFFF',
             transition: 'all 0.2s ease',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#6366F1';
             e.currentTarget.style.transform = 'scale(1.08)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(30, 41, 59, 0.85)';
+            e.currentTarget.style.backgroundColor = 'rgba(30, 41, 59, 0.9)';
             e.currentTarget.style.transform = 'scale(1)';
           }}
         >
@@ -144,7 +154,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             position: 'relative',
-            background: 'radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.12) 0%, #070D19 70%)',
+            background: 'radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.15) 0%, #070D19 75%)',
           }}
         >
           {/* Cover / Infographic Display */}
@@ -163,10 +173,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 style={{
                   position: 'relative',
                   width: '100%',
-                  maxHeight: '500px',
+                  maxHeight: '520px',
                   borderRadius: '16px',
                   overflow: 'hidden',
-                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.15)',
+                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.18)',
                   border: '1px solid rgba(255, 255, 255, 0.15)',
                   backgroundColor: '#071326',
                   display: 'flex',
@@ -186,19 +196,19 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   style={{
                     width: '100%',
                     height: '100%',
-                    maxHeight: '500px',
+                    maxHeight: '520px',
                     objectFit: 'contain',
                     display: 'block',
                   }}
                 />
 
-                {/* Styled CSS Cover Fallback (Matching Cover Image) */}
+                {/* Styled CSS Cover Fallback */}
                 <div
                   id={`modal-left-fallback-${product.id}`}
                   style={{
                     display: 'none',
                     width: '100%',
-                    minHeight: '420px',
+                    minHeight: '440px',
                     background: 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
                     flexDirection: 'column',
                     justifyContent: 'center',
@@ -239,10 +249,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 style={{
                   position: 'relative',
                   width: '100%',
-                  maxHeight: '500px',
+                  maxHeight: '520px',
                   borderRadius: '16px',
                   overflow: 'hidden',
-                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.15)',
+                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.18)',
                   border: '1px solid rgba(255, 255, 255, 0.15)',
                   backgroundColor: '#071326',
                 }}
@@ -254,7 +264,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     style={{
                       width: '100%',
                       height: '100%',
-                      maxHeight: '500px',
+                      maxHeight: '520px',
                       objectFit: 'contain',
                       display: 'block',
                     }}
@@ -268,7 +278,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             )}
           </div>
 
-          {/* Toggle Switcher between Cover Page & Description Graphic */}
+          {/* Toggle Switcher */}
           {descImg && (
             <div
               style={{
@@ -323,12 +333,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         </div>
 
         {/* ════════════════════════════════════════════
-            RIGHT COLUMN: Book Details & Actions (Reference Style)
+            RIGHT COLUMN: Scrollable Book Details & Reference Buttons
         ════════════════════════════════════════════ */}
         <div
+          className="custom-modal-scroller"
           style={{
-            flex: '1 1 450px',
-            padding: '2.5rem 2.5rem 2.5rem 2rem',
+            flex: '1 1 480px',
+            padding: '2.5rem 2.5rem 2rem 2.2rem',
+            maxHeight: '92vh',
+            overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -356,28 +369,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <BookOpen size={14} /> {product.category}
               </span>
 
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.35rem 0.85rem',
-                  borderRadius: '9999px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  color: statusColor,
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                }}
-              >
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: statusColor }} />
-                {product.status} — v{product.version}
-              </span>
-
               {product.author && (
                 <span
                   style={{
-                    fontSize: '0.82rem',
+                    fontSize: '0.84rem',
                     color: '#94A3B8',
                     fontWeight: 600,
                   }}
@@ -396,212 +391,326 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 color: '#FFFFFF',
                 lineHeight: 1.18,
                 letterSpacing: '-0.02em',
-                marginBottom: '0.75rem',
+                marginBottom: '0.65rem',
               }}
             >
               {product.name}
             </h2>
 
-            {/* Tagline */}
+            {/* Subtitle / Tagline */}
             <p
               style={{
                 fontSize: '1.05rem',
                 color: '#94A3B8',
                 fontWeight: 600,
                 lineHeight: 1.5,
-                fontStyle: 'italic',
                 marginBottom: '1.5rem',
               }}
             >
-              "{product.tagline}"
+              {product.tagline}
             </p>
 
-            {/* Book Detailed Description */}
-            <p
+            {/* Detailed Description Paragraphs */}
+            <div style={{ fontSize: '1.02rem', color: '#CBD5E1', lineHeight: 1.75, marginBottom: '2rem' }}>
+              <p style={{ marginBottom: '1rem' }}>
+                <strong style={{ color: '#F8FAFC' }}>{product.name}</strong> is your all-in-one guide to harnessing the power of Python for data analysis, manipulation, and visualization.
+              </p>
+              <p style={{ marginBottom: '1rem' }}>
+                Whether you're a beginner looking to build a strong foundation or an experienced developer wanting to sharpen your data skills, this book takes you step-by-step through the tools, techniques, and real-world workflows used by data professionals.
+              </p>
+              <p>
+                From working with data using pandas to creating insightful visualizations with matplotlib, this book blends clear explanations with practical examples to help you turn raw data into meaningful insights.
+              </p>
+            </div>
+
+            {/* WHAT YOU'LL LEARN SECTION (Matching Description Infographic) */}
+            {product.whatYoullLearn && product.whatYoullLearn.length > 0 && (
+              <div style={{ marginBottom: '2rem' }}>
+                <h3
+                  style={{
+                    fontSize: '1.05rem',
+                    fontWeight: 800,
+                    color: '#6366F1',
+                    letterSpacing: '0.05em',
+                    textTransform: 'uppercase',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  <Target size={18} color="#6366F1" /> WHAT YOU'LL LEARN
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
+                  {product.whatYoullLearn.map((item, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '0.6rem',
+                        fontSize: '0.92rem',
+                        color: '#E2E8F0',
+                        lineHeight: 1.45,
+                        backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                        padding: '0.65rem 0.85rem',
+                        borderRadius: '10px',
+                        border: '1px solid rgba(255, 255, 255, 0.06)',
+                      }}
+                    >
+                      <Check size={16} style={{ color: '#38BDF8', flexShrink: 0, marginTop: '2px' }} />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* WHO THIS BOOK IS FOR SECTION */}
+            {product.whoThisBookIsFor && product.whoThisBookIsFor.length > 0 && (
+              <div style={{ marginBottom: '2rem' }}>
+                <h3
+                  style={{
+                    fontSize: '1.05rem',
+                    fontWeight: 800,
+                    color: '#38BDF8',
+                    letterSpacing: '0.05em',
+                    textTransform: 'uppercase',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  <Users size={18} color="#38BDF8" /> WHO THIS BOOK IS FOR
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
+                  {product.whoThisBookIsFor.map((item, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '0.6rem',
+                        fontSize: '0.92rem',
+                        color: '#E2E8F0',
+                        lineHeight: 1.45,
+                        backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                        padding: '0.65rem 0.85rem',
+                        borderRadius: '10px',
+                        border: '1px solid rgba(255, 255, 255, 0.06)',
+                      }}
+                    >
+                      <Check size={16} style={{ color: '#6366F1', flexShrink: 0, marginTop: '2px' }} />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* WHY PYTHON? SECTION */}
+            {product.whyPython && (
+              <div
+                style={{
+                  backgroundColor: 'rgba(99, 102, 241, 0.08)',
+                  borderRadius: '14px',
+                  padding: '1.2rem 1.4rem',
+                  border: '1px solid rgba(99, 102, 241, 0.2)',
+                  marginBottom: '2rem',
+                }}
+              >
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#A5B4FC', display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
+                  <Code size={18} /> WHY PYTHON?
+                </h4>
+                <p style={{ fontSize: '0.95rem', color: '#CBD5E1', lineHeight: 1.65 }}>
+                  {product.whyPython}
+                </p>
+              </div>
+            )}
+
+            {/* CLOSING BANNER: TURN DATA INTO INSIGHT */}
+            <div
               style={{
-                fontSize: '1.02rem',
-                color: '#CBD5E1',
-                lineHeight: 1.75,
-                marginBottom: '1.75rem',
+                backgroundColor: 'rgba(56, 189, 248, 0.08)',
+                borderRadius: '14px',
+                padding: '1.25rem 1.4rem',
+                border: '1px solid rgba(56, 189, 248, 0.25)',
+                marginBottom: '2rem',
+                textAlign: 'center',
               }}
             >
-              {product.fullDesc}
-            </p>
-
-            {/* Key Features List */}
-            <div style={{ marginBottom: '2rem' }}>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.85rem' }}>
-                What You'll Master:
-              </h4>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.6rem' }}>
-                {product.features.slice(0, 4).map((feature, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '0.5rem',
-                      fontSize: '0.88rem',
-                      color: '#E2E8F0',
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    <Check size={16} style={{ color: '#4ADE80', flexShrink: 0, marginTop: '2px' }} />
-                    <span>{feature}</span>
-                  </div>
-                ))}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', color: '#38BDF8', fontWeight: 800, fontSize: '0.95rem', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>
+                <Star size={18} fill="#38BDF8" /> TURN DATA INTO INSIGHT. INSIGHT INTO IMPACT.
               </div>
+              <p style={{ fontSize: '0.92rem', color: '#94A3B8', fontStyle: 'italic' }}>
+                Let Python be your partner in the journey from data to decisions.
+              </p>
+            </div>
+
+            {/* METADATA INFO LIST (Matching 2nd Reference Image) */}
+            <div style={{ marginBottom: '2rem', fontSize: '0.95rem', color: '#94A3B8', lineHeight: 1.8 }}>
+              <p>
+                <strong style={{ color: '#F8FAFC' }}>Category:</strong> {product.category}
+              </p>
+              <p>
+                <strong style={{ color: '#F8FAFC' }}>Format:</strong> {product.format || 'Digital Download (PDF - 28 Pages)'}
+              </p>
+              <p>
+                <strong style={{ color: '#F8FAFC' }}>Ideal For:</strong> {product.idealFor || 'Students, educators, science lovers, developers, and lifelong learners.'}
+              </p>
             </div>
           </div>
 
           {/* ════════════════════════════════════════════
-              BOTTOM PRICING & ACTIONS BAR
+              BOTTOM BUTTONS SECTION (Matching 2nd Reference Image)
           ════════════════════════════════════════════ */}
           <div
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.6)',
-              borderRadius: '20px',
-              padding: '1.25rem 1.5rem',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              paddingTop: '1.5rem',
+              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '1rem',
-              marginTop: '1rem',
+              flexDirection: 'column',
+              gap: '0.75rem',
             }}
           >
-            <div>
-              <span style={{ fontSize: '0.78rem', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '0.2rem' }}>
-                Price
-              </span>
-              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#FFFFFF', lineHeight: 1 }}>
-                {product.pricing}
-              </span>
-            </div>
+            {/* Top Row: Pricing Box (€100) + Buy Now Button */}
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              {/* Pricing Pill Container */}
+              <div
+                style={{
+                  backgroundColor: '#1E2430',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '14px',
+                  padding: '0.85rem 1.6rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#38BDF8', lineHeight: 1 }}>
+                  {product.pricing}
+                </span>
+              </div>
 
-            <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'center', flexWrap: 'wrap' }}>
-              {/* Wishlist Button */}
-              {onToggleWishlist && (
+              {/* Buy Now Button */}
+              {onBuyNow && (
                 <button
-                  onClick={() => onToggleWishlist(product)}
+                  onClick={() => { handleClose(); onBuyNow(product); }}
                   style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '12px',
-                    border: `1px solid ${isInWishlist ? '#EF4444' : 'rgba(255, 255, 255, 0.15)'}`,
-                    backgroundColor: isInWishlist ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                    color: isInWishlist ? '#EF4444' : '#FFFFFF',
+                    flex: 1,
+                    padding: '0.85rem 1.8rem',
+                    borderRadius: '14px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #6366F1 0%, #38BDF8 100%)',
+                    color: '#FFFFFF',
+                    fontSize: '1rem',
+                    fontWeight: 800,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transition: 'all 0.2s ease',
+                    gap: '0.5rem',
+                    boxShadow: '0 8px 24px rgba(56, 189, 248, 0.35)',
+                    transition: 'all 0.25s ease',
                   }}
-                  title="Add to Wishlist"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(56, 189, 248, 0.55)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(56, 189, 248, 0.35)';
+                  }}
                 >
-                  <Heart size={18} fill={isInWishlist ? '#EF4444' : 'none'} />
+                  <Zap size={18} /> Buy Now
                 </button>
               )}
+            </div>
 
+            {/* Bottom Row: Add to Cart Button + Wishlist / Like Button */}
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
               {/* Add to Cart Button */}
               {onAddToCart && (
                 <button
                   onClick={() => onAddToCart(product)}
                   style={{
-                    padding: '0.7rem 1.1rem',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    flex: 1,
+                    padding: '0.85rem 1.4rem',
+                    borderRadius: '14px',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    backgroundColor: '#1E2430',
                     color: '#FFFFFF',
-                    fontSize: '0.9rem',
+                    fontSize: '0.95rem',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    display: 'inline-flex',
+                    display: 'flex',
                     alignItems: 'center',
-                    gap: '0.4rem',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
                     transition: 'all 0.2s ease',
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.16)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)')}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#2A3344')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#1E2430')}
                 >
-                  <ShoppingCart size={17} /> Add to Cart
+                  <ShoppingCart size={18} /> Add to Cart
                 </button>
               )}
 
-              {/* Buy Now (€100) Button */}
-              {onBuyNow && (
+              {/* Wishlist / Like Button */}
+              {onToggleWishlist && (
                 <button
-                  onClick={() => { handleClose(); onBuyNow(product); }}
+                  onClick={() => onToggleWishlist(product)}
                   style={{
-                    padding: '0.7rem 1.4rem',
-                    borderRadius: '12px',
-                    border: 'none',
-                    background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
-                    color: '#FFFFFF',
-                    fontSize: '0.9rem',
-                    fontWeight: 800,
+                    flex: 1,
+                    padding: '0.85rem 1.4rem',
+                    borderRadius: '14px',
+                    border: `1px solid ${isInWishlist ? '#EF4444' : 'rgba(255, 255, 255, 0.15)'}`,
+                    backgroundColor: isInWishlist ? 'rgba(239, 68, 68, 0.15)' : '#1E2430',
+                    color: isInWishlist ? '#EF4444' : '#FFFFFF',
+                    fontSize: '0.95rem',
+                    fontWeight: 700,
                     cursor: 'pointer',
-                    display: 'inline-flex',
+                    display: 'flex',
                     alignItems: 'center',
-                    gap: '0.4rem',
-                    boxShadow: '0 8px 20px rgba(99, 102, 241, 0.4)',
-                    transition: 'all 0.25s ease',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    transition: 'all 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 12px 28px rgba(99, 102, 241, 0.6)';
+                    if (!isInWishlist) e.currentTarget.style.backgroundColor = '#2A3344';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(99, 102, 241, 0.4)';
+                    if (!isInWishlist) e.currentTarget.style.backgroundColor = '#1E2430';
                   }}
                 >
-                  <Zap size={17} /> Buy Now ({product.pricing})
+                  <Heart size={18} fill={isInWishlist ? '#EF4444' : 'none'} /> {isInWishlist ? 'Liked' : 'Like'}
                 </button>
               )}
 
-              {/* Direct PDF View Link */}
+              {/* PDF Download Link */}
               {product.pdfUrl && (
                 <a
                   href={product.pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    padding: '0.7rem 1rem',
-                    borderRadius: '12px',
+                    padding: '0.85rem 1.2rem',
+                    borderRadius: '14px',
                     backgroundColor: 'rgba(74, 222, 128, 0.15)',
                     border: '1px solid rgba(74, 222, 128, 0.3)',
                     color: '#4ADE80',
-                    fontSize: '0.88rem',
+                    fontSize: '0.9rem',
                     fontWeight: 700,
                     textDecoration: 'none',
-                    display: 'inline-flex',
+                    display: 'flex',
                     alignItems: 'center',
-                    gap: '0.35rem',
+                    justifyContent: 'center',
+                    gap: '0.4rem',
                   }}
                 >
                   <Download size={16} /> PDF
                 </a>
-              )}
-
-              {/* Contact Navigation */}
-              {onNavigate && (
-                <button
-                  onClick={() => { handleClose(); onNavigate('contact'); }}
-                  style={{
-                    padding: '0.7rem 1rem',
-                    borderRadius: '12px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    color: '#94A3B8',
-                    fontSize: '0.88rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  Contact
-                </button>
               )}
             </div>
           </div>
