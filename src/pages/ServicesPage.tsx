@@ -23,7 +23,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate, onOpenSe
   };
 
   return (
-    <div style={{ paddingTop: '80px' }}>
+    <div>
 
       {/* Services Hero Banner */}
       <section style={{ backgroundColor: '#F7FAF5', padding: 'clamp(3.5rem, 6vw, 5.5rem) 0', borderBottom: '1px solid #DCE8D3' }}>

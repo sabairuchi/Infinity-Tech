@@ -167,7 +167,7 @@ startxref
   };
 
   return (
-    <div style={{ paddingTop: '80px', minHeight: '85vh', backgroundColor: '#FFFFFF' }}>
+    <div style={{ minHeight: '85vh', backgroundColor: '#FFFFFF' }}>
 
       {/* Hero Banner Header */}
       <section

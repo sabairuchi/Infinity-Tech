@@ -59,7 +59,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
 
 
   return (
-    <div style={{ paddingTop: '80px' }}>
+    <div>
 
       {/* ════════════════════════════════════════════
           HERO SECTION

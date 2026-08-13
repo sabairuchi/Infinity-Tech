@@ -32,7 +32,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   };
 
   return (
-    <div style={{ paddingTop: '80px', overflowX: 'hidden' }}>
+    <div style={{ overflowX: 'hidden' }}>
 
       {/* 1. HERO SECTION */}
       <section

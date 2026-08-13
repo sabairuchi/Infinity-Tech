@@ -254,13 +254,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   return (
     <div
       style={{
-        paddingTop: '80px',
         minHeight: '90vh',
         backgroundColor: '#F7FAF5',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '5rem 1rem 3rem',
+        padding: '3rem 1rem 3rem',
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
       }}
     >
