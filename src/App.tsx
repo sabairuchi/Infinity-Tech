@@ -40,13 +40,6 @@ export const App: React.FC = () => {
   const [downloads, setDownloads] = useState<DownloadItem[]>([]);
   const [myProductsTab, setMyProductsTab] = useState<'cart' | 'wishlist' | 'downloads' | 'billing'>('cart');
 
-  const handleBuyNow = (product: ProductItem) => {
-    handleAddToCart(product);
-    setMyProductsTab('billing');
-    setSelectedProduct(null);
-    navigateTo('my-products');
-  };
-
   // Sync user purchases from database upon login
   useEffect(() => {
     if (!user || !user.token) return;
@@ -323,16 +316,15 @@ startxref
       const pdfPath = product.pdfUrl || '/assets/Mastering_React_E_Book.pdf';
       const pdfFileName = `${product.name.replace(/\s+/g, '_')}.pdf`;
       triggerPdfDownload(pdfPath, pdfFileName);
+      setMyProductsTab('downloads');
+      setSelectedProduct(null);
       navigateTo('my-products');
       return;
     }
 
-    if (!user) {
-      setAuthRedirectReason('Authentication Required: Please sign in or create an account to purchase products.');
-      navigateTo('login');
-      return;
-    }
     handleAddToCart(product);
+    setMyProductsTab('billing');
+    setSelectedProduct(null);
     navigateTo('my-products');
   };
 
