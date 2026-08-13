@@ -63,7 +63,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
       if (response.ok) {
         const data = await response.json();
         if (data.user && data.token) {
-          processAuthResult(data.user, data.token, data.isNewUser);
+          processAuthResult(data.user, data.token);
           return;
         }
       }
@@ -85,7 +85,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         authProvider: 'google',
         token: credential,
       };
-      processAuthResult(gUser, credential, true);
+      processAuthResult(gUser, credential);
     } else {
       setErrorMsg('Google Sign-In failed. Please try again.');
     }
@@ -118,7 +118,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                 authProvider: 'google',
                 token: accessToken,
               };
-              processAuthResult(gUser, accessToken, true);
+              processAuthResult(gUser, accessToken);
             }
             window.history.replaceState(null, '', window.location.pathname);
           })
@@ -178,55 +178,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({
       document.body.appendChild(script);
     }
   }, []);
-
-  // Submit Profile Details for First-Time Users
-  const handleSaveProfileDetails = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!pendingUser || !pendingToken) return;
-    setSavingProfile(true);
-
-    try {
-      const customApi = import.meta.env.VITE_API_BASE_URL;
-      const apiUrl = customApi
-        ? `${customApi.replace(/\/$/, '')}/api/user/profile`
-        : (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-          ? '/api/user/profile'
-          : 'http://localhost:5000/api/user/profile');
-
-      await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${pendingToken}`,
-        },
-        body: JSON.stringify({
-          name: profileName,
-          phone: profilePhone,
-          company: profileCompany,
-          role: profileRole,
-        }),
-      });
-    } catch (err) {
-      console.warn('Backend profile sync notice:', err);
-    }
-
-    const updatedUser: User = {
-      ...pendingUser,
-      name: profileName || pendingUser.name,
-      phone: profilePhone,
-      company: profileCompany,
-      role: profileRole,
-      isNewUser: false,
-    };
-
-    setSavingProfile(false);
-    setShowProfileDetailsModal(false);
-    setSuccessMsg('Profile setup complete! Redirecting to Home Page...');
-    setTimeout(() => {
-      onLoginSuccess(updatedUser, pendingToken);
-      onNavigate('home');
-    }, 400);
-  };
 
   // Clean warning message without "MySQL"
   const cleanRedirectReason = redirectReason?.replace(/MySQL\s*/gi, '');
