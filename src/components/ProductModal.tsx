@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { ProductItem, PageRoute } from '../types';
 import {
   X, Check, ArrowRight, Layers, Zap, Globe, Users,
-  Shield, BarChart3, Puzzle, Star, Download
+  Shield, BarChart3, Puzzle, Star, Download, ShoppingCart, Heart, BookOpen, FileText
 } from 'lucide-react';
 
 interface ProductModalProps {
@@ -10,10 +10,22 @@ interface ProductModalProps {
   onClose: () => void;
   onNavigate: (page: PageRoute) => void;
   onBuyNow?: (product: ProductItem) => void;
+  onAddToCart?: (product: ProductItem) => void;
+  onToggleWishlist?: (product: ProductItem) => void;
+  isInWishlist?: boolean;
 }
 
-export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onNavigate, onBuyNow }) => {
+export const ProductModal: React.FC<ProductModalProps> = ({
+  product,
+  onClose,
+  onNavigate,
+  onBuyNow,
+  onAddToCart,
+  onToggleWishlist,
+  isInWishlist = false,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<'details' | 'cover' | 'description'>('details');
 
   useEffect(() => {
     if (product) {
@@ -43,6 +55,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       : '#9E9E9E';
 
   const useCaseIcons = [BarChart3, Users, Globe, Shield];
+  const coverImg = product.coverImage || product.image;
+  const descImg = product.descriptionImage;
 
   return (
     <div
@@ -65,9 +79,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
         style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '24px',
-          maxWidth: '900px',
+          maxWidth: '920px',
           width: '100%',
-          maxHeight: '90vh',
+          maxHeight: '92vh',
           overflowY: 'auto',
           transform: isVisible ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(20px)',
           opacity: isVisible ? 1 : 0,
@@ -78,7 +92,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
         {/* Modal Header with Image */}
         <div style={{ position: 'relative' }}>
           <img
-            src={product.image}
+            src={coverImg}
             alt={product.name}
             onError={(e) => {
               e.currentTarget.onerror = null;
@@ -86,7 +100,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             }}
             style={{
               width: '100%',
-              height: '280px',
+              height: '300px',
               objectFit: 'cover',
               borderRadius: '24px 24px 0 0',
             }}
@@ -100,7 +114,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
               left: 0,
               right: 0,
               height: '140px',
-              background: 'linear-gradient(to top, rgba(33,55,47,0.85), transparent)',
+              background: 'linear-gradient(to top, rgba(33,55,47,0.9), transparent)',
               borderRadius: '0 0 0 0',
             }}
           />
@@ -173,6 +187,20 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                 <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: statusColor }} />
                 {product.status} — v{product.version}
               </span>
+              {product.author && (
+                <span
+                  style={{
+                    padding: '4px 12px',
+                    borderRadius: '9999px',
+                    backgroundColor: 'rgba(137,146,85,0.4)',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    color: '#FFFFFF',
+                  }}
+                >
+                  By {product.author}
+                </span>
+              )}
             </div>
             <h2
               style={{
@@ -189,6 +217,123 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
         {/* Modal Content */}
         <div style={{ padding: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
+          
+          {/* Cover & Description Page View Selector */}
+          {(coverImg || descImg) && (
+            <div
+              style={{
+                display: 'flex',
+                gap: '0.75rem',
+                marginBottom: '1.75rem',
+                borderBottom: '1px solid #DCE8D3',
+                paddingBottom: '0.75rem',
+                flexWrap: 'wrap',
+              }}
+            >
+              <button
+                onClick={() => setActiveTab('details')}
+                style={{
+                  padding: '0.5rem 1.1rem',
+                  borderRadius: '8px',
+                  border: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  backgroundColor: activeTab === 'details' ? '#899255' : '#F0F5ED',
+                  color: activeTab === 'details' ? '#FFFFFF' : '#365648',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <FileText size={16} /> Overview Details
+              </button>
+              {coverImg && (
+                <button
+                  onClick={() => setActiveTab('cover')}
+                  style={{
+                    padding: '0.5rem 1.1rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    fontSize: '0.9rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    backgroundColor: activeTab === 'cover' ? '#899255' : '#F0F5ED',
+                    color: activeTab === 'cover' ? '#FFFFFF' : '#365648',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <BookOpen size={16} /> Cover Page
+                </button>
+              )}
+              {descImg && (
+                <button
+                  onClick={() => setActiveTab('description')}
+                  style={{
+                    padding: '0.5rem 1.1rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    fontSize: '0.9rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    backgroundColor: activeTab === 'description' ? '#899255' : '#F0F5ED',
+                    color: activeTab === 'description' ? '#FFFFFF' : '#365648',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <FileText size={16} /> Description Page
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Cover Page Tab View */}
+          {activeTab === 'cover' && coverImg && (
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#21372F', marginBottom: '1rem' }}>
+                Book Cover Page
+              </h3>
+              <img
+                src={coverImg}
+                alt="Book Cover Page"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '650px',
+                  borderRadius: '16px',
+                  boxShadow: '0 12px 35px rgba(33,55,47,0.18)',
+                  objectFit: 'contain',
+                }}
+              />
+            </div>
+          )}
+
+          {/* Description Page Tab View */}
+          {activeTab === 'description' && descImg && (
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#21372F', marginBottom: '1rem' }}>
+                Full Product Description Graphic
+              </h3>
+              <img
+                src={descImg}
+                alt="Full Description Graphic"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '850px',
+                  borderRadius: '16px',
+                  boxShadow: '0 12px 35px rgba(33,55,47,0.18)',
+                  objectFit: 'contain',
+                }}
+              />
+            </div>
+          )}
+
           {/* Tagline & Description */}
           <p
             style={{
@@ -212,7 +357,69 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             {product.fullDesc}
           </p>
 
-          {/* Pricing CTA Bar */}
+          {/* Both Images Side by Side Preview for eBooks */}
+          {product.isEBook && coverImg && descImg && activeTab === 'details' && (
+            <div style={{ marginBottom: '2.5rem' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#21372F', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <BookOpen size={18} color="#899255" /> Book Preview & Infographic
+              </h3>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                  gap: '1.25rem',
+                }}
+              >
+                <div
+                  onClick={() => setActiveTab('cover')}
+                  style={{
+                    cursor: 'pointer',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    border: '1px solid #DCE8D3',
+                    backgroundColor: '#F7FAF5',
+                    padding: '0.75rem',
+                    textAlign: 'center',
+                    transition: 'all 0.25s ease',
+                  }}
+                >
+                  <img
+                    src={coverImg}
+                    alt="Cover Preview"
+                    style={{ width: '100%', height: '320px', objectFit: 'contain', borderRadius: '10px' }}
+                  />
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#899255', marginTop: '0.5rem', display: 'block' }}>
+                    Click to Enlarge Cover Page
+                  </span>
+                </div>
+
+                <div
+                  onClick={() => setActiveTab('description')}
+                  style={{
+                    cursor: 'pointer',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    border: '1px solid #DCE8D3',
+                    backgroundColor: '#F7FAF5',
+                    padding: '0.75rem',
+                    textAlign: 'center',
+                    transition: 'all 0.25s ease',
+                  }}
+                >
+                  <img
+                    src={descImg}
+                    alt="Description Graphic Preview"
+                    style={{ width: '100%', height: '320px', objectFit: 'contain', borderRadius: '10px' }}
+                  />
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#899255', marginTop: '0.5rem', display: 'block' }}>
+                    Click to Enlarge Description Page
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Pricing CTA Bar with Cart, Wishlist, Buy Now */}
           <div
             style={{
               display: 'flex',
@@ -229,40 +436,98 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
           >
             <div>
               <span style={{ fontSize: '0.85rem', color: '#5F685F', display: 'block', marginBottom: '0.25rem' }}>
-                Starting at
+                Pricing
               </span>
-              <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#21372F' }}>
+              <span style={{ fontSize: '1.6rem', fontWeight: 800, color: '#21372F' }}>
                 {product.pricing}
               </span>
             </div>
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-              {product.isEBook ? (
+
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+              {/* Wishlist Button */}
+              {onToggleWishlist && (
                 <button
-                  onClick={() => { handleClose(); if (onBuyNow) onBuyNow(product); }}
-                  className="btn btn-primary"
-                  style={{ padding: '0.75rem 1.6rem', fontSize: '0.95rem', backgroundColor: '#899255', gap: '0.4rem' }}
+                  onClick={() => onToggleWishlist(product)}
+                  style={{
+                    padding: '0.75rem 1.1rem',
+                    borderRadius: '12px',
+                    border: `1px solid ${isInWishlist ? '#E53935' : '#DCE8D3'}`,
+                    backgroundColor: '#FFFFFF',
+                    color: isInWishlist ? '#E53935' : '#21372F',
+                    fontSize: '0.92rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    transition: 'all 0.2s ease',
+                  }}
+                  title="Toggle Wishlist"
                 >
-                  <Download size={18} /> Download Free PDF eBook
+                  <Heart size={18} fill={isInWishlist ? '#E53935' : 'none'} />
+                  {isInWishlist ? 'Wishlisted' : 'Wishlist'}
                 </button>
-              ) : (
-                <>
-                  {onBuyNow && (
-                    <button
-                      onClick={() => { handleClose(); onBuyNow(product); }}
-                      className="btn btn-primary"
-                      style={{ padding: '0.75rem 1.6rem', fontSize: '0.95rem', backgroundColor: '#899255', gap: '0.4rem' }}
-                    >
-                      <Zap size={18} /> Buy Now
-                    </button>
-                  )}
-                  <button
-                    onClick={() => { handleClose(); onNavigate('contact'); }}
-                    className="btn btn-outline"
-                    style={{ padding: '0.75rem 1.4rem', fontSize: '0.95rem' }}
-                  >
-                    Get Started <ArrowRight size={18} />
-                  </button>
-                </>
+              )}
+
+              {/* Cart Button */}
+              {onAddToCart && (
+                <button
+                  onClick={() => onAddToCart(product)}
+                  className="btn btn-outline"
+                  style={{
+                    padding: '0.75rem 1.3rem',
+                    fontSize: '0.95rem',
+                    borderRadius: '12px',
+                    gap: '0.4rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ShoppingCart size={18} /> Add to Cart
+                </button>
+              )}
+
+              {/* Buy Now Button */}
+              {onBuyNow && (
+                <button
+                  onClick={() => { handleClose(); onBuyNow(product); }}
+                  className="btn btn-primary"
+                  style={{
+                    padding: '0.75rem 1.6rem',
+                    fontSize: '0.95rem',
+                    backgroundColor: '#899255',
+                    borderRadius: '12px',
+                    gap: '0.4rem',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Zap size={18} /> Buy Now ({product.pricing})
+                </button>
+              )}
+
+              {/* PDF Direct View/Download Button */}
+              {product.pdfUrl && (
+                <a
+                  href={product.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    padding: '0.75rem 1.2rem',
+                    borderRadius: '12px',
+                    backgroundColor: '#21372F',
+                    color: '#BEEA9A',
+                    fontSize: '0.92rem',
+                    fontWeight: 700,
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                  }}
+                >
+                  <Download size={18} /> View PDF
+                </a>
               )}
             </div>
           </div>

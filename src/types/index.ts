@@ -23,6 +23,10 @@ export interface ProductItem {
   shortDesc: string;
   fullDesc: string;
   image: string;
+  coverImage?: string;
+  descriptionImage?: string;
+  pdfUrl?: string;
+  author?: string;
   pricing: string;
   status: 'Live' | 'Beta' | 'Coming Soon';
   version: string;

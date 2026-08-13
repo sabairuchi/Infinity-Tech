@@ -480,6 +480,9 @@ startxref
         onClose={() => setSelectedProduct(null)}
         onNavigate={navigateTo}
         onBuyNow={handleBuyNow}
+        onAddToCart={handleAddToCart}
+        onToggleWishlist={handleToggleWishlist}
+        isInWishlist={selectedProduct ? wishlist.some((w) => w.id === selectedProduct.id) : false}
       />
 
     </div>

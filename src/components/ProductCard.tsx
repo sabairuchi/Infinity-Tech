@@ -320,9 +320,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            {product.isEBook ? (
+            {onAddToCart && (
               <button
-                onClick={(e) => { e.stopPropagation(); onBuyNow ? onBuyNow(product) : onViewDetails(product); }}
+                onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
+                className="btn btn-outline"
+                style={{
+                  padding: '0.6rem 0.9rem',
+                  fontSize: '0.88rem',
+                  borderRadius: '10px',
+                }}
+                title="Add to Cart"
+              >
+                <ShoppingCart size={16} />
+              </button>
+            )}
+
+            {onBuyNow && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onBuyNow(product); }}
                 className="btn btn-primary"
                 style={{
                   padding: '0.6rem 1rem',
@@ -336,45 +351,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   alignItems: 'center',
                 }}
               >
-                <Download size={16} /> Download PDF
+                <Zap size={15} /> Buy Now
               </button>
-            ) : (
-              <>
-                {onAddToCart && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-                    className="btn btn-outline"
-                    style={{
-                      padding: '0.6rem 0.9rem',
-                      fontSize: '0.88rem',
-                      borderRadius: '10px',
-                    }}
-                    title="Add to Cart"
-                  >
-                    <ShoppingCart size={16} />
-                  </button>
-                )}
-
-                {onBuyNow && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onBuyNow(product); }}
-                    className="btn btn-primary"
-                    style={{
-                      padding: '0.6rem 1rem',
-                      fontSize: '0.88rem',
-                      borderRadius: '10px',
-                      backgroundColor: '#899255',
-                      color: '#FFFFFF',
-                      fontWeight: 700,
-                      gap: '0.35rem',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Zap size={15} /> Buy Now
-                  </button>
-                )}
-              </>
             )}
 
             <button
