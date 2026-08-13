@@ -398,45 +398,73 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         {/* Official Google Sign-In Button Container */}
         <div id="google-official-btn" style={{ margin: '1.5rem auto 0 auto', display: 'flex', justifyContent: 'center', minHeight: '44px' }} />
 
-        {/* Instant Demo Sign-In Fallback Button */}
-        <button
-          type="button"
-          onClick={() => {
-            const demoUser: User = {
-              id: `usr-demo-${Date.now()}`,
-              name: 'Ruchi Kumari',
-              email: 'rk3408330@gmail.com',
+        {/* Or Continue with Email Divider */}
+        <div style={{ display: 'flex', alignItems: 'center', margin: '1.75rem 0 1.5rem 0', color: '#7E9080', fontSize: '0.82rem' }}>
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.12)' }} />
+          <span style={{ padding: '0 0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>or continue with email</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.12)' }} />
+        </div>
+
+        {/* Email Sign-In Form */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const form = e.currentTarget;
+            const emailInput = form.elements.namedItem('email') as HTMLInputElement;
+            const emailVal = emailInput?.value || '';
+            if (!emailVal) return;
+
+            const nameFromEmail = emailVal.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+            const emailUser: User = {
+              id: `usr-email-${Date.now()}`,
+              name: nameFromEmail || 'Verified User',
+              email: emailVal,
               avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
               role: 'Verified Member',
               authProvider: 'email',
-              token: 'demo-token-12345',
+              token: `tok-email-${Date.now()}`,
             };
-            processAuthResult(demoUser, 'demo-token-12345', false);
+            processAuthResult(emailUser, `tok-email-${Date.now()}`, true);
           }}
-          style={{
-            marginTop: '1.25rem',
-            width: '100%',
-            padding: '0.85rem',
-            borderRadius: '9999px',
-            border: '1px solid rgba(190, 234, 154, 0.35)',
-            backgroundColor: 'rgba(190, 234, 154, 0.12)',
-            color: '#BEEA9A',
-            fontSize: '0.92rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(190, 234, 154, 0.25)';
-            e.currentTarget.style.transform = 'translateY(-2px)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(190, 234, 154, 0.12)';
-            e.currentTarget.style.transform = 'translateY(0)';
-          }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}
         >
-          ⚡ Instant Demo Sign-In
-        </button>
+          <input
+            name="email"
+            type="email"
+            required
+            placeholder="name@company.com"
+            style={{
+              width: '100%',
+              padding: '0.85rem 1.1rem',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.18)',
+              backgroundColor: 'rgba(0, 0, 0, 0.25)',
+              color: '#FFFFFF',
+              fontSize: '0.95rem',
+              outline: 'none',
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              width: '100%',
+              padding: '0.85rem',
+              borderRadius: '12px',
+              border: 'none',
+              backgroundColor: '#899255',
+              color: '#FFFFFF',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(137, 146, 85, 0.35)',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#A8C36E')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#899255')}
+          >
+            Continue with Email →
+          </button>
+        </form>
 
         {/* Security assurance footer */}
         <div
