@@ -7,7 +7,7 @@ import {
 interface ProductModalProps {
   product: ProductItem | null;
   onClose: () => void;
-  onNavigate: (page: PageRoute) => void;
+  onNavigate?: (page: PageRoute) => void;
   onBuyNow?: (product: ProductItem) => void;
   onAddToCart?: (product: ProductItem) => void;
   onToggleWishlist?: (product: ProductItem) => void;
@@ -583,6 +583,25 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 >
                   <Download size={16} /> PDF
                 </a>
+              )}
+
+              {/* Contact Navigation */}
+              {onNavigate && (
+                <button
+                  onClick={() => { handleClose(); onNavigate('contact'); }}
+                  style={{
+                    padding: '0.7rem 1rem',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    color: '#94A3B8',
+                    fontSize: '0.88rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Contact
+                </button>
               )}
             </div>
           </div>
