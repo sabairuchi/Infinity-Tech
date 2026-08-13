@@ -204,7 +204,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   display: 'none',
                   width: '100%',
                   minHeight: '440px',
-                  background: 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
+                  background: product.id === 'advanced-ux-design'
+                    ? 'linear-gradient(135deg, #0B192C 0%, #1E3E62 50%, #000000 100%)'
+                    : 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -218,24 +220,30 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     width: '64px',
                     height: '64px',
                     borderRadius: '18px',
-                    background: 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
+                    background: product.id === 'advanced-ux-design'
+                      ? 'linear-gradient(135deg, #FF5722 0%, #FF9800 100%)'
+                      : 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontWeight: 900,
-                    color: '#071326',
+                    color: '#FFFFFF',
                     fontSize: '1.8rem',
-                    boxShadow: '0 0 25px rgba(255, 212, 59, 0.4)',
+                    boxShadow: '0 0 25px rgba(255, 152, 0, 0.4)',
                     marginBottom: '1rem',
                   }}
                 >
-                  Py
+                  {product.id === 'advanced-ux-design' ? 'UX' : 'Py'}
                 </div>
                 <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.04em' }}>
-                  PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span>
+                  {product.id === 'advanced-ux-design' ? (
+                    <>ADVANCED <span style={{ color: '#FF7043' }}>UX DESIGN</span></>
+                  ) : (
+                    <>PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span></>
+                  )}
                 </h2>
                 <p style={{ color: '#BEEA9A', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.5rem', maxWidth: '320px' }}>
-                  THE COMPLETE GUIDE TO DATA ANALYSIS, MANIPULATION, AND VISUALIZATION
+                  {product.id === 'advanced-ux-design' ? 'ELEVATING USER EXPERIENCE THROUGH STRATEGY, RESEARCH & INNOVATION' : 'THE COMPLETE GUIDE TO DATA ANALYSIS, MANIPULATION, AND VISUALIZATION'}
                 </p>
               </div>
             </div>
@@ -322,15 +330,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
             {/* Detailed Description Paragraphs */}
             <div style={{ fontSize: '1.02rem', color: '#CBD5E1', lineHeight: 1.75, marginBottom: '2rem' }}>
-              <p style={{ marginBottom: '1rem' }}>
-                <strong style={{ color: '#F8FAFC' }}>{product.name}</strong> is your all-in-one guide to harnessing the power of Python for data analysis, manipulation, and visualization.
-              </p>
-              <p style={{ marginBottom: '1rem' }}>
-                Whether you're a beginner looking to build a strong foundation or an experienced developer wanting to sharpen your data skills, this book takes you step-by-step through the tools, techniques, and real-world workflows used by data professionals.
-              </p>
-              <p>
-                From working with data using pandas to creating insightful visualizations with matplotlib, this book blends clear explanations with practical examples to help you turn raw data into meaningful insights.
-              </p>
+              {product.fullDesc.split('\n\n').map((paragraph, idx) => (
+                <p key={idx} style={{ marginBottom: '1rem' }}>
+                  {paragraph}
+                </p>
+              ))}
             </div>
 
             {/* WHAT YOU'LL LEARN SECTION */}
@@ -431,7 +435,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 }}
               >
                 <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#A5B4FC', display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                  <Code size={18} /> WHY PYTHON?
+                  <Code size={18} /> {product.id === 'advanced-ux-design' ? 'WHY THIS BOOK?' : 'WHY PYTHON?'}
                 </h4>
                 <p style={{ fontSize: '0.95rem', color: '#CBD5E1', lineHeight: 1.65 }}>
                   {product.whyPython}

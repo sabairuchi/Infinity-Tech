@@ -107,7 +107,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             display: 'none',
             width: '100%',
             height: '100%',
-            background: 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
+            background: product.id === 'advanced-ux-design'
+              ? 'linear-gradient(135deg, #0B192C 0%, #1E3E62 50%, #000000 100%)'
+              : 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
@@ -121,23 +123,29 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               width: '42px',
               height: '42px',
               borderRadius: '12px',
-              background: 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
+              background: product.id === 'advanced-ux-design'
+                ? 'linear-gradient(135deg, #FF5722 0%, #FF9800 100%)'
+                : 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontWeight: 900,
-              color: '#071326',
+              color: '#FFFFFF',
               fontSize: '1.2rem',
               marginBottom: '0.5rem',
             }}
           >
-            Py
+            {product.id === 'advanced-ux-design' ? 'UX' : 'Py'}
           </div>
           <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.04em' }}>
-            PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span>
+            {product.id === 'advanced-ux-design' ? (
+              <>ADVANCED <span style={{ color: '#FF7043' }}>UX DESIGN</span></>
+            ) : (
+              <>PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span></>
+            )}
           </div>
           <div style={{ fontSize: '0.7rem', color: '#BEEA9A', marginTop: '0.25rem', fontWeight: 600 }}>
-            DATA ANALYSIS & VISUALIZATION
+            {product.id === 'advanced-ux-design' ? 'STRATEGY, RESEARCH & INNOVATION' : 'DATA ANALYSIS & VISUALIZATION'}
           </div>
         </div>
 
