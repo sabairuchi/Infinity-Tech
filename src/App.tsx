@@ -288,40 +288,6 @@ startxref
   };
 
   const handleBuyNow = (product: ProductItem) => {
-    if (product.isEBook || product.id === 'cloud-computing-blueprint') {
-      if (!user) {
-        sessionStorage.setItem('pendingEbookDownload', product.id);
-        setAuthRedirectReason(`Create your free account or sign in to instantly download ${product.name} (PDF).`);
-        navigateTo('signup');
-        return;
-      }
-
-      // Add to user downloads if not already listed
-      setDownloads((prev) => {
-        const exists = prev.some((d) => d.product.id === product.id);
-        if (exists) return prev;
-        return [
-          {
-            id: `dl-ebook-${Date.now()}`,
-            product,
-            version: product.version,
-            licenseKey: `EBOOK-FREE-MEMBER-LICENSE`,
-            downloadSize: `${product.pageCount || 45} Pages PDF`,
-            datePurchased: 'Free Member Download',
-          },
-          ...prev,
-        ];
-      });
-
-      const pdfPath = product.pdfUrl || '/assets/Mastering_React_E_Book.pdf';
-      const pdfFileName = `${product.name.replace(/\s+/g, '_')}.pdf`;
-      triggerPdfDownload(pdfPath, pdfFileName);
-      setMyProductsTab('downloads');
-      setSelectedProduct(null);
-      navigateTo('my-products');
-      return;
-    }
-
     handleAddToCart(product);
     setMyProductsTab('billing');
     setSelectedProduct(null);
