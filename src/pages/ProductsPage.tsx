@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { PageRoute, ProductItem } from '../types';
-import { PRODUCTS_DATA, PRODUCT_CATEGORIES } from '../data/products';
+import { PRODUCTS_DATA } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
 import { CTASection } from '../components/CTASection';
 import {
@@ -52,27 +52,10 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   onToggleWishlist,
   wishlistIds = [],
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-
   const hero = useScrollReveal();
   const grid = useScrollReveal();
   const whyChoose = useScrollReveal();
   const stats = useScrollReveal();
-
-  /* ───── Filtering ───── */
-  const filteredProducts = useMemo(() => {
-    if (selectedCategory === 'All') return PRODUCTS_DATA;
-    return PRODUCTS_DATA.filter((p) => p.category === selectedCategory);
-  }, [selectedCategory]);
-
-  const productCounts = useMemo(() => {
-    const counts: Record<string, number> = { All: PRODUCTS_DATA.length };
-    PRODUCTS_DATA.forEach((p) => {
-      counts[p.category] = (counts[p.category] || 0) + 1;
-    });
-    return counts;
-  }, []);
-
 
 
   return (
@@ -303,7 +286,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
               gap: '2rem',
             }}
           >
-            {filteredProducts.map((product, i) => (
+            {PRODUCTS_DATA.map((product, i) => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -316,20 +299,6 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
               />
             ))}
           </div>
-
-          {filteredProducts.length === 0 && (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '4rem 2rem',
-                color: '#5F685F',
-              }}
-            >
-              <Package size={48} style={{ color: '#DCE8D3', marginBottom: '1rem' }} />
-              <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>No products found in this category.</p>
-              <p style={{ fontSize: '0.95rem', marginTop: '0.5rem' }}>Try selecting a different filter.</p>
-            </div>
-          )}
         </div>
       </section>
 
