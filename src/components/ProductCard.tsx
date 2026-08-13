@@ -361,36 +361,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
 
-        {/* Pricing Footer */}
+        {/* Centered Olive Green Price */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             borderTop: '1px solid #F0F5ED',
             paddingTop: '1.25rem',
           }}
         >
-          <div>
-            <span
-              style={{
-                fontSize: '1.2rem',
-                fontWeight: 800,
-                color: '#21372F',
-              }}
-            >
-              {product.pricing}
-            </span>
-          </div>
-
           <span
             style={{
-              fontSize: '0.85rem',
-              fontWeight: 700,
+              fontSize: '1.35rem',
+              fontWeight: 800,
               color: '#899255',
+              letterSpacing: '-0.01em',
             }}
           >
-            Click card for details →
+            {product.pricing}
           </span>
         </div>
       </div>
