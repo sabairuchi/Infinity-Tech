@@ -34,10 +34,18 @@ export const App: React.FC = () => {
   const [legalModalState, setLegalModalState] = useState<{ title: string; type: 'privacy' | 'terms' | null }>({ title: '', type: null });
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
 
-  // User Cart, Wishlist, Downloads State
+  // User Cart, Wishlist, Downloads & Tab State
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<ProductItem[]>([]);
   const [downloads, setDownloads] = useState<DownloadItem[]>([]);
+  const [myProductsTab, setMyProductsTab] = useState<'cart' | 'wishlist' | 'downloads' | 'billing'>('cart');
+
+  const handleBuyNow = (product: ProductItem) => {
+    handleAddToCart(product);
+    setMyProductsTab('billing');
+    setSelectedProduct(null);
+    navigateTo('my-products');
+  };
 
   // Sync user purchases from database upon login
   useEffect(() => {
@@ -431,6 +439,7 @@ startxref
             cart={cart}
             wishlist={wishlist}
             downloads={downloads}
+            initialTab={myProductsTab}
             onUpdateQuantity={handleUpdateQuantity}
             onRemoveFromCart={handleRemoveFromCart}
             onClearCart={handleClearCart}

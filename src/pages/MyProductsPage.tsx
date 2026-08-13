@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { PageRoute, ProductItem, CartItem, DownloadItem } from '../types';
 import {
   ShoppingCart, Heart, Download, Trash2, ArrowRight, Check,
-  Copy, CheckCircle2, ShieldCheck, Plus, Minus
+  Copy, CheckCircle2, ShieldCheck, Plus, Minus, CreditCard, Receipt
 } from 'lucide-react';
 
 interface MyProductsPageProps {
@@ -10,6 +10,7 @@ interface MyProductsPageProps {
   cart: CartItem[];
   wishlist: ProductItem[];
   downloads: DownloadItem[];
+  initialTab?: 'cart' | 'wishlist' | 'downloads' | 'billing';
   onUpdateQuantity: (productId: string, delta: number) => void;
   onRemoveFromCart: (productId: string) => void;
   onClearCart: () => void;
@@ -24,6 +25,7 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
   cart,
   wishlist,
   downloads,
+  initialTab = 'cart',
   onUpdateQuantity,
   onRemoveFromCart,
   onClearCart,
@@ -32,14 +34,19 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
   onViewProductDetails,
   onCheckoutSuccess,
 }) => {
-  const [activeTab, setActiveTab] = useState<'cart' | 'wishlist' | 'downloads'>('cart');
+  const [activeTab, setActiveTab] = useState<'cart' | 'wishlist' | 'downloads' | 'billing'>(initialTab);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'card' | 'paypal' | 'bank' | 'upi'>('card');
   const [copiedLicenseId, setCopiedLicenseId] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
-  const [checkoutComplete, setCheckoutComplete] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
 
   // Helper to parse price number from string like "From $49/mo" or "$99"
   const parsePrice = (priceStr: string): number => {
@@ -161,9 +168,9 @@ startxref
     setIsProcessingCheckout(true);
     setTimeout(() => {
       setIsProcessingCheckout(false);
-      setCheckoutComplete(true);
       onCheckoutSuccess(cart.map((c) => c.product));
-    }, 1800);
+      setActiveTab('downloads');
+    }, 1500);
   };
 
   return (
@@ -353,6 +360,39 @@ startxref
                 {downloads.length}
               </span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('billing')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                padding: '1rem 1.5rem',
+                fontSize: '1rem',
+                fontWeight: activeTab === 'billing' ? 700 : 500,
+                color: activeTab === 'billing' ? '#899255' : '#5F685F',
+                background: 'none',
+                border: 'none',
+                borderBottom: activeTab === 'billing' ? '3px solid #899255' : '3px solid transparent',
+                cursor: 'pointer',
+                marginBottom: '-2px',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <CreditCard size={20} /> Billing & Checkout
+              <span
+                style={{
+                  backgroundColor: activeTab === 'billing' ? '#899255' : '#F0F5ED',
+                  color: activeTab === 'billing' ? '#FFFFFF' : '#5F685F',
+                  padding: '2px 8px',
+                  borderRadius: '9999px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                }}
+              >
+                {cart.length}
+              </span>
+            </button>
           </div>
 
           {/* TAB 1: CART */}
@@ -507,11 +547,11 @@ startxref
                     </div>
 
                     <button
-                      onClick={() => setIsCheckoutOpen(true)}
+                      onClick={() => setActiveTab('billing')}
                       className="btn btn-primary"
                       style={{ width: '100%', padding: '0.9rem', fontSize: '1rem', gap: '0.6rem' }}
                     >
-                      Proceed to Checkout <ArrowRight size={18} />
+                      Proceed to Billing & Checkout <ArrowRight size={18} />
                     </button>
 
                     <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#5F685F', fontSize: '0.82rem' }}>
@@ -680,107 +720,161 @@ startxref
                     </div>
                   ))}
                 </div>
+          {/* TAB 4: BILLING & CHECKOUT */}
+          {activeTab === 'billing' && (
+            <div>
+              {cart.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '4rem 1.5rem', backgroundColor: '#F7FAF5', borderRadius: '20px', border: '1px dashed #DCE8D3' }}>
+                  <Receipt size={54} color="#899255" style={{ marginBottom: '1rem' }} />
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#21372F', marginBottom: '0.5rem' }}>No Items Selected for Billing</h3>
+                  <p style={{ color: '#5F685F', marginBottom: '1.75rem', maxWidth: '420px', margin: '0 auto 1.75rem auto' }}>
+                    Select a product from our catalog or click "Buy Now" to reach the billing section.
+                  </p>
+                  <button onClick={() => onNavigate('products')} className="btn btn-primary">
+                    Browse Products Catalog <ArrowRight size={18} />
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem', alignItems: 'start' }}>
+                  
+                  {/* Billing Details & Payment Method Options */}
+                  <div style={{ backgroundColor: '#F7FAF5', borderRadius: '20px', border: '1px solid #DCE8D3', padding: '2rem' }}>
+                    <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#21372F', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                      💳 Payment & Billing Details
+                    </h3>
+
+                    {/* Payment Method Selector */}
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#21372F', marginBottom: '0.5rem' }}>
+                        Select Payment Method
+                      </label>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem' }}>
+                        {[
+                          { id: 'card', label: '💳 Credit Card' },
+                          { id: 'paypal', label: '🅿️ PayPal' },
+                          { id: 'bank', label: '🏦 Wire Transfer' },
+                          { id: 'upi', label: '📲 UPI / Scan' },
+                        ].map((pm) => (
+                          <button
+                            key={pm.id}
+                            type="button"
+                            onClick={() => setSelectedPaymentMethod(pm.id as any)}
+                            style={{
+                              padding: '0.75rem',
+                              borderRadius: '12px',
+                              border: selectedPaymentMethod === pm.id ? '2px solid #899255' : '1px solid #DCE8D3',
+                              backgroundColor: selectedPaymentMethod === pm.id ? '#FFFFFF' : 'rgba(255, 255, 255, 0.5)',
+                              color: '#21372F',
+                              fontWeight: 700,
+                              fontSize: '0.88rem',
+                              cursor: 'pointer',
+                              textAlign: 'center',
+                              boxShadow: selectedPaymentMethod === pm.id ? '0 4px 12px rgba(137, 146, 85, 0.15)' : 'none',
+                            }}
+                          >
+                            {pm.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Card & Billing Form */}
+                    <form onSubmit={handleConfirmCheckout} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                          Cardholder Full Name
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          defaultValue="Ruchi Kumari"
+                          placeholder="Name as printed on card"
+                          style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #DCE8D3', fontSize: '0.9rem', outline: 'none' }}
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                          Card Number
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          defaultValue="•••• •••• •••• 4242"
+                          placeholder="4532 0123 4567 8910"
+                          style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #DCE8D3', fontSize: '0.9rem', outline: 'none' }}
+                        />
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.82rem', fontWeight 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                            Expiry Date
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            defaultValue="12/28"
+                            placeholder="MM/YY"
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #DCE8D3', fontSize: '0.9rem', outline: 'none' }}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.82rem', fontWeight 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                            CVC / Security Code
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            defaultValue="888"
+                            placeholder="123"
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #DCE8D3', fontSize: '0.9rem', outline: 'none' }}
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isProcessingCheckout}
+                        className="btn btn-primary"
+                        style={{ marginTop: '1rem', width: '100%', padding: '0.95rem', fontSize: '1.05rem', fontWeight: 700 }}
+                      >
+                        {isProcessingCheckout ? 'Processing Billing...' : `Pay & Access Downloads (€${total.toFixed(2)}) →`}
+                      </button>
+                    </form>
+                  </div>
+
+                  {/* Order Summary & Items List */}
+                  <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', border: '1px solid #DCE8D3', padding: '1.75rem', boxShadow: '0 6px 20px rgba(33, 55, 47, 0.05)' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#21372F', marginBottom: '1.25rem' }}>
+                      Selected Products ({cart.length})
+                    </h3>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+                      {cart.map((item) => (
+                        <div key={item.product.id} style={{ display: 'flex', gap: '0.85rem', alignItems: 'center', paddingBottom: '0.85rem', borderBottom: '1px solid #F0F5ED' }}>
+                          <img src={item.product.image} alt={item.product.name} style={{ width: '54px', height: '48px', borderRadius: '8px', objectFit: 'cover' }} />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#21372F' }}>{item.product.name}</div>
+                            <div style={{ fontSize: '0.78rem', color: '#5F685F' }}>Qty: {item.quantity} × {item.product.pricing}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div style={{ borderTop: '1px solid #DCE8D3', paddingTop: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                      <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#21372F' }}>Total Amount</span>
+                      <span style={{ fontSize: '1.6rem', fontWeight: 800, color: '#899255' }}>€{total.toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                </div>
               )}
             </div>
           )}
 
         </div>
       </section>
-
-      {/* CHECKOUT MODAL */}
-      {isCheckoutOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 300,
-            backgroundColor: 'rgba(33, 55, 47, 0.65)',
-            backdropFilter: 'blur(6px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1.5rem',
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '24px',
-              maxWidth: '540px',
-              width: '100%',
-              padding: '2.5rem',
-              boxShadow: '0 25px 60px rgba(33, 55, 47, 0.25)',
-              position: 'relative',
-            }}
-          >
-            {checkoutComplete ? (
-              <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-                <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#F0F5ED', color: '#4CAF50', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem auto' }}>
-                  <CheckCircle2 size={36} />
-                </div>
-                <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#21372F', marginBottom: '0.5rem' }}>License Deployment Complete!</h3>
-                <p style={{ color: '#5F685F', marginBottom: '1.75rem' }}>
-                  Your software license keys and build installers have been generated and added to your <strong>Downloads & Licenses</strong> tab.
-                </p>
-                <button
-                  onClick={() => {
-                    setIsCheckoutOpen(false);
-                    setCheckoutComplete(false);
-                    setActiveTab('downloads');
-                  }}
-                  className="btn btn-primary"
-                  style={{ width: '100%', padding: '0.9rem' }}
-                >
-                  View My Downloads <ArrowRight size={18} />
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleConfirmCheckout}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#21372F' }}>Complete Software Purchase</h3>
-                  <button type="button" onClick={() => setIsCheckoutOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#5F685F' }}>
-                    ✕
-                  </button>
-                </div>
-
-                <div style={{ backgroundColor: '#F7FAF5', padding: '1rem 1.25rem', borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid #DCE8D3', display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: 600, color: '#21372F' }}>Total Payable Amount</span>
-                  <span style={{ fontWeight: 800, color: '#899255', fontSize: '1.2rem' }}>${total.toFixed(2)}</span>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#21372F', marginBottom: '0.3rem' }}>Work Email</label>
-                    <input type="email" required placeholder="name@company.com" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #DCE8D3', outline: 'none' }} />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#21372F', marginBottom: '0.3rem' }}>Company Name</label>
-                    <input type="text" required placeholder="Company Name" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #DCE8D3', outline: 'none' }} />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#21372F', marginBottom: '0.3rem' }}>Payment Method (Simulated)</label>
-                    <select style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #DCE8D3', outline: 'none', backgroundColor: '#FFFFFF' }}>
-                      <option>Corporate Card (Visa ending 4242)</option>
-                      <option>Company Invoice / Purchase Order</option>
-                    </select>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isProcessingCheckout}
-                  className="btn btn-primary"
-                  style={{ width: '100%', padding: '0.9rem', fontSize: '1rem' }}
-                >
-                  {isProcessingCheckout ? 'Deploying Licenses...' : 'Confirm & Deploy Software'}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
 
     </div>
   );
