@@ -791,7 +791,6 @@ startxref
                         <input
                           type="text"
                           required
-                          defaultValue="Ruchi Kumari"
                           placeholder="Name as printed on card"
                           style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #DCE8D3', fontSize: '0.9rem', outline: 'none' }}
                         />
@@ -804,7 +803,6 @@ startxref
                         <input
                           type="text"
                           required
-                          defaultValue="•••• •••• •••• 4242"
                           placeholder="4532 0123 4567 8910"
                           style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #DCE8D3', fontSize: '0.9rem', outline: 'none' }}
                         />
@@ -818,7 +816,6 @@ startxref
                           <input
                             type="text"
                             required
-                            defaultValue="12/28"
                             placeholder="MM/YY"
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #DCE8D3', fontSize: '0.9rem', outline: 'none' }}
                           />
@@ -830,7 +827,6 @@ startxref
                           <input
                             type="text"
                             required
-                            defaultValue="888"
                             placeholder="123"
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #DCE8D3', fontSize: '0.9rem', outline: 'none' }}
                           />
