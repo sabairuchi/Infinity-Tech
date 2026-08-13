@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { ProductItem, PageRoute } from '../types';
 import {
-  X, Check, Zap, Download, ShoppingCart, Heart, BookOpen, Target, Users, Code, Star
+  X, Check, Zap, ShoppingCart, Heart, BookOpen, Target, Users, Code, Star
 } from 'lucide-react';
 
 interface ProductModalProps {
@@ -592,30 +592,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 >
                   <Heart size={18} fill={isInWishlist ? '#EF4444' : 'none'} /> {isInWishlist ? 'Liked' : 'Like'}
                 </button>
-              )}
-
-              {product.pdfUrl && (
-                <a
-                  href={product.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    padding: '0.85rem 1.2rem',
-                    borderRadius: '14px',
-                    backgroundColor: 'rgba(74, 222, 128, 0.15)',
-                    border: '1px solid rgba(74, 222, 128, 0.3)',
-                    color: '#4ADE80',
-                    fontSize: '0.9rem',
-                    fontWeight: 700,
-                    textDecoration: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.4rem',
-                  }}
-                >
-                  <Download size={16} /> PDF
-                </a>
               )}
             </div>
           </div>
