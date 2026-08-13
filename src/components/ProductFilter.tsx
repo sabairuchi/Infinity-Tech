@@ -14,6 +14,10 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
   onCategoryChange,
   productCounts,
 }) => {
+  if (!productCounts || !productCounts['All'] || productCounts['All'] === 0) {
+    return null;
+  }
+
   return (
     <div
       style={{
