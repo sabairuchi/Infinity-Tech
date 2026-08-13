@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { ProductItem, PageRoute } from '../types';
 import {
-  X, Check, Zap, Download, ShoppingCart, Heart, BookOpen, FileText, Target, Users, Code, Star
+  X, Check, Zap, Download, ShoppingCart, Heart, BookOpen, Target, Users, Code, Star
 } from 'lucide-react';
 
 interface ProductModalProps {
@@ -23,7 +23,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   isInWishlist = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState<'cover' | 'description'>('cover');
 
   useEffect(() => {
     if (product) {
@@ -47,7 +46,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   if (!product) return null;
 
   const coverImg = product.coverImage || product.image;
-  const descImg = product.descriptionImage;
 
   return (
     <div
@@ -140,7 +138,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         </button>
 
         {/* ════════════════════════════════════════════
-            LEFT COLUMN: Book Cover / Description Showcase
+            LEFT COLUMN: Book Cover Display
         ════════════════════════════════════════════ */}
         <div
           style={{
@@ -157,7 +155,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             background: 'radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.15) 0%, #070D19 75%)',
           }}
         >
-          {/* Cover / Infographic Display */}
           <div
             style={{
               position: 'relative',
@@ -165,171 +162,84 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              marginBottom: '1.5rem',
             }}
           >
-            {activeTab === 'cover' ? (
-              <div
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  maxHeight: '520px',
-                  borderRadius: '16px',
-                  overflow: 'hidden',
-                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.18)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  backgroundColor: '#071326',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <img
-                  src={coverImg}
-                  alt={product.name}
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.style.display = 'none';
-                    const fallbackEl = document.getElementById(`modal-left-fallback-${product.id}`);
-                    if (fallbackEl) fallbackEl.style.display = 'flex';
-                  }}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    maxHeight: '520px',
-                    objectFit: 'contain',
-                    display: 'block',
-                  }}
-                />
-
-                {/* Styled CSS Cover Fallback */}
-                <div
-                  id={`modal-left-fallback-${product.id}`}
-                  style={{
-                    display: 'none',
-                    width: '100%',
-                    minHeight: '440px',
-                    background: 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                    padding: '2rem 1.5rem',
-                    position: 'relative',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '64px',
-                      height: '64px',
-                      borderRadius: '18px',
-                      background: 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 900,
-                      color: '#071326',
-                      fontSize: '1.8rem',
-                      boxShadow: '0 0 25px rgba(255, 212, 59, 0.4)',
-                      marginBottom: '1rem',
-                    }}
-                  >
-                    Py
-                  </div>
-                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.04em' }}>
-                    PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span>
-                  </h2>
-                  <p style={{ color: '#BEEA9A', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.5rem', maxWidth: '320px' }}>
-                    THE COMPLETE GUIDE TO DATA ANALYSIS, MANIPULATION, AND VISUALIZATION
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  maxHeight: '520px',
-                  borderRadius: '16px',
-                  overflow: 'hidden',
-                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.18)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  backgroundColor: '#071326',
-                }}
-              >
-                {descImg ? (
-                  <img
-                    src={descImg}
-                    alt="Description Graphic"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      maxHeight: '520px',
-                      objectFit: 'contain',
-                      display: 'block',
-                    }}
-                  />
-                ) : (
-                  <div style={{ padding: '2rem', textAlign: 'center', color: '#94A3B8' }}>
-                    Full Description Graphic
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Toggle Switcher */}
-          {descImg && (
             <div
               style={{
+                position: 'relative',
+                width: '100%',
+                maxHeight: '520px',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.18)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                backgroundColor: '#071326',
                 display: 'flex',
-                gap: '0.5rem',
-                backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                padding: '4px',
-                borderRadius: '9999px',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              <button
-                onClick={() => setActiveTab('cover')}
+              <img
+                src={coverImg}
+                alt={product.name}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.style.display = 'none';
+                  const fallbackEl = document.getElementById(`modal-left-fallback-${product.id}`);
+                  if (fallbackEl) fallbackEl.style.display = 'flex';
+                }}
                 style={{
-                  padding: '0.45rem 1rem',
-                  borderRadius: '9999px',
-                  border: 'none',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  backgroundColor: activeTab === 'cover' ? '#6366F1' : 'transparent',
-                  color: activeTab === 'cover' ? '#FFFFFF' : '#94A3B8',
-                  display: 'flex',
+                  width: '100%',
+                  height: '100%',
+                  maxHeight: '520px',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
+              />
+
+              {/* Styled CSS Cover Fallback */}
+              <div
+                id={`modal-left-fallback-${product.id}`}
+                style={{
+                  display: 'none',
+                  width: '100%',
+                  minHeight: '440px',
+                  background: 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
                   alignItems: 'center',
-                  gap: '0.35rem',
-                  transition: 'all 0.2s ease',
+                  textAlign: 'center',
+                  padding: '2rem 1.5rem',
+                  position: 'relative',
                 }}
               >
-                <BookOpen size={14} /> Cover Page
-              </button>
-              <button
-                onClick={() => setActiveTab('description')}
-                style={{
-                  padding: '0.45rem 1rem',
-                  borderRadius: '9999px',
-                  border: 'none',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  backgroundColor: activeTab === 'description' ? '#6366F1' : 'transparent',
-                  color: activeTab === 'description' ? '#FFFFFF' : '#94A3B8',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                <FileText size={14} /> Description Graphic
-              </button>
+                <div
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '18px',
+                    background: 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 900,
+                    color: '#071326',
+                    fontSize: '1.8rem',
+                    boxShadow: '0 0 25px rgba(255, 212, 59, 0.4)',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  Py
+                </div>
+                <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.04em' }}>
+                  PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span>
+                </h2>
+                <p style={{ color: '#BEEA9A', fontSize: '0.85rem', fontWeight 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.5rem', maxWidth: '320px' }}>
+                  THE COMPLETE GUIDE TO DATA ANALYSIS, MANIPULATION, AND VISUALIZATION
+                </p>
+              </div>
             </div>
-          )}
+          </div>
         </div>
 
         {/* ════════════════════════════════════════════
@@ -423,7 +333,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               </p>
             </div>
 
-            {/* WHAT YOU'LL LEARN SECTION (Matching Description Infographic) */}
+            {/* WHAT YOU'LL LEARN SECTION */}
             {product.whatYoullLearn && product.whatYoullLearn.length > 0 && (
               <div style={{ marginBottom: '2rem' }}>
                 <h3
@@ -529,7 +439,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               </div>
             )}
 
-            {/* CLOSING BANNER: TURN DATA INTO INSIGHT */}
+            {/* CLOSING BANNER */}
             <div
               style={{
                 backgroundColor: 'rgba(56, 189, 248, 0.08)',
@@ -548,7 +458,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               </p>
             </div>
 
-            {/* METADATA INFO LIST (Matching 2nd Reference Image) */}
+            {/* METADATA INFO LIST */}
             <div style={{ marginBottom: '2rem', fontSize: '0.95rem', color: '#94A3B8', lineHeight: 1.8 }}>
               <p>
                 <strong style={{ color: '#F8FAFC' }}>Category:</strong> {product.category}
@@ -563,7 +473,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           </div>
 
           {/* ════════════════════════════════════════════
-              BOTTOM BUTTONS SECTION (Matching 2nd Reference Image)
+              BOTTOM BUTTONS SECTION
           ════════════════════════════════════════════ */}
           <div
             style={{
@@ -576,7 +486,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           >
             {/* Top Row: Pricing Box (€100) + Buy Now Button */}
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-              {/* Pricing Pill Container */}
               <div
                 style={{
                   backgroundColor: '#1E2430',
@@ -593,7 +502,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 </span>
               </div>
 
-              {/* Buy Now Button */}
               {onBuyNow && (
                 <button
                   onClick={() => { handleClose(); onBuyNow(product); }}
@@ -630,7 +538,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
             {/* Bottom Row: Add to Cart Button + Wishlist / Like Button */}
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-              {/* Add to Cart Button */}
               {onAddToCart && (
                 <button
                   onClick={() => onAddToCart(product)}
@@ -657,7 +564,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 </button>
               )}
 
-              {/* Wishlist / Like Button */}
               {onToggleWishlist && (
                 <button
                   onClick={() => onToggleWishlist(product)}
@@ -688,7 +594,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 </button>
               )}
 
-              {/* PDF Download Link */}
               {product.pdfUrl && (
                 <a
                   href={product.pdfUrl}
