@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import type { PageRoute, ProductItem } from '../types';
 import { PRODUCTS_DATA, PRODUCT_CATEGORIES } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
-import { ProductFilter } from '../components/ProductFilter';
 import { CTASection } from '../components/CTASection';
 import {
   ArrowRight, Package, Shield, Zap,
@@ -294,13 +293,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
         <div className="container">
 
 
-          {/* Filter Bar */}
-          <ProductFilter
-            categories={PRODUCT_CATEGORIES}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            productCounts={productCounts}
-          />
+
 
           {/* Product Grid */}
           <div
