@@ -171,24 +171,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.status}
         </div>
 
-        {/* Category Badge */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '16px',
-            left: '16px',
-            padding: '6px 14px',
-            borderRadius: '9999px',
-            backgroundColor: 'rgba(33, 55, 47, 0.85)',
-            backdropFilter: 'blur(6px)',
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
-          }}
-        >
-          {product.category}
-        </div>
+
 
         {/* Wishlist Heart Button */}
         {onToggleWishlist && (
