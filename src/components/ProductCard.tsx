@@ -77,7 +77,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           position: 'relative',
           overflow: 'hidden',
           height: '220px',
-          backgroundColor: '#F7FAF5',
+          backgroundColor: '#071326',
         }}
       >
         <img
@@ -86,7 +86,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           loading="lazy"
           onError={(e) => {
             e.currentTarget.onerror = null;
-            e.currentTarget.src = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80';
+            e.currentTarget.style.display = 'none';
+            const fallbackEl = document.getElementById(`card-fallback-${product.id}`);
+            if (fallbackEl) fallbackEl.style.display = 'flex';
           }}
           style={{
             width: '100%',
@@ -96,6 +98,47 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             transform: isHovered ? 'scale(1.08)' : 'scale(1)',
           }}
         />
+
+        {/* Custom Book Cover Styled Fallback */}
+        <div
+          id={`card-fallback-${product.id}`}
+          style={{
+            display: 'none',
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '1rem',
+            position: 'relative',
+          }}
+        >
+          <div
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 900,
+              color: '#071326',
+              fontSize: '1.2rem',
+              marginBottom: '0.5rem',
+            }}
+          >
+            Py
+          </div>
+          <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.04em' }}>
+            PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span>
+          </div>
+          <div style={{ fontSize: '0.7rem', color: '#BEEA9A', marginTop: '0.25rem', fontWeight: 600 }}>
+            DATA ANALYSIS & VISUALIZATION
+          </div>
+        </div>
 
         {/* Status Badge */}
         <div
