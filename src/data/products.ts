@@ -1,4 +1,5 @@
 import type { ProductItem } from '../types';
+import { PYTHON_FOR_DATA_COVER_BASE64, PYTHON_FOR_DATA_DESC_BASE64 } from './pythonDataAssets';
 
 export const PRODUCT_CATEGORIES = [
   'All',
@@ -18,9 +19,9 @@ export const PRODUCTS_DATA: ProductItem[] = [
     category: 'E-Books',
     shortDesc: 'Python for Data is your all-in-one guide to harnessing the power of Python for data analysis, manipulation, and visualization. Master pandas, Matplotlib, NumPy, scikit-learn, and real-world workflows.',
     fullDesc: "Python for Data is your all-in-one guide to harnessing the power of Python for data analysis, manipulation, and visualization. Whether you're a beginner looking to build a strong foundation or an experienced developer wanting to sharpen your data skills, this book takes you step-by-step through the tools, techniques, and real-world workflows used by data professionals. From working with data using pandas to creating insightful visualizations with Matplotlib, this book blends clear explanations with practical examples to help you turn raw data into meaningful insights.",
-    image: '/assets/python_for_data_cover.jpg',
-    coverImage: '/assets/python_for_data_cover.jpg',
-    descriptionImage: '/assets/python_for_data_description.jpg',
+    image: PYTHON_FOR_DATA_COVER_BASE64,
+    coverImage: PYTHON_FOR_DATA_COVER_BASE64,
+    descriptionImage: PYTHON_FOR_DATA_DESC_BASE64,
     pdfUrl: '/assets/python_for_data.pdf',
     pricing: '€100',
     status: 'Live',
