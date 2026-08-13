@@ -551,7 +551,28 @@ startxref
                       </div>
                     )}
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1.75rem' }}>
+                    {/* Promo Code Form */}
+                    <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
+                      <input
+                        type="text"
+                        placeholder="Promo Code (DIGIRO15)"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        style={{
+                          flex: 1,
+                          padding: '0.6rem 0.85rem',
+                          borderRadius: '8px',
+                          border: '1px solid #DCE8D3',
+                          fontSize: '0.88rem',
+                          outline: 'none',
+                        }}
+                      />
+                      <button type="submit" className="btn btn-outline" style={{ padding: '0.6rem 0.9rem', fontSize: '0.85rem' }}>
+                        Apply
+                      </button>
+                    </form>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1.5rem' }}>
                       <span style={{ fontSize: '1.3rem', fontWeight: 800, color: '#21372F' }}>Total</span>
                       <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#899255' }}>€{total.toFixed(2)}</span>
                     </div>
@@ -581,6 +602,10 @@ startxref
                       >
                         or Continue Shopping
                       </button>
+                    </div>
+
+                    <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', color: '#5F685F', fontSize: '0.82rem' }}>
+                      <ShieldCheck size={16} color="#899255" /> 256-Bit Encrypted Instant Checkout
                     </div>
                   </div>
 
