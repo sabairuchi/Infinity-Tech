@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProductItem } from '../types';
-import { Check, Heart, ShoppingCart } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 
 interface ProductCardProps {
   product: ProductItem;
@@ -292,33 +292,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           {product.shortDesc}
         </p>
-
-        {/* Key Benefits Preview */}
-        <div style={{ marginBottom: '1.25rem' }}>
-          {product.benefits.slice(0, 2).map((benefit, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '0.5rem',
-                marginBottom: '0.5rem',
-                fontSize: '0.88rem',
-                color: '#365648',
-              }}
-            >
-              <Check
-                size={16}
-                style={{
-                  color: '#899255',
-                  flexShrink: 0,
-                  marginTop: '2px',
-                }}
-              />
-              <span>{benefit}</span>
-            </div>
-          ))}
-        </div>
 
         {/* Tech Stack Preview */}
         <div
