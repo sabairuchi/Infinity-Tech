@@ -720,6 +720,10 @@ startxref
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+          )}
+
           {/* TAB 4: BILLING & CHECKOUT */}
           {activeTab === 'billing' && (
             <div>
@@ -808,7 +812,7 @@ startxref
 
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div>
-                          <label style={{ display: 'block', fontSize: '0.82rem', fontWeight 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                          <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#21372F', marginBottom: '0.35rem' }}>
                             Expiry Date
                           </label>
                           <input
@@ -820,7 +824,7 @@ startxref
                           />
                         </div>
                         <div>
-                          <label style={{ display: 'block', fontSize: '0.82rem', fontWeight 700, color: '#21372F', marginBottom: '0.35rem' }}>
+                          <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#21372F', marginBottom: '0.35rem' }}>
                             CVC / Security Code
                           </label>
                           <input
