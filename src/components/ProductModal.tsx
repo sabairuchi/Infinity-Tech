@@ -302,17 +302,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <BookOpen size={14} /> {product.category}
               </span>
 
-              {product.author && (
-                <span
-                  style={{
-                    fontSize: '0.84rem',
-                    color: '#94A3B8',
-                    fontWeight: 600,
-                  }}
-                >
-                  By <strong style={{ color: '#F8FAFC' }}>{product.author}</strong>
-                </span>
-              )}
             </div>
 
             {/* Book Title */}
