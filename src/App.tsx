@@ -289,7 +289,7 @@ startxref
 
   const handleBuyNow = (product: ProductItem) => {
     handleAddToCart(product);
-    setMyProductsTab('billing');
+    setMyProductsTab('cart');
     setSelectedProduct(null);
     navigateTo('my-products');
   };

@@ -395,12 +395,21 @@ startxref
             </button>
           </div>
 
-          {/* TAB 1: CART */}
+          {/* TAB 1: CART / ORDER REVIEW */}
           {activeTab === 'cart' && (
             <div>
+              <div style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#21372F', letterSpacing: '-0.02em', marginBottom: '0.4rem' }}>
+                  Your Shopping Cart
+                </h2>
+                <p style={{ color: '#5F685F', fontSize: '1.05rem' }}>
+                  Review your selected digital products before checkout.
+                </p>
+              </div>
+
               {cart.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem 1.5rem', backgroundColor: '#F7FAF5', borderRadius: '20px', border: '1px dashed #DCE8D3' }}>
-                  <ShoppingCart size={54} color="#A8C36E" style={{ marginBottom: '1rem' }} />
+                  <ShoppingCart size={54} color="#899255" style={{ marginBottom: '1rem' }} />
                   <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#21372F', marginBottom: '0.5rem' }}>Your Cart is Empty</h3>
                   <p style={{ color: '#5F685F', marginBottom: '1.75rem', maxWidth: '420px', margin: '0 auto 1.75rem auto' }}>
                     Explore our suite of enterprise digital products and add solutions to your cart.
@@ -412,7 +421,7 @@ startxref
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem', alignItems: 'start' }}>
                   
-                  {/* Cart Items List */}
+                  {/* Selected Cart Items */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     {cart.map((item) => {
                       const unitPrice = parsePrice(item.product.pricing);
@@ -424,33 +433,34 @@ startxref
                             display: 'flex',
                             gap: '1.25rem',
                             backgroundColor: '#FFFFFF',
-                            borderRadius: '16px',
+                            borderRadius: '18px',
                             border: '1px solid #DCE8D3',
-                            padding: '1.25rem',
+                            padding: '1.4rem',
                             alignItems: 'center',
-                            boxShadow: '0 4px 16px rgba(33, 55, 47, 0.04)',
+                            boxShadow: '0 6px 20px rgba(33, 55, 47, 0.05)',
+                            position: 'relative',
                             flexWrap: 'wrap',
                           }}
                         >
                           <img
                             src={item.product.image}
                             alt={item.product.name}
-                            style={{ width: '90px', height: '80px', objectFit: 'cover', borderRadius: '12px', flexShrink: 0 }}
+                            style={{ width: '100px', height: '90px', objectFit: 'cover', borderRadius: '12px', flexShrink: 0 }}
                           />
-                          <div style={{ flex: 1, minWidth: '180px' }}>
-                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#899255', textTransform: 'uppercase' }}>
-                              {item.product.category}
+                          <div style={{ flex: 1, minWidth: '180px', paddingRight: '2.5rem' }}>
+                            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#899255', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                              {item.product.category || 'eBook'}
                             </span>
-                            <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#21372F', margin: '0.2rem 0' }}>
+                            <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#21372F', margin: '0.3rem 0 0.5rem 0', lineHeight: 1.3 }}>
                               {item.product.name}
                             </h4>
-                            <span style={{ fontSize: '0.9rem', color: '#5F685F', fontWeight: 600 }}>
-                              ${unitPrice} / license
+                            <span style={{ fontSize: '1.25rem', color: '#21372F', fontWeight: 800 }}>
+                              €{itemTotal}
                             </span>
                           </div>
 
                           {/* Quantity Controls */}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#F7FAF5', padding: '0.3rem 0.6rem', borderRadius: '8px', border: '1px solid #DCE8D3' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#F7FAF5', padding: '0.35rem 0.65rem', borderRadius: '10px', border: '1px solid #DCE8D3' }}>
                             <button
                               onClick={() => onUpdateQuantity(item.product.id, -1)}
                               style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#21372F', display: 'flex', alignItems: 'center' }}
@@ -466,17 +476,39 @@ startxref
                             </button>
                           </div>
 
-                          <div style={{ textAlign: 'right', minWidth: '90px' }}>
-                            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#21372F', display: 'block' }}>
-                              ${itemTotal}
-                            </span>
-                            <button
-                              onClick={() => onRemoveFromCart(item.product.id)}
-                              style={{ background: 'none', border: 'none', color: '#E53935', fontSize: '0.825rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.25rem' }}
-                            >
-                              <Trash2 size={14} /> Remove
-                            </button>
-                          </div>
+                          {/* Trash Icon Button matching reference image top-right position */}
+                          <button
+                            onClick={() => onRemoveFromCart(item.product.id)}
+                            title="Remove item"
+                            style={{
+                              position: 'absolute',
+                              top: '1.25rem',
+                              right: '1.25rem',
+                              width: '36px',
+                              height: '36px',
+                              borderRadius: '50%',
+                              backgroundColor: '#F7FAF5',
+                              border: '1px solid #DCE8D3',
+                              color: '#5F685F',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = 'rgba(229, 57, 53, 0.1)';
+                              e.currentTarget.style.color = '#E53935';
+                              e.currentTarget.style.borderColor = 'rgba(229, 57, 53, 0.3)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = '#F7FAF5';
+                              e.currentTarget.style.color = '#5F685F';
+                              e.currentTarget.style.borderColor = '#DCE8D3';
+                            }}
+                          >
+                            <Trash2 size={18} />
+                          </button>
                         </div>
                       );
                     })}
@@ -485,79 +517,73 @@ startxref
                       <button onClick={onClearCart} style={{ background: 'none', border: 'none', color: '#5F685F', fontSize: '0.9rem', cursor: 'pointer', textDecoration: 'underline' }}>
                         Clear Cart
                       </button>
-                      <button onClick={() => onNavigate('products')} style={{ background: 'none', border: 'none', color: '#899255', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer' }}>
+                      <button onClick={() => onNavigate('products')} style={{ background: 'none', border: 'none', color: '#899255', fontWeight: 700, fontSize: '0.92rem', cursor: 'pointer' }}>
                         + Add More Products
                       </button>
                     </div>
                   </div>
 
-                  {/* Summary Sidebar */}
+                  {/* Summary Sidebar Card */}
                   <div
                     style={{
-                      backgroundColor: '#F7FAF5',
-                      borderRadius: '20px',
+                      backgroundColor: '#FFFFFF',
+                      borderRadius: '24px',
                       border: '1px solid #DCE8D3',
-                      padding: '1.75rem',
-                      boxShadow: '0 6px 20px rgba(33, 55, 47, 0.05)',
+                      padding: '2rem',
+                      boxShadow: '0 10px 30px rgba(33, 55, 47, 0.06)',
                     }}
                   >
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#21372F', marginBottom: '1.25rem' }}>Order Summary</h3>
+                    <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#21372F', marginBottom: '1.5rem' }}>
+                      Order Summary
+                    </h3>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', color: '#5F685F' }}>
-                      <span>Subtotal</span>
-                      <span style={{ fontWeight: 600, color: '#21372F' }}>${subtotal}</span>
+                    <div style={{ borderBottom: '1px solid #F0F5ED', paddingBottom: '1.25rem', marginBottom: '1.25rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#5F685F', fontSize: '1.05rem', fontWeight: 500 }}>
+                        <span>Subtotal</span>
+                        <span style={{ fontWeight: 700, color: '#21372F' }}>€{subtotal.toFixed(2)}</span>
+                      </div>
                     </div>
 
                     {discountApplied && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', color: '#4CAF50' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', color: '#4CAF50', fontWeight: 600 }}>
                         <span>Promo Discount (15%)</span>
-                        <span style={{ fontWeight: 600 }}>-${discountAmount.toFixed(2)}</span>
+                        <span>-€{discountAmount.toFixed(2)}</span>
                       </div>
                     )}
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem', color: '#5F685F' }}>
-                      <span>Estimated Tax & Support</span>
-                      <span style={{ fontWeight: 600, color: '#4CAF50' }}>FREE</span>
-                    </div>
-
-                    {/* Promo Input */}
-                    <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                      <input
-                        type="text"
-                        placeholder="Promo Code (DIGIRO15)"
-                        value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value)}
-                        style={{
-                          flex: 1,
-                          padding: '0.65rem 0.9rem',
-                          borderRadius: '8px',
-                          border: '1px solid #DCE8D3',
-                          fontSize: '0.88rem',
-                          outline: 'none',
-                        }}
-                      />
-                      <button type="submit" className="btn btn-outline" style={{ padding: '0.65rem 1rem', fontSize: '0.85rem' }}>
-                        Apply
-                      </button>
-                    </form>
-
-                    <div style={{ borderTop: '1px solid #DCE8D3', paddingTop: '1.25rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                      <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#21372F' }}>Total Amount</span>
-                      <span style={{ fontSize: '1.6rem', fontWeight: 800, color: '#899255' }}>${total.toFixed(2)}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1.75rem' }}>
+                      <span style={{ fontSize: '1.3rem', fontWeight: 800, color: '#21372F' }}>Total</span>
+                      <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#899255' }}>€{total.toFixed(2)}</span>
                     </div>
 
                     <button
                       onClick={() => setActiveTab('billing')}
                       className="btn btn-primary"
-                      style={{ width: '100%', padding: '0.9rem', fontSize: '1rem', gap: '0.6rem' }}
+                      style={{ width: '100%', padding: '1rem', fontSize: '1.05rem', fontWeight: 700, justifyContent: 'center', gap: '0.5rem', borderRadius: '14px' }}
                     >
-                      Proceed to Billing & Checkout <ArrowRight size={18} />
+                      Proceed to Checkout <ArrowRight size={20} />
                     </button>
 
-                    <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#5F685F', fontSize: '0.82rem' }}>
-                      <ShieldCheck size={16} color="#899255" /> 256-Bit Encrypted Instant Deployment
+                    <div style={{ textAlign: 'center', marginTop: '1.25rem' }}>
+                      <button
+                        onClick={() => onNavigate('products')}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#5F685F',
+                          fontSize: '0.95rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          textDecoration: 'none',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = '#899255')}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = '#5F685F')}
+                      >
+                        or Continue Shopping
+                      </button>
                     </div>
                   </div>
+
                 </div>
               )}
             </div>
