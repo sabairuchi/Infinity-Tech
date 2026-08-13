@@ -241,7 +241,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Product Info */}
-      <div style={{ padding: '1.75rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '1.5rem 1.5rem 0.85rem 1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <div style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <h3
             style={{
@@ -326,7 +326,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             display: 'flex',
             flexWrap: 'wrap',
             gap: '0.4rem',
-            marginBottom: '1.5rem',
+            marginBottom: '0.85rem',
           }}
         >
           {product.techStack.slice(0, 4).map((tech, i) => (
@@ -368,15 +368,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             borderTop: '1px solid #F0F5ED',
-            paddingTop: '1.25rem',
+            paddingTop: '0.85rem',
+            paddingBottom: '0.2rem',
           }}
         >
           <span
             style={{
-              fontSize: '1.35rem',
+              fontSize: '1.85rem',
               fontWeight: 800,
               color: '#899255',
               letterSpacing: '-0.01em',
+              lineHeight: 1,
             }}
           >
             {product.pricing}
