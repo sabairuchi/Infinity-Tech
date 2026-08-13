@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { ProductItem, PageRoute } from '../types';
 import {
-  X, Check, ArrowRight, Layers, Zap, Globe, Users,
-  Shield, BarChart3, Puzzle, Star, Download, ShoppingCart, Heart, BookOpen, FileText
+  X, Check, Zap, Download, ShoppingCart, Heart, BookOpen, FileText
 } from 'lucide-react';
 
 interface ProductModalProps {
@@ -25,7 +24,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   isInWishlist = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState<'details' | 'cover' | 'description'>('details');
+  const [activeTab, setActiveTab] = useState<'cover' | 'description'>('cover');
 
   useEffect(() => {
     if (product) {
@@ -49,12 +48,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   if (!product) return null;
 
   const statusColor = product.status === 'Live'
-    ? '#4CAF50'
+    ? '#4ADE80'
     : product.status === 'Beta'
-      ? '#FF9800'
-      : '#9E9E9E';
+      ? '#FACC15'
+      : '#94A3B8';
 
-  const useCaseIcons = [BarChart3, Users, Globe, Shield];
   const coverImg = product.coverImage || product.image;
   const descImg = product.descriptionImage;
 
@@ -65,396 +63,458 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         position: 'fixed',
         inset: 0,
         zIndex: 200,
-        backgroundColor: isVisible ? 'rgba(33, 55, 47, 0.6)' : 'rgba(33, 55, 47, 0)',
-        backdropFilter: isVisible ? 'blur(6px)' : 'blur(0px)',
-        transition: 'all 0.3s ease',
+        backgroundColor: isVisible ? 'rgba(7, 12, 23, 0.75)' : 'rgba(7, 12, 23, 0)',
+        backdropFilter: isVisible ? 'blur(12px)' : 'blur(0px)',
+        transition: 'all 0.35s ease',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '1rem',
+        padding: '1.25rem',
       }}
     >
+      {/* 2-Column Dark Reference Card Container */}
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '24px',
-          maxWidth: '920px',
+          backgroundColor: '#0F172A',
+          color: '#F8FAFC',
+          borderRadius: '28px',
+          maxWidth: '1020px',
           width: '100%',
           maxHeight: '92vh',
           overflowY: 'auto',
-          transform: isVisible ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(20px)',
+          transform: isVisible ? 'scale(1) translateY(0)' : 'scale(0.94) translateY(24px)',
           opacity: isVisible ? 1 : 0,
           transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
-          boxShadow: '0 30px 80px rgba(33, 55, 47, 0.25)',
+          boxShadow: '0 30px 90px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.1)',
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          position: 'relative',
+          overflow: 'hidden',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
         }}
       >
-        {/* Modal Header with Image */}
-        <div style={{ position: 'relative' }}>
-          <img
-            src={coverImg}
-            alt={product.name}
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80';
-            }}
+        {/* Close Button (X) at Top Right */}
+        <button
+          onClick={handleClose}
+          aria-label="Close modal"
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            zIndex: 10,
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(30, 41, 59, 0.85)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#FFFFFF',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#6366F1';
+            e.currentTarget.style.transform = 'scale(1.08)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(30, 41, 59, 0.85)';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+        >
+          <X size={20} />
+        </button>
+
+        {/* ════════════════════════════════════════════
+            LEFT COLUMN: Book Cover / Description Showcase
+        ════════════════════════════════════════════ */}
+        <div
+          style={{
+            flex: '1 1 380px',
+            maxWidth: '460px',
+            backgroundColor: '#070D19',
+            borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+            padding: '2.5rem 2rem',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            background: 'radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.12) 0%, #070D19 70%)',
+          }}
+        >
+          {/* Cover / Infographic Display */}
+          <div
             style={{
+              position: 'relative',
               width: '100%',
-              height: '300px',
-              objectFit: 'cover',
-              borderRadius: '24px 24px 0 0',
-            }}
-          />
-
-          {/* Gradient overlay */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: '140px',
-              background: 'linear-gradient(to top, rgba(33,55,47,0.9), transparent)',
-              borderRadius: '0 0 0 0',
-            }}
-          />
-
-          {/* Close button */}
-          <button
-            onClick={handleClose}
-            style={{
-              position: 'absolute',
-              top: '16px',
-              right: '16px',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(255,255,255,0.9)',
-              border: 'none',
-              cursor: 'pointer',
               display: 'flex',
-              alignItems: 'center',
               justifyContent: 'center',
-              color: '#21372F',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#FFFFFF')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.9)')}
-          >
-            <X size={20} />
-          </button>
-
-          {/* Product title on image */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '20px',
-              left: '28px',
-              right: '28px',
-              color: '#FFFFFF',
+              alignItems: 'center',
+              marginBottom: '1.5rem',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-              <span
+            {activeTab === 'cover' ? (
+              <div
                 style={{
-                  padding: '4px 12px',
-                  borderRadius: '9999px',
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  backdropFilter: 'blur(6px)',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  color: '#BEEA9A',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                }}
-              >
-                {product.category}
-              </span>
-              <span
-                style={{
-                  padding: '4px 12px',
-                  borderRadius: '9999px',
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  color: statusColor,
+                  position: 'relative',
+                  width: '100%',
+                  maxHeight: '500px',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.15)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  backgroundColor: '#071326',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px',
+                  justifyContent: 'center',
+                }}
+              >
+                <img
+                  src={coverImg}
+                  alt={product.name}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.style.display = 'none';
+                    const fallbackEl = document.getElementById(`modal-left-fallback-${product.id}`);
+                    if (fallbackEl) fallbackEl.style.display = 'flex';
+                  }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    maxHeight: '500px',
+                    objectFit: 'contain',
+                    display: 'block',
+                  }}
+                />
+
+                {/* Styled CSS Cover Fallback (Matching Cover Image) */}
+                <div
+                  id={`modal-left-fallback-${product.id}`}
+                  style={{
+                    display: 'none',
+                    width: '100%',
+                    minHeight: '420px',
+                    background: 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    padding: '2rem 1.5rem',
+                    position: 'relative',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '64px',
+                      height: '64px',
+                      borderRadius: '18px',
+                      background: 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 900,
+                      color: '#071326',
+                      fontSize: '1.8rem',
+                      boxShadow: '0 0 25px rgba(255, 212, 59, 0.4)',
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    Py
+                  </div>
+                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.04em' }}>
+                    PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span>
+                  </h2>
+                  <p style={{ color: '#BEEA9A', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.5rem', maxWidth: '320px' }}>
+                    THE COMPLETE GUIDE TO DATA ANALYSIS, MANIPULATION, AND VISUALIZATION
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  maxHeight: '500px',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.15)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  backgroundColor: '#071326',
+                }}
+              >
+                {descImg ? (
+                  <img
+                    src={descImg}
+                    alt="Description Graphic"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      maxHeight: '500px',
+                      objectFit: 'contain',
+                      display: 'block',
+                    }}
+                  />
+                ) : (
+                  <div style={{ padding: '2rem', textAlign: 'center', color: '#94A3B8' }}>
+                    Full Description Graphic
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Toggle Switcher between Cover Page & Description Graphic */}
+          {descImg && (
+            <div
+              style={{
+                display: 'flex',
+                gap: '0.5rem',
+                backgroundColor: 'rgba(30, 41, 59, 0.8)',
+                padding: '4px',
+                borderRadius: '9999px',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <button
+                onClick={() => setActiveTab('cover')}
+                style={{
+                  padding: '0.45rem 1rem',
+                  borderRadius: '9999px',
+                  border: 'none',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  backgroundColor: activeTab === 'cover' ? '#6366F1' : 'transparent',
+                  color: activeTab === 'cover' ? '#FFFFFF' : '#94A3B8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <BookOpen size={14} /> Cover Page
+              </button>
+              <button
+                onClick={() => setActiveTab('description')}
+                style={{
+                  padding: '0.45rem 1rem',
+                  borderRadius: '9999px',
+                  border: 'none',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  backgroundColor: activeTab === 'description' ? '#6366F1' : 'transparent',
+                  color: activeTab === 'description' ? '#FFFFFF' : '#94A3B8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <FileText size={14} /> Description Graphic
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* ════════════════════════════════════════════
+            RIGHT COLUMN: Book Details & Actions (Reference Style)
+        ════════════════════════════════════════════ */}
+        <div
+          style={{
+            flex: '1 1 450px',
+            padding: '2.5rem 2.5rem 2.5rem 2rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div>
+            {/* Top Category Badge Pill */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.4rem 1rem',
+                  borderRadius: '9999px',
+                  backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                  border: '1px solid rgba(165, 180, 252, 0.3)',
+                  color: '#A5B4FC',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                <BookOpen size={14} /> {product.category}
+              </span>
+
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.35rem 0.85rem',
+                  borderRadius: '9999px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: statusColor,
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
                 }}
               >
                 <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: statusColor }} />
                 {product.status} — v{product.version}
               </span>
+
               {product.author && (
                 <span
                   style={{
-                    padding: '4px 12px',
-                    borderRadius: '9999px',
-                    backgroundColor: 'rgba(137,146,85,0.4)',
-                    fontSize: '0.78rem',
+                    fontSize: '0.82rem',
+                    color: '#94A3B8',
                     fontWeight: 600,
-                    color: '#FFFFFF',
                   }}
                 >
-                  By {product.author}
+                  By <strong style={{ color: '#F8FAFC' }}>{product.author}</strong>
                 </span>
               )}
             </div>
+
+            {/* Book Title */}
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
+                fontSize: 'clamp(1.8rem, 3.2vw, 2.5rem)',
                 fontWeight: 800,
-                lineHeight: 1.2,
+                color: '#FFFFFF',
+                lineHeight: 1.18,
+                letterSpacing: '-0.02em',
+                marginBottom: '0.75rem',
               }}
             >
               {product.name}
             </h2>
-          </div>
-        </div>
 
-        {/* Modal Content */}
-        <div style={{ padding: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
-          
-          {/* Cover & Description Page View Selector */}
-          {(coverImg || descImg) && (
-            <div
+            {/* Tagline */}
+            <p
               style={{
-                display: 'flex',
-                gap: '0.75rem',
-                marginBottom: '1.75rem',
-                borderBottom: '1px solid #DCE8D3',
-                paddingBottom: '0.75rem',
-                flexWrap: 'wrap',
+                fontSize: '1.05rem',
+                color: '#94A3B8',
+                fontWeight: 600,
+                lineHeight: 1.5,
+                fontStyle: 'italic',
+                marginBottom: '1.5rem',
               }}
             >
-              <button
-                onClick={() => setActiveTab('details')}
-                style={{
-                  padding: '0.5rem 1.1rem',
-                  borderRadius: '8px',
-                  border: 'none',
-                  fontSize: '0.9rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  backgroundColor: activeTab === 'details' ? '#899255' : '#F0F5ED',
-                  color: activeTab === 'details' ? '#FFFFFF' : '#365648',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                <FileText size={16} /> Overview Details
-              </button>
-              {coverImg && (
-                <button
-                  onClick={() => setActiveTab('cover')}
-                  style={{
-                    padding: '0.5rem 1.1rem',
-                    borderRadius: '8px',
-                    border: 'none',
-                    fontSize: '0.9rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    backgroundColor: activeTab === 'cover' ? '#899255' : '#F0F5ED',
-                    color: activeTab === 'cover' ? '#FFFFFF' : '#365648',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  <BookOpen size={16} /> Cover Page
-                </button>
-              )}
-              {descImg && (
-                <button
-                  onClick={() => setActiveTab('description')}
-                  style={{
-                    padding: '0.5rem 1.1rem',
-                    borderRadius: '8px',
-                    border: 'none',
-                    fontSize: '0.9rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    backgroundColor: activeTab === 'description' ? '#899255' : '#F0F5ED',
-                    color: activeTab === 'description' ? '#FFFFFF' : '#365648',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  <FileText size={16} /> Description Page
-                </button>
-              )}
-            </div>
-          )}
+              "{product.tagline}"
+            </p>
 
-          {/* Cover Page Tab View */}
-          {activeTab === 'cover' && coverImg && (
-            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#21372F', marginBottom: '1rem' }}>
-                Book Cover Page
-              </h3>
-              <img
-                src={coverImg}
-                alt="Book Cover Page"
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '650px',
-                  borderRadius: '16px',
-                  boxShadow: '0 12px 35px rgba(33,55,47,0.18)',
-                  objectFit: 'contain',
-                }}
-              />
-            </div>
-          )}
+            {/* Book Detailed Description */}
+            <p
+              style={{
+                fontSize: '1.02rem',
+                color: '#CBD5E1',
+                lineHeight: 1.75,
+                marginBottom: '1.75rem',
+              }}
+            >
+              {product.fullDesc}
+            </p>
 
-          {/* Description Page Tab View */}
-          {activeTab === 'description' && descImg && (
-            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#21372F', marginBottom: '1rem' }}>
-                Full Product Description Graphic
-              </h3>
-              <img
-                src={descImg}
-                alt="Full Description Graphic"
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '850px',
-                  borderRadius: '16px',
-                  boxShadow: '0 12px 35px rgba(33,55,47,0.18)',
-                  objectFit: 'contain',
-                }}
-              />
-            </div>
-          )}
-
-          {/* Tagline & Description */}
-          <p
-            style={{
-              fontSize: '1.1rem',
-              fontWeight: 600,
-              fontStyle: 'italic',
-              color: '#899255',
-              marginBottom: '1rem',
-            }}
-          >
-            "{product.tagline}"
-          </p>
-          <p
-            style={{
-              fontSize: '1.05rem',
-              color: '#5F685F',
-              lineHeight: 1.7,
-              marginBottom: '2rem',
-            }}
-          >
-            {product.fullDesc}
-          </p>
-
-          {/* Both Images Side by Side Preview for eBooks */}
-          {product.isEBook && coverImg && descImg && activeTab === 'details' && (
-            <div style={{ marginBottom: '2.5rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#21372F', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <BookOpen size={18} color="#899255" /> Book Preview & Infographic
-              </h3>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                  gap: '1.25rem',
-                }}
-              >
-                <div
-                  onClick={() => setActiveTab('cover')}
-                  style={{
-                    cursor: 'pointer',
-                    borderRadius: '16px',
-                    overflow: 'hidden',
-                    border: '1px solid #DCE8D3',
-                    backgroundColor: '#F7FAF5',
-                    padding: '0.75rem',
-                    textAlign: 'center',
-                    transition: 'all 0.25s ease',
-                  }}
-                >
-                  <img
-                    src={coverImg}
-                    alt="Cover Preview"
-                    style={{ width: '100%', height: '320px', objectFit: 'contain', borderRadius: '10px' }}
-                  />
-                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#899255', marginTop: '0.5rem', display: 'block' }}>
-                    Click to Enlarge Cover Page
-                  </span>
-                </div>
-
-                <div
-                  onClick={() => setActiveTab('description')}
-                  style={{
-                    cursor: 'pointer',
-                    borderRadius: '16px',
-                    overflow: 'hidden',
-                    border: '1px solid #DCE8D3',
-                    backgroundColor: '#F7FAF5',
-                    padding: '0.75rem',
-                    textAlign: 'center',
-                    transition: 'all 0.25s ease',
-                  }}
-                >
-                  <img
-                    src={descImg}
-                    alt="Description Graphic Preview"
-                    style={{ width: '100%', height: '320px', objectFit: 'contain', borderRadius: '10px' }}
-                  />
-                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#899255', marginTop: '0.5rem', display: 'block' }}>
-                    Click to Enlarge Description Page
-                  </span>
-                </div>
+            {/* Key Features List */}
+            <div style={{ marginBottom: '2rem' }}>
+              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.85rem' }}>
+                What You'll Master:
+              </h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.6rem' }}>
+                {product.features.slice(0, 4).map((feature, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '0.5rem',
+                      fontSize: '0.88rem',
+                      color: '#E2E8F0',
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    <Check size={16} style={{ color: '#4ADE80', flexShrink: 0, marginTop: '2px' }} />
+                    <span>{feature}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          )}
+          </div>
 
-          {/* Pricing CTA Bar with Cart, Wishlist, Buy Now */}
+          {/* ════════════════════════════════════════════
+              BOTTOM PRICING & ACTIONS BAR
+          ════════════════════════════════════════════ */}
           <div
             style={{
+              backgroundColor: 'rgba(30, 41, 59, 0.6)',
+              borderRadius: '20px',
+              padding: '1.25rem 1.5rem',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              backgroundColor: '#F7FAF5',
-              borderRadius: '16px',
-              padding: '1.25rem 1.5rem',
-              marginBottom: '2.5rem',
-              border: '1px solid #DCE8D3',
               flexWrap: 'wrap',
               gap: '1rem',
+              marginTop: '1rem',
             }}
           >
             <div>
-              <span style={{ fontSize: '0.85rem', color: '#5F685F', display: 'block', marginBottom: '0.25rem' }}>
-                Pricing
+              <span style={{ fontSize: '0.78rem', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '0.2rem' }}>
+                Price
               </span>
-              <span style={{ fontSize: '1.6rem', fontWeight: 800, color: '#21372F' }}>
+              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#FFFFFF', lineHeight: 1 }}>
                 {product.pricing}
               </span>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'center', flexWrap: 'wrap' }}>
               {/* Wishlist Button */}
               {onToggleWishlist && (
                 <button
                   onClick={() => onToggleWishlist(product)}
                   style={{
-                    padding: '0.75rem 1.1rem',
+                    width: '42px',
+                    height: '42px',
                     borderRadius: '12px',
-                    border: `1px solid ${isInWishlist ? '#E53935' : '#DCE8D3'}`,
-                    backgroundColor: '#FFFFFF',
-                    color: isInWishlist ? '#E53935' : '#21372F',
-                    fontSize: '0.92rem',
+                    border: `1px solid ${isInWishlist ? '#EF4444' : 'rgba(255, 255, 255, 0.15)'}`,
+                    backgroundColor: isInWishlist ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                    color: isInWishlist ? '#EF4444' : '#FFFFFF',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s ease',
+                  }}
+                  title="Add to Wishlist"
+                >
+                  <Heart size={18} fill={isInWishlist ? '#EF4444' : 'none'} />
+                </button>
+              )}
+
+              {/* Add to Cart Button */}
+              {onAddToCart && (
+                <button
+                  onClick={() => onAddToCart(product)}
+                  style={{
+                    padding: '0.7rem 1.1rem',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    color: '#FFFFFF',
+                    fontSize: '0.9rem',
                     fontWeight: 700,
                     cursor: 'pointer',
                     display: 'inline-flex',
@@ -462,341 +522,68 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     gap: '0.4rem',
                     transition: 'all 0.2s ease',
                   }}
-                  title="Toggle Wishlist"
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.16)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)')}
                 >
-                  <Heart size={18} fill={isInWishlist ? '#E53935' : 'none'} />
-                  {isInWishlist ? 'Wishlisted' : 'Wishlist'}
+                  <ShoppingCart size={17} /> Add to Cart
                 </button>
               )}
 
-              {/* Cart Button */}
-              {onAddToCart && (
-                <button
-                  onClick={() => onAddToCart(product)}
-                  className="btn btn-outline"
-                  style={{
-                    padding: '0.75rem 1.3rem',
-                    fontSize: '0.95rem',
-                    borderRadius: '12px',
-                    gap: '0.4rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <ShoppingCart size={18} /> Add to Cart
-                </button>
-              )}
-
-              {/* Buy Now Button */}
+              {/* Buy Now (€100) Button */}
               {onBuyNow && (
                 <button
                   onClick={() => { handleClose(); onBuyNow(product); }}
-                  className="btn btn-primary"
                   style={{
-                    padding: '0.75rem 1.6rem',
-                    fontSize: '0.95rem',
-                    backgroundColor: '#899255',
+                    padding: '0.7rem 1.4rem',
                     borderRadius: '12px',
-                    gap: '0.4rem',
-                    fontWeight: 700,
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+                    color: '#FFFFFF',
+                    fontSize: '0.9rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
                     display: 'inline-flex',
                     alignItems: 'center',
+                    gap: '0.4rem',
+                    boxShadow: '0 8px 20px rgba(99, 102, 241, 0.4)',
+                    transition: 'all 0.25s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 12px 28px rgba(99, 102, 241, 0.6)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(99, 102, 241, 0.4)';
                   }}
                 >
-                  <Zap size={18} /> Buy Now ({product.pricing})
+                  <Zap size={17} /> Buy Now ({product.pricing})
                 </button>
               )}
 
-              {/* PDF Direct View/Download Button */}
+              {/* Direct PDF View Link */}
               {product.pdfUrl && (
                 <a
                   href={product.pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    padding: '0.75rem 1.2rem',
+                    padding: '0.7rem 1rem',
                     borderRadius: '12px',
-                    backgroundColor: '#21372F',
-                    color: '#BEEA9A',
-                    fontSize: '0.92rem',
+                    backgroundColor: 'rgba(74, 222, 128, 0.15)',
+                    border: '1px solid rgba(74, 222, 128, 0.3)',
+                    color: '#4ADE80',
+                    fontSize: '0.88rem',
                     fontWeight: 700,
                     textDecoration: 'none',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.4rem',
+                    gap: '0.35rem',
                   }}
                 >
-                  <Download size={18} /> View PDF
+                  <Download size={16} /> PDF
                 </a>
               )}
-            </div>
-          </div>
-
-          {/* Features Grid */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
-              <div
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '10px',
-                  backgroundColor: '#F0F5ED',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Layers size={18} color="#899255" />
-              </div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#21372F' }}>Key Features</h3>
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                gap: '0.75rem',
-              }}
-            >
-              {product.features.map((feature, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '0.6rem',
-                    padding: '0.75rem 1rem',
-                    backgroundColor: '#F7FAF5',
-                    borderRadius: '12px',
-                    border: '1px solid #F0F5ED',
-                    fontSize: '0.92rem',
-                    color: '#365648',
-                    lineHeight: 1.5,
-                  }}
-                >
-                  <Check size={16} style={{ color: '#899255', flexShrink: 0, marginTop: '2px' }} />
-                  {feature}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Benefits */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
-              <div
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '10px',
-                  backgroundColor: '#F0F5ED',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Zap size={18} color="#899255" />
-              </div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#21372F' }}>Benefits</h3>
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                gap: '1rem',
-              }}
-            >
-              {product.benefits.map((benefit, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '0.75rem',
-                    padding: '1rem 1.25rem',
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '14px',
-                    border: '1px solid #DCE8D3',
-                    boxShadow: '0 2px 8px rgba(33,55,47,0.04)',
-                  }}
-                >
-                  <Star size={18} style={{ color: '#899255', flexShrink: 0, marginTop: '2px' }} />
-                  <span style={{ fontSize: '0.95rem', color: '#365648', lineHeight: 1.5 }}>{benefit}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Use Cases */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
-              <div
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '10px',
-                  backgroundColor: '#F0F5ED',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Users size={18} color="#899255" />
-              </div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#21372F' }}>Use Cases</h3>
-            </div>
-
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-              {product.useCases.map((useCase, i) => {
-                const Icon = useCaseIcons[i % useCaseIcons.length];
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      padding: '0.6rem 1.2rem',
-                      backgroundColor: '#F0F5ED',
-                      borderRadius: '10px',
-                      border: '1px solid #DCE8D3',
-                      fontSize: '0.9rem',
-                      fontWeight: 600,
-                      color: '#365648',
-                    }}
-                  >
-                    <Icon size={16} color="#899255" />
-                    {useCase}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Tech Stack & Integrations */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gap: '1.5rem',
-              marginBottom: '2rem',
-            }}
-          >
-            {/* Tech Stack */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                <div
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '10px',
-                    backgroundColor: '#F0F5ED',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Layers size={18} color="#899255" />
-                </div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#21372F' }}>Tech Stack</h3>
-              </div>
-
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {product.techStack.map((tech, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      color: '#365648',
-                      backgroundColor: '#F7FAF5',
-                      padding: '6px 14px',
-                      borderRadius: '8px',
-                      border: '1px solid #DCE8D3',
-                    }}
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Integrations */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                <div
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '10px',
-                    backgroundColor: '#F0F5ED',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Puzzle size={18} color="#899255" />
-                </div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#21372F' }}>Integrations</h3>
-              </div>
-
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {product.integrations.map((integration, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      color: '#899255',
-                      backgroundColor: '#F0F5ED',
-                      padding: '6px 14px',
-                      borderRadius: '8px',
-                    }}
-                  >
-                    {integration}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom CTA */}
-          <div
-            style={{
-              textAlign: 'center',
-              borderTop: '1px solid #DCE8D3',
-              paddingTop: '2rem',
-            }}
-          >
-            <p style={{ fontSize: '1rem', color: '#5F685F', marginBottom: '1.25rem' }}>
-              Interested in {product.name}? Let's discuss how it fits your business.
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              {product.isEBook ? (
-                <button
-                  onClick={() => { handleClose(); if (onBuyNow) onBuyNow(product); }}
-                  className="btn btn-primary"
-                  style={{ padding: '0.8rem 2rem' }}
-                >
-                  Download eBook PDF <Download size={18} />
-                </button>
-              ) : (
-                <button
-                  onClick={() => { handleClose(); onNavigate('contact'); }}
-                  className="btn btn-primary"
-                  style={{ padding: '0.8rem 2rem' }}
-                >
-                  Get Started <ArrowRight size={18} />
-                </button>
-              )}
-              <button
-                onClick={handleClose}
-                className="btn btn-outline"
-                style={{ padding: '0.8rem 2rem' }}
-              >
-                Back to Products
-              </button>
             </div>
           </div>
         </div>
