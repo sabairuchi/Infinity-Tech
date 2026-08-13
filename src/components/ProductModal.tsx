@@ -234,7 +234,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.04em' }}>
                   PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span>
                 </h2>
-                <p style={{ color: '#BEEA9A', fontSize: '0.85rem', fontWeight 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.5rem', maxWidth: '320px' }}>
+                <p style={{ color: '#BEEA9A', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.5rem', maxWidth: '320px' }}>
                   THE COMPLETE GUIDE TO DATA ANALYSIS, MANIPULATION, AND VISUALIZATION
                 </p>
               </div>
