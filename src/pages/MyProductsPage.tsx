@@ -63,13 +63,15 @@ export const MyProductsPage: React.FC<MyProductsPageProps> = ({
       setDownloadingId(null);
       if (item.product.isEBook || item.product.id === 'cloud-computing-blueprint') {
         try {
-          const res = await fetch('/assets/cloud-computing-blueprint.pdf');
+          const targetPdf = item.product.pdfUrl || '/assets/Mastering_React_E_Book.pdf';
+          const fileName = `${item.product.name.replace(/\s+/g, '_')}.pdf`;
+          const res = await fetch(targetPdf);
           if (res.ok) {
             const blob = await res.blob();
             const blobUrl = URL.createObjectURL(blob);
             const element = document.createElement('a');
             element.href = blobUrl;
-            element.download = 'Cloud-Computing-Blueprint-Digiro.pdf';
+            element.download = fileName;
             document.body.appendChild(element);
             element.click();
             document.body.removeChild(element);
@@ -100,15 +102,13 @@ BT
 /F1 14 Tf
 50 720 Td
 20 TL
-(CLOUD COMPUTING BLUEPRINT - 65 PAGES EBOOK) '
+(${item.product.name.toUpperCase()} - EBOOK) '
 (==================================================) '
-(A Beginner's Guide to Cloud Technologies, Architecture,) '
-(and Real-World Applications) '
+(${item.product.tagline}) '
 (==================================================) '
 () '
 (Publisher: Digiro Digital Publications) '
-(Chapters: IaaS, PaaS, SaaS, Public/Private Cloud, Security,) '
-(Databases, AWS, Azure, GCP, DevOps & Cloud Careers.) '
+(Format: PDF Digital Download) '
 ET
 endstream
 endobj
@@ -130,7 +130,7 @@ startxref
         const blobUrl = URL.createObjectURL(blob);
         const element = document.createElement('a');
         element.href = blobUrl;
-        element.download = 'Cloud-Computing-Blueprint-Digiro.pdf';
+        element.download = `${item.product.name.replace(/\s+/g, '_')}.pdf`;
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);

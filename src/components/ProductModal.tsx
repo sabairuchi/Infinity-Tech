@@ -183,10 +183,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 src={coverImg}
                 alt={product.name}
                 onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.style.display = 'none';
-                  const fallbackEl = document.getElementById(`modal-left-fallback-${product.id}`);
-                  if (fallbackEl) fallbackEl.style.display = 'flex';
+                  const target = e.currentTarget;
+                  if (!target.dataset.triedAlt && product.id === 'mastering-react') {
+                    target.dataset.triedAlt = 'true';
+                    target.src = '/assets/react cover page.png';
+                  } else {
+                    target.style.display = 'none';
+                    const fallbackEl = document.getElementById(`modal-left-fallback-${product.id}`);
+                    if (fallbackEl) fallbackEl.style.display = 'flex';
+                  }
                 }}
                 style={{
                   width: '100%',
@@ -206,7 +211,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   minHeight: '440px',
                   background: product.id === 'advanced-ux-design'
                     ? 'linear-gradient(135deg, #0B192C 0%, #1E3E62 50%, #000000 100%)'
-                    : 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
+                    : product.id === 'mastering-react'
+                      ? 'linear-gradient(135deg, #0A192F 0%, #112240 50%, #020C1B 100%)'
+                      : 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -222,28 +229,36 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     borderRadius: '18px',
                     background: product.id === 'advanced-ux-design'
                       ? 'linear-gradient(135deg, #FF5722 0%, #FF9800 100%)'
-                      : 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
+                      : product.id === 'mastering-react'
+                        ? 'linear-gradient(135deg, #61DAFB 0%, #007ACC 100%)'
+                        : 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontWeight: 900,
                     color: '#FFFFFF',
-                    fontSize: '1.8rem',
-                    boxShadow: '0 0 25px rgba(255, 152, 0, 0.4)',
+                    fontSize: '2rem',
+                    boxShadow: product.id === 'mastering-react' ? '0 0 25px rgba(97, 218, 251, 0.4)' : '0 0 25px rgba(255, 152, 0, 0.4)',
                     marginBottom: '1rem',
                   }}
                 >
-                  {product.id === 'advanced-ux-design' ? 'UX' : 'Py'}
+                  {product.id === 'advanced-ux-design' ? 'UX' : product.id === 'mastering-react' ? '⚛' : 'Py'}
                 </div>
                 <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.04em' }}>
                   {product.id === 'advanced-ux-design' ? (
                     <>ADVANCED <span style={{ color: '#FF7043' }}>UX DESIGN</span></>
+                  ) : product.id === 'mastering-react' ? (
+                    <>MASTERING <span style={{ color: '#61DAFB' }}>REACT</span></>
                   ) : (
                     <>PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span></>
                   )}
                 </h2>
                 <p style={{ color: '#BEEA9A', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.5rem', maxWidth: '320px' }}>
-                  {product.id === 'advanced-ux-design' ? 'ELEVATING USER EXPERIENCE THROUGH STRATEGY, RESEARCH & INNOVATION' : 'THE COMPLETE GUIDE TO DATA ANALYSIS, MANIPULATION, AND VISUALIZATION'}
+                  {product.id === 'advanced-ux-design'
+                    ? 'ELEVATING USER EXPERIENCE THROUGH STRATEGY, RESEARCH & INNOVATION'
+                    : product.id === 'mastering-react'
+                      ? 'A COMPREHENSIVE GUIDE TO BUILDING ROBUST INTERFACES WITH REACT'
+                      : 'THE COMPLETE GUIDE TO DATA ANALYSIS, MANIPULATION, AND VISUALIZATION'}
                 </p>
               </div>
             </div>
@@ -435,7 +450,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 }}
               >
                 <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#A5B4FC', display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                  <Code size={18} /> {product.id === 'advanced-ux-design' ? 'WHY THIS BOOK?' : 'WHY PYTHON?'}
+                  <Code size={18} /> {product.id === 'python-for-data' ? 'WHY PYTHON?' : 'WHY THIS BOOK?'}
                 </h4>
                 <p style={{ fontSize: '0.95rem', color: '#CBD5E1', lineHeight: 1.65 }}>
                   {product.whyPython}
@@ -455,10 +470,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', color: '#38BDF8', fontWeight: 800, fontSize: '0.95rem', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>
-                <Star size={18} fill="#38BDF8" /> TURN DATA INTO INSIGHT. INSIGHT INTO IMPACT.
+                <Star size={18} fill="#38BDF8" /> {product.id === 'mastering-react' ? 'BUILD BETTER. SHIP FASTER.' : product.id === 'advanced-ux-design' ? 'GREAT DESIGN IS HOW IT WORKS.' : 'TURN DATA INTO INSIGHT. INSIGHT INTO IMPACT.'}
               </div>
               <p style={{ fontSize: '0.92rem', color: '#94A3B8', fontStyle: 'italic' }}>
-                Let Python be your partner in the journey from data to decisions.
+                {product.closingQuote || 'Let Python be your partner in the journey from data to decisions.'}
               </p>
             </div>
 

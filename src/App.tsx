@@ -305,14 +305,16 @@ startxref
             product,
             version: product.version,
             licenseKey: `EBOOK-FREE-MEMBER-LICENSE`,
-            downloadSize: '12.5 MB PDF',
+            downloadSize: `${product.pageCount || 45} Pages PDF`,
             datePurchased: 'Free Member Download',
           },
           ...prev,
         ];
       });
 
-      triggerPdfDownload('/assets/cloud-computing-blueprint.pdf', 'Cloud-Computing-Blueprint-Digiro.pdf');
+      const pdfPath = product.pdfUrl || '/assets/Mastering_React_E_Book.pdf';
+      const pdfFileName = `${product.name.replace(/\s+/g, '_')}.pdf`;
+      triggerPdfDownload(pdfPath, pdfFileName);
       navigateTo('my-products');
       return;
     }
@@ -352,7 +354,9 @@ startxref
       });
 
       setTimeout(() => {
-        triggerPdfDownload('/assets/cloud-computing-blueprint.pdf', 'Cloud-Computing-Blueprint-Digiro.pdf');
+        const pdfPath = ebookProd.pdfUrl || '/assets/Mastering_React_E_Book.pdf';
+        const pdfFileName = `${ebookProd.name.replace(/\s+/g, '_')}.pdf`;
+        triggerPdfDownload(pdfPath, pdfFileName);
         navigateTo('my-products');
       }, 400);
     }

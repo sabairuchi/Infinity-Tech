@@ -86,10 +86,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           alt={product.name}
           loading="lazy"
           onError={(e) => {
-            e.currentTarget.onerror = null;
-            e.currentTarget.style.display = 'none';
-            const fallbackEl = document.getElementById(`card-fallback-${product.id}`);
-            if (fallbackEl) fallbackEl.style.display = 'flex';
+            const target = e.currentTarget;
+            if (!target.dataset.triedAlt && product.id === 'mastering-react') {
+              target.dataset.triedAlt = 'true';
+              target.src = '/assets/react cover page.png';
+            } else {
+              target.style.display = 'none';
+              const fallbackEl = document.getElementById(`card-fallback-${product.id}`);
+              if (fallbackEl) fallbackEl.style.display = 'flex';
+            }
           }}
           style={{
             width: '100%',
@@ -109,7 +114,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             height: '100%',
             background: product.id === 'advanced-ux-design'
               ? 'linear-gradient(135deg, #0B192C 0%, #1E3E62 50%, #000000 100%)'
-              : 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
+              : product.id === 'mastering-react'
+                ? 'linear-gradient(135deg, #0A192F 0%, #112240 50%, #020C1B 100%)'
+                : 'linear-gradient(135deg, #071326 0%, #0D2240 50%, #071326 100%)',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
@@ -125,7 +132,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               borderRadius: '12px',
               background: product.id === 'advanced-ux-design'
                 ? 'linear-gradient(135deg, #FF5722 0%, #FF9800 100%)'
-                : 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
+                : product.id === 'mastering-react'
+                  ? 'linear-gradient(135deg, #61DAFB 0%, #007ACC 100%)'
+                  : 'linear-gradient(135deg, #3776AB 0%, #FFD43B 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -135,17 +144,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               marginBottom: '0.5rem',
             }}
           >
-            {product.id === 'advanced-ux-design' ? 'UX' : 'Py'}
+            {product.id === 'advanced-ux-design' ? 'UX' : product.id === 'mastering-react' ? '⚛' : 'Py'}
           </div>
           <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.04em' }}>
             {product.id === 'advanced-ux-design' ? (
               <>ADVANCED <span style={{ color: '#FF7043' }}>UX DESIGN</span></>
+            ) : product.id === 'mastering-react' ? (
+              <>MASTERING <span style={{ color: '#61DAFB' }}>REACT</span></>
             ) : (
               <>PYTHON <span style={{ color: '#FFD43B' }}>FOR DATA</span></>
             )}
           </div>
           <div style={{ fontSize: '0.7rem', color: '#BEEA9A', marginTop: '0.25rem', fontWeight: 600 }}>
-            {product.id === 'advanced-ux-design' ? 'STRATEGY, RESEARCH & INNOVATION' : 'DATA ANALYSIS & VISUALIZATION'}
+            {product.id === 'advanced-ux-design'
+              ? 'STRATEGY, RESEARCH & INNOVATION'
+              : product.id === 'mastering-react'
+                ? 'COMPONENTS • STATE • HOOKS • ROUTING'
+                : 'DATA ANALYSIS & VISUALIZATION'}
           </div>
         </div>
 
