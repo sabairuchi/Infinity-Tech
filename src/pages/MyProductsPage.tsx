@@ -256,10 +256,13 @@ startxref
           <div
             style={{
               display: 'flex',
-              gap: '1rem',
+              gap: '0.75rem',
               borderBottom: '2px solid #F0F5ED',
-              marginBottom: '3rem',
+              marginBottom: '2.5rem',
               overflowX: 'auto',
+              whiteSpace: 'nowrap',
+              WebkitOverflowScrolling: 'touch',
+              paddingBottom: '4px',
             }}
           >
             <button
@@ -419,7 +422,7 @@ startxref
                   </button>
                 </div>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem', alignItems: 'start' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', alignItems: 'start' }}>
                   
                   {/* Selected Cart Items */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -790,10 +793,10 @@ startxref
                   </button>
                 </div>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem', alignItems: 'start' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', alignItems: 'start' }}>
                   
                   {/* Billing Details & Payment Method Options */}
-                  <div style={{ backgroundColor: '#F7FAF5', borderRadius: '20px', border: '1px solid #DCE8D3', padding: '2rem' }}>
+                  <div style={{ backgroundColor: '#F7FAF5', borderRadius: '20px', border: '1px solid #DCE8D3', padding: 'clamp(1.25rem, 4vw, 2rem)' }}>
                     <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#21372F', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                       💳 Payment & Billing Details
                     </h3>
@@ -803,7 +806,7 @@ startxref
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#21372F', marginBottom: '0.5rem' }}>
                         Select Payment Method
                       </label>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.75rem' }}>
                         {[
                           { id: 'card', label: '💳 Credit Card' },
                           { id: 'paypal', label: '🅿️ PayPal' },
