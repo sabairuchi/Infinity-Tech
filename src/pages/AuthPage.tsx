@@ -398,6 +398,46 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         {/* Official Google Sign-In Button Container */}
         <div id="google-official-btn" style={{ margin: '1.5rem auto 0 auto', display: 'flex', justifyContent: 'center', minHeight: '44px' }} />
 
+        {/* Instant Demo Sign-In Fallback Button */}
+        <button
+          type="button"
+          onClick={() => {
+            const demoUser: User = {
+              id: `usr-demo-${Date.now()}`,
+              name: 'Ruchi Kumari',
+              email: 'rk3408330@gmail.com',
+              avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+              role: 'Verified Member',
+              authProvider: 'email',
+              token: 'demo-token-12345',
+            };
+            processAuthResult(demoUser, 'demo-token-12345', false);
+          }}
+          style={{
+            marginTop: '1.25rem',
+            width: '100%',
+            padding: '0.85rem',
+            borderRadius: '9999px',
+            border: '1px solid rgba(190, 234, 154, 0.35)',
+            backgroundColor: 'rgba(190, 234, 154, 0.12)',
+            color: '#BEEA9A',
+            fontSize: '0.92rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(190, 234, 154, 0.25)';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(190, 234, 154, 0.12)';
+            e.currentTarget.style.transform = 'translateY(0)';
+          }}
+        >
+          ⚡ Instant Demo Sign-In
+        </button>
+
         {/* Security assurance footer */}
         <div
           style={{
