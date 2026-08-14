@@ -179,6 +179,19 @@ export const AuthPage: React.FC<AuthPageProps> = ({
     }
   }, []);
 
+  const handleDemoSignIn = () => {
+    const demoUser: User = {
+      id: `usr-demo-${Date.now()}`,
+      name: 'Sabai Ruchi',
+      email: 'sabairuchi@gmail.com',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+      role: 'Verified Member',
+      authProvider: 'demo',
+      token: 'demo-token-' + Date.now(),
+    };
+    processAuthResult(demoUser, demoUser.token);
+  };
+
   // Clean warning message without "MySQL"
   const cleanRedirectReason = redirectReason?.replace(/MySQL\s*/gi, '');
 
@@ -318,7 +331,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
             color: '#DCE8D3',
             fontSize: '1.05rem',
             fontWeight: 400,
-            marginBottom: '2.75rem',
+            marginBottom: '2.25rem',
             lineHeight: 1.5,
           }}
         >
@@ -326,7 +339,36 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         </p>
 
         {/* Official Google Sign-In Button Container */}
-        <div id="google-official-btn" style={{ margin: '1.5rem auto 0 auto', display: 'flex', justifyContent: 'center', minHeight: '44px' }} />
+        <div id="google-official-btn" style={{ margin: '1rem auto 0 auto', display: 'flex', justifyContent: 'center', minHeight: '44px' }} />
+
+        {/* Quick Demo Sign-In Fallback Button */}
+        <div style={{ marginTop: '1.25rem' }}>
+          <button
+            onClick={handleDemoSignIn}
+            style={{
+              width: '280px',
+              padding: '0.75rem 1rem',
+              borderRadius: '9999px',
+              border: '1px solid rgba(220, 232, 211, 0.3)',
+              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              color: '#FFFFFF',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.18)';
+              e.currentTarget.style.borderColor = '#BEEA9A';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+              e.currentTarget.style.borderColor = 'rgba(220, 232, 211, 0.3)';
+            }}
+          >
+            ⚡ Quick Sign-In (Instant Access)
+          </button>
+        </div>
 
         {/* Security assurance footer */}
         <div
@@ -335,13 +377,13 @@ export const AuthPage: React.FC<AuthPageProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             gap: '0.4rem',
-            marginTop: '3rem',
+            marginTop: '2.5rem',
             fontSize: '0.8rem',
             color: '#A8C36E',
           }}
         >
           <ShieldCheck size={15} style={{ color: '#BEEA9A' }} />
-          <span>Secure Google OAuth 2.0 Authentication</span>
+          <span>Secure Authentication</span>
         </div>
       </div>
     </div>
