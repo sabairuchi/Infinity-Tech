@@ -306,7 +306,7 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="+91 93155 82116"
+                        placeholder="e.g. +91 98765 43210"
                         style={{
                           width: '100%',
                           padding: '0.75rem 1rem',
