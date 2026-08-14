@@ -183,11 +183,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.9rem', color: '#DCE8D3' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Mail size={18} style={{ color: '#BEEA9A', flexShrink: 0 }} />
-                <a href="mailto:hello@digiro.digital" style={{ color: 'inherit' }}>hello@digiro.digital</a>
+                <a href="mailto:contact@digiro.in" style={{ color: 'inherit' }}>contact@digiro.in</a>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Phone size={18} style={{ color: '#BEEA9A', flexShrink: 0 }} />
-                <a href="tel:+18005550199" style={{ color: 'inherit' }}>+1 (800) 555-0199</a>
+                <a href="tel:+919315582116" style={{ color: 'inherit' }}>+91 93155 82116</a>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                 <MapPin size={18} style={{ color: '#BEEA9A', flexShrink: 0, marginTop: '2px' }} />
@@ -199,7 +199,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
             <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
               {/* WhatsApp */}
               <a
-                href="https://wa.me/18005550199"
+                href="https://wa.me/919315582116"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Contact on WhatsApp"
@@ -231,7 +231,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
 
               {/* Mail */}
               <a
-                href="mailto:hello@digiro.digital"
+                href="mailto:contact@digiro.in"
                 aria-label="Send Email"
                 title="Send Email"
                 style={{

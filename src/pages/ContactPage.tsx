@@ -148,8 +148,8 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                   </div>
                   <div>
                     <strong style={{ display: 'block', fontSize: '1rem', color: '#21372F', marginBottom: '0.2rem' }}>Email Inquiry</strong>
-                    <a href="mailto:hello@digiro.digital" style={{ color: '#899255', fontWeight: 600, fontSize: '0.95rem' }}>
-                      hello@digiro.digital
+                    <a href="mailto:contact@digiro.in" style={{ color: '#899255', fontWeight: 600, fontSize: '0.95rem' }}>
+                      contact@digiro.in
                     </a>
                   </div>
                 </div>
@@ -160,8 +160,8 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                   </div>
                   <div>
                     <strong style={{ display: 'block', fontSize: '1rem', color: '#21372F', marginBottom: '0.2rem' }}>Phone Line</strong>
-                    <a href="tel:+18005550199" style={{ color: '#899255', fontWeight: 600, fontSize: '0.95rem' }}>
-                      +1 (800) 555-0199
+                    <a href="tel:+919315582116" style={{ color: '#899255', fontWeight: 600, fontSize: '0.95rem' }}>
+                      +91 93155 82116
                     </a>
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                   <div>
                     <strong style={{ display: 'block', fontSize: '1rem', color: '#21372F', marginBottom: '0.2rem' }}>Business Hours</strong>
                     <span style={{ color: '#5F685F', fontSize: '0.95rem' }}>
-                      Monday – Friday: 8:00 AM – 6:00 PM PST
+                      Monday – Saturday: 9:30 AM – 6:30 PM
                     </span>
                   </div>
                 </div>
@@ -336,7 +336,7 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="+1 (555) 000-0000"
+                        placeholder="+91 93155 82116"
                         style={{
                           width: '100%',
                           padding: '0.75rem 1rem',
