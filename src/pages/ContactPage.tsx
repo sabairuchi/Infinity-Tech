@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { PageRoute, ContactFormData } from '../types';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, AlertCircle, Loader2, MessageCircle } from 'lucide-react';
 
 interface ContactPageProps {
   onNavigate: (page: PageRoute) => void;
@@ -51,6 +51,13 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
 
     setIsSubmitting(true);
 
+    // Format WhatsApp message to send directly to contact number +91 93155 82116
+    const whatsappMsg = `*New Inquiry from Digiro Website*\n\n*Full Name:* ${formData.name}\n*Email:* ${formData.email}\n*Phone:* ${formData.phone || 'N/A'}\n*Company:* ${formData.company || 'N/A'}\n*Service Requested:* ${formData.service}\n\n*Message:*\n${formData.message}`;
+    const whatsappUrl = `https://wa.me/919315582116?text=${encodeURIComponent(whatsappMsg)}`;
+
+    // Automatically open WhatsApp chat in new tab
+    window.open(whatsappUrl, '_blank');
+
     // Real API call to Express backend
     try {
       const customApi = import.meta.env.VITE_API_BASE_URL;
@@ -60,16 +67,11 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
             ? '/api/contact'
             : 'http://localhost:5000/api/contact');
 
-      const response = await fetch(apiUrl, {
+      await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to submit inquiry.');
-      }
+      }).catch(() => {});
       
       setSubmittedData({ ...formData });
       setIsSuccess(true);
@@ -83,7 +85,6 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
       });
       setErrors({});
     } catch (err: any) {
-      // Fallback in case local backend server is not running
       setSubmittedData({ ...formData });
       setIsSuccess(true);
       setFormData({
@@ -222,13 +223,48 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                     {submittedData?.company && <div>Company: {submittedData.company}</div>}
                   </div>
 
-                  <button
-                    onClick={() => setIsSuccess(false)}
-                    className="btn btn-primary"
-                    style={{ width: '100%' }}
-                  >
-                    Send Another Message
-                  </button>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                    {submittedData && (
+                      <a
+                        href={`https://wa.me/919315582116?text=${encodeURIComponent(`*New Inquiry from Digiro Website*\n\n*Full Name:* ${submittedData.name}\n*Email:* ${submittedData.email}\n*Phone:* ${submittedData.phone || 'N/A'}\n*Company:* ${submittedData.company || 'N/A'}\n*Service Requested:* ${submittedData.service}\n\n*Message:*\n${submittedData.message}`)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn"
+                        style={{
+                          width: '100%',
+                          textDecoration: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.5rem',
+                          backgroundColor: '#25D366',
+                          color: '#FFFFFF',
+                          fontWeight: 700,
+                          padding: '0.85rem',
+                          borderRadius: '8px',
+                          border: 'none',
+                        }}
+                      >
+                        <MessageCircle size={18} /> Open WhatsApp Chat (+91 93155 82116)
+                      </a>
+                    )}
+                    <button
+                      onClick={() => setIsSuccess(false)}
+                      className="btn"
+                      style={{
+                        width: '100%',
+                        backgroundColor: '#F0F5ED',
+                        color: '#21372F',
+                        border: '1px solid #DCE8D3',
+                        padding: '0.75rem',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontWeight: 600,
+                      }}
+                    >
+                      Send Another Message
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
