@@ -119,15 +119,24 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
               Get In Touch
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.9rem', color: '#DCE8D3' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Mail size={18} style={{ color: '#BEEA9A', flexShrink: 0 }} />
-                <a
-                  href="mailto:contact@digiro.in"
-                  onClick={() => onNavigate('contact')}
-                  style={{ color: 'inherit' }}
-                >
-                  contact@digiro.in
-                </a>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                <Mail size={18} style={{ color: '#BEEA9A', flexShrink: 0, marginTop: '3px' }} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                  <a
+                    href="mailto:contact@digiro.in"
+                    onClick={() => onNavigate('contact')}
+                    style={{ color: 'inherit' }}
+                  >
+                    contact@digiro.in
+                  </a>
+                  <a
+                    href="mailto:info@digiro.in"
+                    onClick={() => onNavigate('contact')}
+                    style={{ color: 'inherit' }}
+                  >
+                    info@digiro.in
+                  </a>
+                </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Phone size={18} style={{ color: '#BEEA9A', flexShrink: 0 }} />

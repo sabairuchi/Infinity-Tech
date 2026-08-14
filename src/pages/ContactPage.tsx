@@ -149,8 +149,11 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                   </div>
                   <div>
                     <strong style={{ display: 'block', fontSize: '1rem', color: '#21372F', marginBottom: '0.2rem' }}>Email Inquiry</strong>
-                    <a href="mailto:contact@digiro.in" style={{ color: '#899255', fontWeight: 600, fontSize: '0.95rem' }}>
+                    <a href="mailto:contact@digiro.in" style={{ color: '#899255', fontWeight: 600, fontSize: '0.95rem', display: 'block' }}>
                       contact@digiro.in
+                    </a>
+                    <a href="mailto:info@digiro.in" style={{ color: '#899255', fontWeight: 600, fontSize: '0.95rem', display: 'block', marginTop: '0.2rem' }}>
+                      info@digiro.in
                     </a>
                   </div>
                 </div>
