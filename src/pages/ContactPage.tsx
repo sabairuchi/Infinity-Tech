@@ -140,7 +140,7 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                 Whether you are a global enterprise or a scaling startup, our team is ready to discuss your digital software requirements.
               </p>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', marginBottom: '3rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
                 
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                   <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#F0F5ED', border: '1px solid #DCE8D3', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -190,36 +190,6 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                   </div>
                 </div>
 
-              </div>
-
-              {/* Stylized Interactive Office Map Mockup Component */}
-              <div
-                style={{
-                  backgroundColor: '#F7FAF5',
-                  borderRadius: '16px',
-                  border: '1px solid #DCE8D3',
-                  padding: '1.5rem',
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <MapPin size={18} color="#899255" />
-                  <strong style={{ fontSize: '0.9rem', color: '#21372F' }}>San Francisco Innovation Hub</strong>
-                </div>
-
-                {/* SVG Stylized Map Layout */}
-                <div style={{ width: '100%', height: '160px', backgroundColor: '#EBF4E5', borderRadius: '10px', position: 'relative', overflow: 'hidden', border: '1px solid #DCE8D3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="100%" height="100%" viewBox="0 0 400 160" fill="none" style={{ position: 'absolute', top: 0, left: 0 }}>
-                    <path d="M0 40 H400 M0 100 H400 M100 0 V160 M260 0 V160" stroke="#DCE8D3" strokeWidth="2" strokeDasharray="4 4" />
-                    <rect x="120" y="50" width="120" height="40" rx="6" fill="#365648" opacity="0.15" />
-                    <circle cx="180" cy="70" r="10" fill="#899255" />
-                    <circle cx="180" cy="70" r="4" fill="#FFFFFF" />
-                  </svg>
-                  <div style={{ position: 'relative', zIndex: 2, backgroundColor: '#FFFFFF', padding: '0.4rem 0.85rem', borderRadius: '9999px', border: '1px solid #899255', boxShadow: '0 4px 12px rgba(33,55,47,0.1)', fontSize: '0.8rem', fontWeight: 700, color: '#21372F' }}>
-                    📍 Digiro Studio
-                  </div>
-                </div>
               </div>
 
             </div>
