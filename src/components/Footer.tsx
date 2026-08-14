@@ -183,11 +183,23 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.9rem', color: '#DCE8D3' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Mail size={18} style={{ color: '#BEEA9A', flexShrink: 0 }} />
-                <a href="mailto:contact@digiro.in" style={{ color: 'inherit' }}>contact@digiro.in</a>
+                <a
+                  href="mailto:contact@digiro.in"
+                  onClick={() => onNavigate('contact')}
+                  style={{ color: 'inherit' }}
+                >
+                  contact@digiro.in
+                </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Phone size={18} style={{ color: '#BEEA9A', flexShrink: 0 }} />
-                <a href="tel:+919315582116" style={{ color: 'inherit' }}>+91 93155 82116</a>
+                <a
+                  href="tel:+919315582116"
+                  onClick={() => onNavigate('contact')}
+                  style={{ color: 'inherit' }}
+                >
+                  +91 93155 82116
+                </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                 <MapPin size={18} style={{ color: '#BEEA9A', flexShrink: 0, marginTop: '2px' }} />
@@ -203,7 +215,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Contact on WhatsApp"
-                title="WhatsApp Us"
+                title="WhatsApp Us (+91 93155 82116)"
                 style={{
                   width: '38px',
                   height: '38px',
@@ -232,8 +244,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
               {/* Mail */}
               <a
                 href="mailto:contact@digiro.in"
+                onClick={() => onNavigate('contact')}
                 aria-label="Send Email"
-                title="Send Email"
+                title="Send Email (contact@digiro.in)"
                 style={{
                   width: '38px',
                   height: '38px',
@@ -257,18 +270,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
                 <Mail size={18} />
               </a>
 
-              {/* Contact / Call */}
-              <button
+              {/* Contact / Phone Call */}
+              <a
+                href="tel:+919315582116"
                 onClick={() => onNavigate('contact')}
-                aria-label="Contact Page"
-                title="Contact Us"
+                aria-label="Call +91 93155 82116"
+                title="Call +91 93155 82116 / Contact Form"
                 style={{
                   width: '38px',
                   height: '38px',
                   borderRadius: '50%',
                   backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                  border: 'none',
-                  cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -285,7 +297,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
                 }}
               >
                 <Phone size={18} />
-              </button>
+              </a>
             </div>
           </div>
 
