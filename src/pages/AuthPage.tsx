@@ -180,6 +180,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   }, []);
 
   const handleDemoSignIn = () => {
+    const demoToken = 'demo-token-' + Date.now();
     const demoUser: User = {
       id: `usr-demo-${Date.now()}`,
       name: 'Sabai Ruchi',
@@ -187,9 +188,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
       role: 'Verified Member',
       authProvider: 'demo',
-      token: 'demo-token-' + Date.now(),
+      token: demoToken,
     };
-    processAuthResult(demoUser, demoUser.token);
+    processAuthResult(demoUser, demoToken);
   };
 
   // Clean warning message without "MySQL"

@@ -11,7 +11,7 @@ export interface User {
   token?: string;
   googleId?: string;
   profileImage?: string;
-  authProvider?: 'email' | 'google';
+  authProvider?: 'email' | 'google' | 'demo';
   isNewUser?: boolean;
 }
 
