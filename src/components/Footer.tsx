@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { PageRoute } from '../types';
-import { Mail, Phone, MapPin, Send, CheckCircle2 } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import { DigiroLogoIcon } from './DigiroLogoIcon';
 
 interface FooterProps {
@@ -9,18 +9,6 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.trim() && email.includes('@')) {
-      setSubscribed(true);
-      setEmail('');
-      setTimeout(() => setSubscribed(false), 4000);
-    }
-  };
-
   return (
     <footer style={{ backgroundColor: '#21372F', color: '#FFFFFF', paddingTop: '4.5rem', paddingBottom: '2.5rem' }}>
       <div className="container">
@@ -51,56 +39,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLegalModal }) 
             <p style={{ color: '#A8C36E', fontSize: '0.875rem', lineHeight: 1.6 }}>
               Empowering global enterprises and scaling startups with custom digital products, cloud platforms, and intelligent automation.
             </p>
-
-            {/* Newsletter Input */}
-            <div style={{ marginTop: '0.5rem' }}>
-              <span style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFF', marginBottom: '0.5rem' }}>
-                Subscribe to Industry Insights
-              </span>
-              {subscribed ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#BEEA9A', fontSize: '0.85rem', fontWeight: 600 }}>
-                  <CheckCircle2 size={18} /> Thank you for subscribing!
-                </div>
-              ) : (
-                <form onSubmit={handleSubscribe} style={{ display: 'flex', gap: '0.5rem' }}>
-                  <input
-                    type="email"
-                    placeholder="Enter business email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    style={{
-                      flex: 1,
-                      padding: '0.6rem 0.85rem',
-                      borderRadius: '6px',
-                      border: '1px solid rgba(220, 232, 211, 0.25)',
-                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                      color: '#FFFFFF',
-                      fontSize: '0.85rem',
-                      outline: 'none',
-                    }}
-                  />
-                  <button
-                    type="submit"
-                    aria-label="Subscribe to newsletter"
-                    style={{
-                      padding: '0.6rem 1rem',
-                      borderRadius: '6px',
-                      border: 'none',
-                      backgroundColor: '#899255',
-                      color: '#FFFFFF',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      transition: 'background 0.2s ease',
-                    }}
-                  >
-                    <Send size={16} />
-                  </button>
-                </form>
-              )}
-            </div>
           </div>
 
           {/* Quick Links Column */}
