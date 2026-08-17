@@ -12,6 +12,7 @@ import { PortfolioPage } from './pages/PortfolioPage';
 import { BlogPage } from './pages/BlogPage';
 import { ContactPage } from './pages/ContactPage';
 import { ProductsPage } from './pages/ProductsPage';
+import { ProductDetailPage } from './pages/ProductDetailPage';
 import { MyProductsPage } from './pages/MyProductsPage';
 import { AuthPage } from './pages/AuthPage';
 
@@ -179,11 +180,32 @@ export const App: React.FC = () => {
       });
   };
 
+  const handleViewProduct = (product: ProductItem) => {
+    setSelectedProduct(product);
+    setActivePage('product-detail');
+    window.location.hash = `product-detail?id=${product.id}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Handle URL hash changes & back/forward browser navigation
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '') as PageRoute;
-      if (['home', 'about', 'services', 'portfolio', 'blog', 'contact', 'products', 'my-products', 'login', 'signup'].includes(hash)) {
+      const rawHash = window.location.hash.replace('#', '');
+      if (rawHash.startsWith('product-detail')) {
+        const urlParams = new URLSearchParams(rawHash.includes('?') ? rawHash.split('?')[1] : '');
+        const prodId = urlParams.get('id');
+        if (prodId) {
+          const found = PRODUCTS_DATA.find((p) => p.id === prodId);
+          if (found) {
+            setSelectedProduct(found);
+          }
+        }
+        setActivePage('product-detail');
+        return;
+      }
+
+      const hash = rawHash as PageRoute;
+      if (['home', 'about', 'services', 'portfolio', 'blog', 'contact', 'products', 'product-detail', 'my-products', 'login', 'signup'].includes(hash)) {
         setActivePage(hash);
       }
     };
@@ -198,7 +220,11 @@ export const App: React.FC = () => {
 
   const navigateTo = (page: PageRoute, targetId?: string) => {
     setActivePage(page);
-    window.location.hash = page;
+    if (page === 'product-detail' && selectedProduct) {
+      window.location.hash = `product-detail?id=${selectedProduct.id}`;
+    } else {
+      window.location.hash = page;
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (targetId) {
@@ -383,11 +409,23 @@ startxref
         {activePage === 'products' && (
           <ProductsPage
             onNavigate={navigateTo}
-            onOpenProductModal={(product) => setSelectedProduct(product)}
+            onOpenProductModal={handleViewProduct}
             onAddToCart={handleAddToCart}
             onBuyNow={handleBuyNow}
             onToggleWishlist={handleToggleWishlist}
             wishlistIds={wishlist.map((w) => w.id)}
+          />
+        )}
+
+        {activePage === 'product-detail' && (
+          <ProductDetailPage
+            product={selectedProduct}
+            onNavigate={navigateTo}
+            onSelectProduct={handleViewProduct}
+            onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
+            onToggleWishlist={handleToggleWishlist}
+            isInWishlist={selectedProduct ? wishlist.some((w) => w.id === selectedProduct.id) : false}
           />
         )}
 
@@ -403,7 +441,7 @@ startxref
             onClearCart={handleClearCart}
             onRemoveFromWishlist={handleRemoveFromWishlist}
             onMoveToCartFromWishlist={handleMoveToCartFromWishlist}
-            onViewProductDetails={(product) => setSelectedProduct(product)}
+            onViewProductDetails={handleViewProduct}
             onCheckoutSuccess={handleCheckoutSuccess}
           />
         )}

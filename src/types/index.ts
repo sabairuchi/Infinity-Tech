@@ -1,4 +1,4 @@
-export type PageRoute = 'home' | 'about' | 'services' | 'portfolio' | 'blog' | 'contact' | 'products' | 'my-products' | 'login' | 'signup';
+export type PageRoute = 'home' | 'about' | 'services' | 'portfolio' | 'blog' | 'contact' | 'products' | 'product-detail' | 'my-products' | 'login' | 'signup';
 
 export interface User {
   id: string | number;
